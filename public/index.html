@@ -1,0 +1,1242 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Validador de Produto ML - V1.5</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      background: #f6f7fb;
+      color: #1f2937;
+    }
+
+    .container {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 24px 16px 40px;
+    }
+
+    h1 {
+      margin: 0 0 8px;
+      font-size: 30px;
+    }
+
+    .sub {
+      color: #4b5563;
+      margin-bottom: 20px;
+      line-height: 1.5;
+    }
+
+    .card {
+      background: #fff;
+      border: 1px solid #e5e7eb;
+      border-radius: 16px;
+      padding: 18px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    .card + .card {
+      margin-top: 16px;
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 12px;
+    }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin-bottom: 12px;
+    }
+
+    .field label {
+      font-size: 14px;
+      font-weight: 700;
+      color: #374151;
+    }
+
+    .field input,
+    .field select,
+    .field textarea {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #d1d5db;
+      border-radius: 10px;
+      font-size: 15px;
+      background: #fff;
+    }
+
+    .field textarea {
+      min-height: 90px;
+      resize: vertical;
+    }
+
+    .checkbox-line {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      min-height: 44px;
+    }
+
+    .checkbox-line input {
+      width: auto;
+      transform: scale(1.15);
+    }
+
+    .checkbox-line.disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .checkbox-line.disabled input {
+      cursor: not-allowed;
+    }
+
+    .actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 8px;
+    }
+
+    button {
+      padding: 12px 16px;
+      border: 1px solid #d1d5db;
+      background: #fff;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 15px;
+      font-weight: 700;
+    }
+
+    button.primary {
+      background: #111827;
+      color: #fff;
+      border-color: #111827;
+    }
+
+    button:disabled {
+      opacity: 0.7;
+      cursor: wait;
+    }
+
+    button:hover:not(:disabled) {
+      opacity: 0.95;
+    }
+
+    .small {
+      font-size: 13px;
+      color: #6b7280;
+      line-height: 1.5;
+    }
+
+    .status {
+      margin-top: 12px;
+      padding: 12px;
+      border-radius: 10px;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .status.info {
+      background: #eff6ff;
+      color: #1d4ed8;
+      border: 1px solid #bfdbfe;
+    }
+
+    .status.error {
+      background: #fef2f2;
+      color: #b91c1c;
+      border: 1px solid #fecaca;
+    }
+
+    .status.success {
+      background: #ecfdf5;
+      color: #047857;
+      border: 1px solid #a7f3d0;
+    }
+
+    .section-title {
+      margin: 0 0 14px;
+      font-size: 19px;
+    }
+
+    .pill {
+      display: inline-block;
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+      background: #eef2ff;
+      color: #4338ca;
+      margin-right: 6px;
+      margin-bottom: 6px;
+      transition: all 0.2s;
+    }
+
+    .pill:hover {
+      transform: scale(1.05);
+      background: #e0e7ff;
+    }
+
+    .pill.neutral {
+      background: #f1f5f9;
+      color: #334155;
+    }
+
+    .result-grid {
+      display: grid;
+      grid-template-columns: 1.2fr 1fr 1fr;
+      gap: 16px;
+      margin-top: 16px;
+    }
+
+    .metric {
+      padding: 10px 0;
+      border-bottom: 1px solid #f1f5f9;
+    }
+
+    .metric strong {
+      display: block;
+      font-size: 13px;
+      color: #6b7280;
+      margin-bottom: 4px;
+    }
+
+    .metric span {
+      font-size: 17px;
+      font-weight: 700;
+      color: #111827;
+    }
+
+    .hero-result {
+      padding: 16px;
+      border-radius: 14px;
+      background: #f9fafb;
+      border: 1px solid #e5e7eb;
+    }
+
+    .decision {
+      font-size: 24px;
+      font-weight: 800;
+      margin-bottom: 8px;
+    }
+
+    .decision.good {
+      color: #047857;
+    }
+
+    .decision.warn {
+      color: #b45309;
+    }
+
+    .decision.bad {
+      color: #b91c1c;
+    }
+
+    .image-box {
+      width: 100%;
+      max-height: 220px;
+      object-fit: contain;
+      background: #fff;
+      border-radius: 12px;
+      border: 1px solid #e5e7eb;
+      padding: 10px;
+      margin-top: 8px;
+    }
+
+    .hint {
+      margin-top: 4px;
+      font-size: 12px;
+      color: #6b7280;
+    }
+
+    .warning-box {
+      margin-top: 8px;
+      padding: 10px 12px;
+      border-radius: 10px;
+      background: #fff7ed;
+      color: #9a3412;
+      border: 1px solid #fdba74;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .muted-box {
+      margin-top: 8px;
+      padding: 10px 12px;
+      border-radius: 10px;
+      background: #f8fafc;
+      color: #475569;
+      border: 1px solid #e2e8f0;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .mini-note {
+      margin-top: 10px;
+      font-size: 12px;
+      color: #64748b;
+      line-height: 1.5;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+    }
+
+    table th, table td {
+      padding: 8px 0;
+    }
+
+    table tr {
+      border-bottom: 1px solid #e5e7eb;
+      transition: background-color 0.2s;
+    }
+
+    table tr:hover td {
+      background-color: #f9fafb;
+    }
+
+    table th {
+      text-align: left;
+      font-weight: 600;
+      color: #374151;
+    }
+
+    table td {
+      text-align: right;
+    }
+
+    table td:first-child {
+      text-align: left;
+    }
+
+    .result-highlight {
+      background: linear-gradient(135deg, #f0f9ff 0%, #e6f7e6 100%);
+      border: 2px solid #10b981;
+    }
+
+    .net-profit-large {
+      font-size: 48px;
+      font-weight: 800;
+      color: #059669;
+      animation: fadeInUp 0.5s ease-out;
+    }
+
+    .margin-large {
+      font-size: 18px;
+      color: #047857;
+      margin-top: 8px;
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .stat-card {
+      background: white;
+      padding: 12px;
+      border-radius: 10px;
+      text-align: center;
+      transition: transform 0.2s;
+    }
+
+    .stat-card:hover {
+      transform: scale(1.02);
+    }
+
+    .stat-card-label {
+      font-size: 12px;
+      color: #6b7280;
+    }
+
+    .stat-card-value {
+      font-size: 20px;
+      font-weight: 700;
+      color: #1f2937;
+      margin-top: 4px;
+    }
+
+    @media (max-width: 900px) {
+      .grid-2,
+      .grid-3,
+      .result-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Validador de Produto ML - V1.5</h1>
+    <div class="sub">
+      Cole a <strong>URL do anúncio</strong> do Mercado Livre. A extração automática continua experimental; então os campos da referência permanecem editáveis.
+      Agora a simulação usa <strong>peso</strong>, <strong>reputação</strong>, <strong>tipo de anúncio</strong> e a regra de <strong>frete grátis a partir do limiar configurado</strong>.
+    </div>
+
+    <div class="card">
+      <h2 class="section-title">1. Buscar produto de referência</h2>
+
+      <div class="field">
+        <label for="referenceInput">URL ou ID do anúncio</label>
+        <input id="referenceInput" type="text" placeholder="Cole a URL do anúncio. URL funciona melhor que ID puro." />
+        <div class="hint">Para esta versão, a URL completa do anúncio funciona melhor. Se vier só parte dos dados, você pode completar manualmente.</div>
+      </div>
+
+      <div class="actions">
+        <button class="primary" id="btnExtract" type="button">Buscar dados públicos</button>
+        <button id="btnHealth" type="button">Testar servidor</button>
+        <button id="btnClear" type="button">Limpar tudo</button>
+      </div>
+
+      <div id="topStatus"></div>
+    </div>
+
+    <div class="grid-2">
+      <div class="card">
+        <h2 class="section-title">2. Produto de referência no mercado</h2>
+
+        <div class="field">
+          <label for="refTitle">Título</label>
+          <input id="refTitle" type="text" />
+        </div>
+
+        <div class="grid-3">
+          <div class="field">
+            <label for="refPrice">Preço atual (R$)</label>
+            <input id="refPrice" type="number" step="0.01" min="0" />
+          </div>
+
+          <div class="field">
+            <label for="refOriginalPrice">Preço original (R$)</label>
+            <input id="refOriginalPrice" type="number" step="0.01" min="0" />
+          </div>
+
+          <div class="field">
+            <label for="refSoldQty">Qtd. vendida</label>
+            <input id="refSoldQty" type="number" step="1" min="0" />
+          </div>
+        </div>
+
+        <div class="grid-3">
+          <div class="field">
+            <label for="refExposure">Exposição do concorrente</label>
+            <select id="refExposure">
+              <option value="classic">Clássico</option>
+              <option value="premium">Premium</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="refReputation">Reputação do concorrente</label>
+            <select id="refReputation">
+              <option value="red">Nova / sem reputação</option>
+              <option value="yellow">Amarela</option>
+              <option value="green">Verde</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="refInstallment">Parcelamento</label>
+            <input id="refInstallment" type="text" placeholder="Ex.: 10x de R$ 29,90" />
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <div class="field">
+            <label for="refShippingCostEstimate">Frete manual do concorrente (R$) — opcional</label>
+            <input id="refShippingCostEstimate" type="number" step="0.01" min="0" value="0" />
+            <div class="hint">Se preenchido, este valor será usado no lugar do cálculo automático de frete.</div>
+          </div>
+
+          <div class="field">
+            <label>Frete grátis do concorrente</label>
+            <div class="checkbox-line">
+              <input id="refShippingFree" type="checkbox" />
+              <span>Sim</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <div class="field">
+            <label for="refLink">Link</label>
+            <input id="refLink" type="text" />
+          </div>
+
+          <div class="field checkbox-line" style="margin-top: 24px;">
+            <input id="assumeProfessionalCompetitor" type="checkbox" />
+            <span><strong>Assumir concorrente profissional</strong> (força exposição Premium + reputação Verde)</span>
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="refImage">Imagem</label>
+          <input id="refImage" type="text" />
+          <img id="refImagePreview" class="image-box" style="display:none;" alt="Imagem do produto" />
+        </div>
+
+        <div class="muted-box">
+          Dica: se marcar "Assumir concorrente profissional", os campos de exposição e reputação serão automaticamente configurados como Premium e Verde.
+        </div>
+      </div>
+
+      <div class="card">
+        <h2 class="section-title">3. Minha simulação</h2>
+
+        <div class="grid-2">
+          <div class="field">
+            <label for="myCostProduct">Custo do produto (R$)</label>
+            <input id="myCostProduct" type="number" step="0.01" min="0" />
+          </div>
+
+          <div class="field">
+            <label for="mySalePrice">Meu preço de venda (R$)</label>
+            <input id="mySalePrice" type="number" step="0.01" min="0" />
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <div class="field">
+            <label for="myExposure">Minha exposição</label>
+            <select id="myExposure">
+              <option value="classic">Clássico</option>
+              <option value="premium">Premium</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="myWeightCategory">Peso do produto</label>
+            <select id="myWeightCategory">
+              <option value="leve">Leve (até 500g)</option>
+              <option value="medio" selected>Médio (até 2kg)</option>
+              <option value="pesado">Pesado (até 5kg)</option>
+              <option value="muito_pesado">Muito pesado (acima de 5kg)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <div class="field">
+            <label for="myReputation">Minha reputação</label>
+            <select id="myReputation">
+              <option value="red" selected>Nova / sem reputação</option>
+              <option value="yellow">Amarela</option>
+              <option value="green">Verde</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="myShippingCostSeller">Frete manual do usuário (R$) — opcional</label>
+            <input id="myShippingCostSeller" type="number" step="0.01" min="0" value="0" />
+            <div class="hint">Se preenchido, este valor será usado no lugar do cálculo automático de frete.</div>
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <div class="field">
+            <label>Vou oferecer frete grátis?</label>
+            <div class="checkbox-line" id="shippingFreeContainer">
+              <input id="myShippingFree" type="checkbox" checked />
+              <span>Sim</span>
+            </div>
+            <div id="shippingHint" class="hint"></div>
+          </div>
+        </div>
+
+        <div class="field">
+          <label>Configuração atual do sistema</label>
+          <div id="configBadges" class="small"></div>
+        </div>
+
+        <div class="actions">
+          <button class="primary" id="btnAnalyze" type="button">Calcular cenário</button>
+        </div>
+
+        <div class="muted-box">
+          Na V1.5, o cálculo pode considerar <strong>peso</strong>, <strong>reputação</strong> e <strong>tipo de anúncio</strong>.
+          A opção de frete grátis é automaticamente marcada e travada quando o preço de venda é igual ou superior a R$ 79.
+          Campos manuais de frete têm prioridade sobre o cálculo automático.
+        </div>
+      </div>
+    </div>
+
+    <div id="resultsArea" style="display:none;">
+      <div class="result-grid">
+        <!-- BLOCO 1: COMPARATIVO LIMPO -->
+        <div class="card">
+          <h2 class="section-title">📊 Comparativo</h2>
+          
+          <table>
+            <thead>
+              <tr>
+                <th>Métrica</th>
+                <th>Concorrente</th>
+                <th>Você</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>💰 Preço</strong></td>
+                <td id="cmpRefPrice">-</td>
+                <td id="cmpMyPrice">-</td>
+              </tr>
+              <tr>
+                <td><strong>📈 Taxa ML</strong></td>
+                <td id="cmpRefFee">-</td>
+                <td id="cmpMyFee">-</td>
+              </tr>
+              <tr>
+                <td><strong>🚚 Frete</strong></td>
+                <td id="cmpRefFreight">-</td>
+                <td id="cmpMyFreight">-</td>
+              </tr>
+              <tr>
+                <td><strong>⭐ Reputação</strong></td>
+                <td id="cmpRefReputation">-</td>
+                <td id="cmpMyReputation">-</td>
+              </tr>
+              <tr>
+                <td><strong>📢 Tipo Anúncio</strong></td>
+                <td id="cmpRefExposure">-</td>
+                <td id="cmpMyExposure">-</td>
+              </tr>
+            </tbody>
+          </table>
+          
+          <div class="mini-note" style="margin-top: 12px;" id="cmpRefFreightSource"></div>
+          <div class="mini-note" id="cmpMyFreightSource"></div>
+        </div>
+
+        <!-- BLOCO 2: SEU RESULTADO DESTACADO -->
+        <div class="card result-highlight">
+          <h2 class="section-title" style="color: #065f46;">💰 SEU RESULTADO</h2>
+          
+          <div style="text-align: center; padding: 20px 0;">
+            <div class="net-profit-large" id="myNetProfitLarge">
+              R$ 0,00
+            </div>
+            <div class="margin-large" id="myMarginLarge">
+              Margem: 0%
+            </div>
+          </div>
+          
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 16px;">
+            <div class="stat-card">
+              <div class="stat-card-label">Custo Total</div>
+              <div class="stat-card-value" id="myTotalCost">-</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-card-label">Taxa ML</div>
+              <div class="stat-card-value" id="myFeeValue">-</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-card-label">Frete</div>
+              <div class="stat-card-value" id="myFreightValue">-</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-card-label">Custo Produto</div>
+              <div class="stat-card-value" id="myCostProductDisplay">-</div>
+            </div>
+          </div>
+          
+          <div class="mini-note" style="margin-top: 12px;" id="myFreightNote"></div>
+        </div>
+
+        <!-- BLOCO 3: ANÁLISE -->
+        <div class="card">
+          <h2 class="section-title">📈 Análise</h2>
+          
+          <div class="metric">
+            <strong>Diferença de preço</strong>
+            <span id="cmpDiffPrice">-</span>
+          </div>
+          
+          <div class="metric">
+            <strong>Diferença percentual</strong>
+            <span id="cmpDiffPct">-</span>
+          </div>
+          
+          <div class="hero-result" style="margin-top: 16px;">
+            <div id="decisionText" class="decision">-</div>
+            <div id="recommendationText" class="small">-</div>
+          </div>
+          
+          <div style="margin-top: 14px;">
+            <span id="pillDemand" class="pill">Demanda: -</span>
+            <span id="pillPrice" class="pill">Preço: -</span>
+            <span id="pillMargin" class="pill">Margem: -</span>
+          </div>
+          
+          <div id="shippingWarning" class="warning-box" style="display:none; margin-top: 12px;"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let appConfig = {
+      freightFreeThreshold: 79,
+      classicFeePct: 11.5,
+      premiumFeePct: 16.5,
+      estimatedReferenceShippingPct: 15
+    };
+
+    let isAnalyzing = false;
+    let isExtracting = false;
+
+    const els = {
+      referenceInput: document.getElementById("referenceInput"),
+      refTitle: document.getElementById("refTitle"),
+      refPrice: document.getElementById("refPrice"),
+      refOriginalPrice: document.getElementById("refOriginalPrice"),
+      refSoldQty: document.getElementById("refSoldQty"),
+      refExposure: document.getElementById("refExposure"),
+      refReputation: document.getElementById("refReputation"),
+      refInstallment: document.getElementById("refInstallment"),
+      refShippingCostEstimate: document.getElementById("refShippingCostEstimate"),
+      refShippingFree: document.getElementById("refShippingFree"),
+      refLink: document.getElementById("refLink"),
+      refImage: document.getElementById("refImage"),
+      refImagePreview: document.getElementById("refImagePreview"),
+      assumeProfessionalCompetitor: document.getElementById("assumeProfessionalCompetitor"),
+
+      myCostProduct: document.getElementById("myCostProduct"),
+      mySalePrice: document.getElementById("mySalePrice"),
+      myExposure: document.getElementById("myExposure"),
+      myWeightCategory: document.getElementById("myWeightCategory"),
+      myReputation: document.getElementById("myReputation"),
+      myShippingCostSeller: document.getElementById("myShippingCostSeller"),
+      myShippingFree: document.getElementById("myShippingFree"),
+      shippingFreeContainer: document.getElementById("shippingFreeContainer"),
+
+      btnExtract: document.getElementById("btnExtract"),
+      btnAnalyze: document.getElementById("btnAnalyze"),
+      btnHealth: document.getElementById("btnHealth"),
+      btnClear: document.getElementById("btnClear"),
+
+      topStatus: document.getElementById("topStatus"),
+      resultsArea: document.getElementById("resultsArea"),
+      configBadges: document.getElementById("configBadges"),
+      shippingHint: document.getElementById("shippingHint"),
+
+      cmpRefPrice: document.getElementById("cmpRefPrice"),
+      cmpMyPrice: document.getElementById("cmpMyPrice"),
+      cmpRefFee: document.getElementById("cmpRefFee"),
+      cmpMyFee: document.getElementById("cmpMyFee"),
+      cmpRefFreight: document.getElementById("cmpRefFreight"),
+      cmpMyFreight: document.getElementById("cmpMyFreight"),
+      cmpRefReputation: document.getElementById("cmpRefReputation"),
+      cmpMyReputation: document.getElementById("cmpMyReputation"),
+      cmpRefExposure: document.getElementById("cmpRefExposure"),
+      cmpMyExposure: document.getElementById("cmpMyExposure"),
+      cmpRefFreightSource: document.getElementById("cmpRefFreightSource"),
+      cmpMyFreightSource: document.getElementById("cmpMyFreightSource"),
+      cmpDiffPrice: document.getElementById("cmpDiffPrice"),
+      cmpDiffPct: document.getElementById("cmpDiffPct"),
+
+      myNetProfitLarge: document.getElementById("myNetProfitLarge"),
+      myMarginLarge: document.getElementById("myMarginLarge"),
+      myTotalCost: document.getElementById("myTotalCost"),
+      myFeeValue: document.getElementById("myFeeValue"),
+      myFreightValue: document.getElementById("myFreightValue"),
+      myCostProductDisplay: document.getElementById("myCostProductDisplay"),
+      myFreightNote: document.getElementById("myFreightNote"),
+
+      decisionText: document.getElementById("decisionText"),
+      recommendationText: document.getElementById("recommendationText"),
+      pillDemand: document.getElementById("pillDemand"),
+      pillPrice: document.getElementById("pillPrice"),
+      pillMargin: document.getElementById("pillMargin"),
+      shippingWarning: document.getElementById("shippingWarning")
+    };
+
+    function setStatus(message, type = "info") {
+      if (!message) {
+        els.topStatus.innerHTML = "";
+        return;
+      }
+      els.topStatus.innerHTML = `<div class="status ${type}">${escapeHtml(message)}</div>`;
+    }
+
+    function toNumber(value) {
+      const n = Number(value);
+      return Number.isFinite(n) ? n : 0;
+    }
+
+    function formatBRL(value) {
+      if (value == null || Number.isNaN(Number(value))) return "-";
+      return Number(value).toLocaleString("pt-BR", {
+        style: "currency",
+        currency: "BRL"
+      });
+    }
+
+    function formatPct(value) {
+      if (value == null || Number.isNaN(Number(value))) return "-";
+      return `${Number(value).toLocaleString("pt-BR", {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+      })}%`;
+    }
+
+    function escapeHtml(text) {
+      return String(text ?? "")
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
+
+    function setBusy(button, busy, textBusy, textNormal) {
+      button.disabled = busy;
+      button.textContent = busy ? textBusy : textNormal;
+    }
+
+    function updateImagePreview() {
+      const src = (els.refImage.value || "").trim();
+      if (!src) {
+        els.refImagePreview.style.display = "none";
+        els.refImagePreview.removeAttribute("src");
+        return;
+      }
+
+      els.refImagePreview.src = src;
+      els.refImagePreview.style.display = "block";
+    }
+
+    function handleProfessionalCompetitor() {
+      const isProfessional = els.assumeProfessionalCompetitor.checked;
+      
+      if (isProfessional) {
+        els.refExposure.value = "premium";
+        els.refReputation.value = "green";
+        els.refExposure.disabled = true;
+        els.refReputation.disabled = true;
+      } else {
+        els.refExposure.disabled = false;
+        els.refReputation.disabled = false;
+      }
+    }
+
+    function updateShippingFreeLock() {
+      const price = toNumber(els.mySalePrice.value);
+      const threshold = Number(appConfig.freightFreeThreshold || 79);
+      const checkbox = els.myShippingFree;
+      const container = els.shippingFreeContainer;
+      
+      if (price >= threshold) {
+        checkbox.checked = true;
+        checkbox.disabled = true;
+        container.classList.add("disabled");
+        els.shippingHint.innerHTML = `<strong>Frete grátis obrigatório</strong> (preço ≥ R$ ${threshold.toFixed(2).replace(".", ",")})`;
+      } else {
+        checkbox.disabled = false;
+        container.classList.remove("disabled");
+        if (price > 0) {
+          els.shippingHint.innerHTML = `Preço abaixo de R$ ${threshold.toFixed(2).replace(".", ",")} - você pode optar por não oferecer frete grátis.`;
+        } else {
+          els.shippingHint.innerHTML = "";
+        }
+      }
+    }
+
+    function fillReferenceFields(data) {
+      els.refTitle.value = data.title || "";
+      els.refPrice.value = data.price ?? "";
+      els.refOriginalPrice.value = data.originalPrice ?? "";
+      els.refSoldQty.value = data.soldQuantity ?? "";
+      els.refShippingFree.checked = !!data.shippingFree;
+      els.refInstallment.value = data.installment || "";
+      els.refExposure.value = data.exposure === "premium" ? "premium" : "classic";
+      els.refLink.value = data.link || "";
+      els.refImage.value = data.image || "";
+      updateImagePreview();
+    }
+
+    function collectReference() {
+      return {
+        title: els.refTitle.value.trim(),
+        price: els.refPrice.value === "" ? 0 : toNumber(els.refPrice.value),
+        originalPrice: els.refOriginalPrice.value === "" ? null : toNumber(els.refOriginalPrice.value),
+        soldQuantity: els.refSoldQty.value === "" ? 0 : toNumber(els.refSoldQty.value),
+        shippingFree: els.refShippingFree.checked,
+        installment: els.refInstallment.value.trim(),
+        exposure: els.refExposure.value,
+        reputation: els.refReputation.value,
+        shippingCostEstimate: els.refShippingCostEstimate.value === "" ? 0 : toNumber(els.refShippingCostEstimate.value),
+        link: els.refLink.value.trim(),
+        image: els.refImage.value.trim(),
+        assumeProfessionalCompetitor: els.assumeProfessionalCompetitor.checked
+      };
+    }
+
+    function collectSimulation() {
+      return {
+        costProduct: els.myCostProduct.value === "" ? 0 : toNumber(els.myCostProduct.value),
+        salePrice: els.mySalePrice.value === "" ? 0 : toNumber(els.mySalePrice.value),
+        exposure: els.myExposure.value,
+        weightCategory: els.myWeightCategory.value,
+        reputation: els.myReputation.value,
+        shippingFree: els.myShippingFree.checked,
+        shippingCostSeller: els.myShippingCostSeller.value === "" ? 0 : toNumber(els.myShippingCostSeller.value)
+      };
+    }
+
+    function getWeightLabel(value) {
+      if (value === "leve") return "Leve (até 500g)";
+      if (value === "medio") return "Médio (até 2kg)";
+      if (value === "pesado") return "Pesado (até 5kg)";
+      if (value === "muito_pesado") return "Muito pesado (acima de 5kg)";
+      return "-";
+    }
+
+    function getReputationLabel(value) {
+      if (value === "green") return "Verde";
+      if (value === "yellow") return "Amarela";
+      if (value === "red") return "Nova / sem reputação";
+      return "-";
+    }
+
+    function updateShippingSuggestion() {
+      const price = toNumber(els.mySalePrice.value);
+      const threshold = Number(appConfig.freightFreeThreshold || 79);
+      updateShippingFreeLock();
+    }
+
+    function updateConfigBadges() {
+      els.configBadges.innerHTML = `
+        <span class="pill">Frete grátis a partir de: R$ ${Number(appConfig.freightFreeThreshold).toFixed(2).replace(".", ",")}</span>
+        <span class="pill">Clássico: ${formatPct(appConfig.classicFeePct)}</span>
+        <span class="pill">Premium: ${formatPct(appConfig.premiumFeePct)}</span>
+        <span class="pill neutral">Heurística antiga de frete concorrente: ${formatPct(appConfig.estimatedReferenceShippingPct || 15)}</span>
+      `;
+    }
+
+    async function loadConfig() {
+      try {
+        const response = await fetch("/api/config");
+        const data = await response.json();
+
+        if (response.ok && data) {
+          appConfig = data;
+          updateConfigBadges();
+          updateShippingSuggestion();
+        }
+      } catch {
+        updateConfigBadges();
+      }
+    }
+
+    async function testHealth() {
+      try {
+        setBusy(els.btnHealth, true, "Testando...", "Testar servidor");
+        const response = await fetch("/api/health");
+        const data = await response.json();
+
+        if (!response.ok) {
+          throw new Error(data.message || "Falha no teste.");
+        }
+
+        setStatus(data.message || "Servidor funcionando.", "success");
+      } catch (error) {
+        setStatus(error.message || "Falha ao testar servidor.", "error");
+      } finally {
+        setBusy(els.btnHealth, false, "Testando...", "Testar servidor");
+      }
+    }
+
+    async function extractReference() {
+      if (isExtracting) return;
+      const input = els.referenceInput.value.trim();
+
+      if (!input) {
+        setStatus("Cole a URL ou ID do anúncio.", "error");
+        return;
+      }
+
+      isExtracting = true;
+      setBusy(els.btnExtract, true, "Buscando...", "Buscar dados públicos");
+      setStatus("Buscando dados públicos do anúncio...", "info");
+
+      try {
+        const response = await fetch("/api/reference/extract", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({ input })
+        });
+
+        const data = await response.json();
+
+        if (!response.ok || !data.ok) {
+          throw new Error(data.message || "Não foi possível extrair os dados públicos.");
+        }
+
+        fillReferenceFields(data.extracted || {});
+        setStatus(data.message || "Dados públicos carregados.", "success");
+      } catch (error) {
+        setStatus(error.message || "Falha ao buscar dados públicos.", "error");
+      } finally {
+        isExtracting = false;
+        setBusy(els.btnExtract, false, "Buscando...", "Buscar dados públicos");
+      }
+    }
+
+    function applyDecisionClass(text) {
+      els.decisionText.classList.remove("good", "warn", "bad");
+
+      if (text === "VALE A PENA") {
+        els.decisionText.classList.add("good");
+      } else if (text === "AJUSTAR PREÇO OU CUSTO" || text === "AJUSTAR PREÇO") {
+        els.decisionText.classList.add("warn");
+      } else {
+        els.decisionText.classList.add("bad");
+      }
+    }
+
+    function clearRenderedAnalysis() {
+      els.cmpRefPrice.textContent = "-";
+      els.cmpMyPrice.textContent = "-";
+      els.cmpRefFee.textContent = "-";
+      els.cmpMyFee.textContent = "-";
+      els.cmpRefFreight.textContent = "-";
+      els.cmpMyFreight.textContent = "-";
+      els.cmpRefReputation.textContent = "-";
+      els.cmpMyReputation.textContent = "-";
+      els.cmpRefExposure.textContent = "-";
+      els.cmpMyExposure.textContent = "-";
+      els.cmpRefFreightSource.textContent = "";
+      els.cmpMyFreightSource.textContent = "";
+      els.cmpDiffPrice.textContent = "-";
+      els.cmpDiffPct.textContent = "-";
+
+      els.myNetProfitLarge.textContent = "R$ 0,00";
+      els.myMarginLarge.textContent = "Margem: 0%";
+      els.myTotalCost.textContent = "-";
+      els.myFeeValue.textContent = "-";
+      els.myFreightValue.textContent = "-";
+      els.myCostProductDisplay.textContent = "-";
+      els.myFreightNote.textContent = "";
+
+      els.decisionText.textContent = "-";
+      els.recommendationText.textContent = "-";
+      els.pillDemand.textContent = "Demanda: -";
+      els.pillPrice.textContent = "Preço: -";
+      els.pillMargin.textContent = "Margem: -";
+      els.shippingWarning.style.display = "none";
+      els.shippingWarning.textContent = "";
+      els.decisionText.classList.remove("good", "warn", "bad");
+    }
+
+    function renderAnalysis(analysis, simulation) {
+      els.resultsArea.style.display = "block";
+
+      els.cmpRefPrice.textContent = formatBRL(analysis.reference?.price);
+      els.cmpMyPrice.textContent = formatBRL(analysis.simulation?.salePrice);
+      
+      els.cmpRefFee.textContent = formatPct(analysis.reference?.feePct);
+      els.cmpMyFee.textContent = formatPct(analysis.simulation?.feePct);
+      
+      els.cmpRefFreight.textContent = formatBRL(analysis.reference?.shippingCostEstimate);
+      els.cmpMyFreight.textContent = formatBRL(analysis.simulation?.shippingCostApplied);
+      
+      els.cmpRefReputation.textContent = getReputationLabel(analysis.reference?.shippingReputationUsed || "red");
+      els.cmpMyReputation.textContent = getReputationLabel(simulation.reputation);
+      
+      els.cmpRefExposure.textContent = analysis.reference?.exposure === "premium" ? "Premium" : "Clássico";
+      els.cmpMyExposure.textContent = simulation.exposure === "premium" ? "Premium" : "Clássico";
+      
+      if (analysis.reference?.shippingCostSource === "manual") {
+        els.cmpRefFreightSource.textContent = "📌 Frete: valor manual informado";
+      } else if (analysis.reference?.shippingCostSource === "dynamic-professional") {
+        els.cmpRefFreightSource.textContent = "⚡ Frete: calculado (concorrente profissional)";
+      } else if (analysis.reference?.shippingCostSource === "dynamic-reference") {
+        els.cmpRefFreightSource.textContent = "⚡ Frete: calculado dinamicamente";
+      } else if (analysis.reference?.shippingCostSource === "estimado") {
+        els.cmpRefFreightSource.textContent = "📊 Frete: estimado automaticamente";
+      } else {
+        els.cmpRefFreightSource.textContent = "Frete não aplicado ou não calculado";
+      }
+
+      if (analysis.simulation?.shippingCostSource === "manual") {
+        els.cmpMyFreightSource.textContent = "📌 Frete: valor manual informado";
+      } else if (analysis.simulation?.shippingCostSource === "dynamic") {
+        els.cmpMyFreightSource.textContent = "⚡ Frete: calculado dinamicamente (peso + reputação + exposição)";
+      } else {
+        els.cmpMyFreightSource.textContent = "Frete não aplicado ou não calculado";
+      }
+
+      const netProfit = analysis.simulation?.netProfit || 0;
+      const margin = analysis.simulation?.marginPct || 0;
+      const totalCost = analysis.simulation?.totalCost || 0;
+      const feeValue = analysis.simulation?.feeValue || 0;
+      const freightValue = analysis.simulation?.shippingCostApplied || 0;
+      
+      els.myNetProfitLarge.textContent = formatBRL(netProfit);
+      els.myMarginLarge.textContent = `Margem: ${formatPct(margin)}`;
+      els.myTotalCost.textContent = formatBRL(totalCost);
+      els.myFeeValue.textContent = formatBRL(feeValue);
+      els.myFreightValue.textContent = formatBRL(freightValue);
+      els.myCostProductDisplay.textContent = formatBRL(simulation.costProduct);
+      
+      if (analysis.simulation?.shippingFree) {
+        if (analysis.simulation?.shippingCostApplied > 0) {
+          els.myFreightNote.textContent = "✓ Frete grátis incluso - custo de frete assumido por você";
+        } else {
+          els.myFreightNote.textContent = "✓ Frete grátis incluso - sem custo adicional (frete grátis automático)";
+        }
+      } else {
+        els.myFreightNote.textContent = "Frete não incluso (comprador paga o frete)";
+      }
+
+      els.cmpDiffPrice.textContent = formatBRL(analysis.comparison?.priceDifference);
+      els.cmpDiffPct.textContent = formatPct(analysis.comparison?.priceDifferencePct);
+      
+      els.decisionText.textContent = analysis.diagnosis?.decision || "-";
+      applyDecisionClass(analysis.diagnosis?.decision || "");
+      els.recommendationText.textContent = analysis.diagnosis?.recommendation || "-";
+      
+      els.pillDemand.textContent = `Demanda: ${analysis.diagnosis?.demand || "-"}`;
+      els.pillPrice.textContent = `Preço: ${analysis.diagnosis?.price || "-"}`;
+      els.pillMargin.textContent = `Margem: ${analysis.diagnosis?.margin || "-"}`;
+      
+      if (analysis.simulation?.suggestedShippingFree && !analysis.simulation?.shippingFree) {
+        els.shippingWarning.style.display = "block";
+        els.shippingWarning.textContent =
+          `Atenção: pelo limiar configurado (R$ ${Number(analysis.config?.freightFreeThreshold || appConfig.freightFreeThreshold).toFixed(2).replace(".", ",")}), esse preço entra em faixa onde normalmente o anúncio já opera com frete grátis ao comprador.`;
+      } else {
+        els.shippingWarning.style.display = "none";
+        els.shippingWarning.textContent = "";
+      }
+    }
+
+    async function analyze() {
+      if (isAnalyzing) return;
+
+      const reference = collectReference();
+      const simulation = collectSimulation();
+
+      if (!reference.price) {
+        setStatus("Preencha ao menos o preço do produto de referência.", "error");
+        return;
+      }
+
+      if (!simulation.costProduct || !simulation.salePrice) {
+        setStatus("Preencha custo do produto e seu preço de venda.", "error");
+        return;
+      }
+
+      isAnalyzing = true;
+      setBusy(els.btnAnalyze, true, "Calculando...", "Calcular cenário");
+      setStatus("Recalculando cenário...", "info");
+
+      clearRenderedAnalysis();
+      els.resultsArea.style.display = "none";
+
+      try {
+        const response = await fetch("/api/analyze", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({ reference, simulation })
+        });
+
+        const data = await response.json();
+
+        if (!response.ok || !data.ok) {
+          throw new Error(data.message || "Não foi possível calcular o cenário.");
+        }
+
+        renderAnalysis(data.analysis, simulation);
+        setStatus("Cenário calculado com sucesso.", "success");
+      } catch (error) {
+        setStatus(error.message || "Falha ao calcular cenário.", "error");
+      } finally {
+        isAnalyzing = false;
+        setBusy(els.btnAnalyze, false, "Calculando...", "Calcular cenário");
+      }
+    }
+
+    function clearAll() {
+      els.referenceInput.value = "";
+      els.refTitle.value = "";
+      els.refPrice.value = "";
+      els.refOriginalPrice.value = "";
+      els.refSoldQty.value = "";
+      els.refExposure.value = "classic";
+      els.refReputation.value = "red";
+      els.refInstallment.value = "";
+      els.refShippingCostEstimate.value = "0";
+      els.refShippingFree.checked = false;
+      els.refLink.value = "";
+      els.refImage.value = "";
+      els.assumeProfessionalCompetitor.checked = false;
+      handleProfessionalCompetitor();
+
+      els.myCostProduct.value = "";
+      els.mySalePrice.value = "";
+      els.myExposure.value = "classic";
+      els.myWeightCategory.value = "medio";
+      els.myReputation.value = "red";
+      els.myShippingCostSeller.value = "0";
+      els.myShippingFree.checked = true;
+      els.myShippingFree.disabled = false;
+      els.shippingFreeContainer.classList.remove("disabled");
+
+      clearRenderedAnalysis();
+      els.resultsArea.style.display = "none";
+      setStatus("");
+      updateImagePreview();
+      updateShippingSuggestion();
+    }
+
+    els.refImage.addEventListener("input", updateImagePreview);
+    els.mySalePrice.addEventListener("input", updateShippingSuggestion);
+    els.assumeProfessionalCompetitor.addEventListener("change", handleProfessionalCompetitor);
+
+    els.btnExtract.addEventListener("click", extractReference);
+    els.btnAnalyze.addEventListener("click", analyze);
+    els.btnHealth.addEventListener("click", testHealth);
+    els.btnClear.addEventListener("click", clearAll);
+
+    handleProfessionalCompetitor();
+    loadConfig();
+    updateImagePreview();
+    updateShippingSuggestion();
+  </script>
+</body>
+</html>
