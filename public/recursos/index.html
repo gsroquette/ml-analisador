@@ -17,7 +17,7 @@
         .form-group-full { flex: 100%; min-width: 100%; }
         label { font-weight: 600; font-size: 0.8rem; display: block; margin-bottom: 6px; color: #333; }
         input, select, textarea { width: 100%; padding: 10px 12px; border-radius: 16px; border: 1px solid #ccc; font-size: 0.9rem; }
-        textarea { resize: vertical; font-family: monospace; font-size: 0.8rem; }
+        textarea { resize: vertical; font-family: monospace; font-size: 0.75rem; }
         button { background: #1e3a8a; color: white; border: none; padding: 10px 24px; border-radius: 40px; font-weight: bold; cursor: pointer; transition: 0.2s; font-size: 0.9rem; }
         button:hover { background: #1e40af; transform: scale(0.97); }
         .btn-copiar { background: #4b5563; padding: 6px 12px; font-size: 0.7rem; margin-left: 8px; }
@@ -31,7 +31,7 @@
         .prompt-card { background: #fef3c7; border-left: 4px solid #f59e0b; padding: 12px 16px; margin-bottom: 16px; border-radius: 16px; }
         .prompt-card h4 { margin: 0 0 8px 0; font-size: 0.9rem; }
         .prompt-card p { margin: 0 0 8px 0; font-size: 0.75rem; color: #555; }
-        .prompt-card code { background: #fff; padding: 8px; display: block; border-radius: 8px; font-size: 0.7rem; white-space: pre-wrap; word-break: break-all; font-family: monospace; }
+        .prompt-card code { background: #fff; padding: 8px; display: block; border-radius: 8px; font-size: 0.7rem; white-space: pre-wrap; word-break: break-all; font-family: monospace; max-height: 150px; overflow-y: auto; }
         .filtros { display: flex; flex-wrap: wrap; gap: 16px; margin-bottom: 20px; align-items: flex-end; background: #f8fafc; padding: 16px; border-radius: 20px; }
         table { width: 100%; border-collapse: collapse; overflow-x: auto; display: block; }
         th, td { border: 1px solid #ddd; padding: 10px 8px; text-align: center; font-size: 0.75rem; }
@@ -49,7 +49,6 @@
         .botoes-acao { display: flex; gap: 12px; justify-content: flex-end; margin-bottom: 16px; flex-wrap: wrap; }
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); justify-content: center; align-items: center; z-index: 1000; }
         .modal-content { background: white; border-radius: 32px; padding: 24px; max-width: 90%; width: 800px; max-height: 85vh; overflow-y: auto; }
-        .produto-detalhe-imagem { max-width: 200px; border-radius: 16px; margin-bottom: 16px; }
         .preco-box { background: #f1f5f9; padding: 12px; border-radius: 16px; margin: 12px 0; }
         .area-import { background: #f3e8ff; border: 2px dashed #7c3aed; border-radius: 20px; padding: 16px; margin-bottom: 20px; }
         .filtro-input { min-width: 150px; }
@@ -63,28 +62,8 @@
 
     <!-- Área de prompts -->
     <div class="card">
-        <h3>📋 Passo a Passo - Use os prompts abaixo com sua IA (ChatGPT/DeepSeek)</h3>
-        
-        <div class="prompt-card">
-            <h4>📌 PROMPT 1: SELECIONAR 5 ANÚNCIOS</h4>
-            <p>📸 Anexe os PRINTS da página de busca do Mercado Livre e cole este prompt. A IA vai escolher 5 anúncios para você analisar.</p>
-            <code id="prompt1Texto">Carregando...</code>
-            <button class="btn-copiar" data-prompt="selecao" style="margin-top: 8px;">📋 Copiar Prompt 1</button>
-        </div>
-
-        <div class="prompt-card">
-            <h4>🔗 PROMPT 2: ANALISAR OS 5 LINKS</h4>
-            <p>🔗 Abra os 5 links sugeridos, colete as informações e cole os links neste prompt. A IA vai analisar a qualidade da concorrência.</p>
-            <code id="prompt2Texto">Carregando...</code>
-            <button class="btn-copiar" data-prompt="analise" style="margin-top: 8px;">📋 Copiar Prompt 2</button>
-        </div>
-
-        <div class="prompt-card">
-            <h4>📦 PROMPT 3: GERAR JSON COMPLETO</h4>
-            <p>🤖 Cole este prompt após ter todas as informações. A IA vai gerar o JSON completo para importar no app.</p>
-            <code id="prompt3Texto">Carregando...</code>
-            <button class="btn-copiar" data-prompt="compilado" style="margin-top: 8px;">📋 Copiar Prompt 3</button>
-        </div>
+        <h3>📋 Passo a Passo - Use os prompts abaixo com sua IA</h3>
+        <div id="promptsContainer">Carregando prompts...</div>
     </div>
 
     <!-- Área de importação JSON -->
@@ -118,29 +97,28 @@
     <div class="card">
         <h3>🔍 Filtrar Produtos</h3>
         <div class="filtros">
-            <div class="form-group filtro-input"><label>🔎 Nome do produto</label><input type="text" id="filtroNome" placeholder="Digite para buscar..."></div>
+            <div class="form-group filtro-input"><label>🔎 Nome</label><input type="text" id="filtroNome" placeholder="Digite..."></div>
             <div class="form-group filtro-input"><label>📂 Categoria</label><select id="filtroCategoria"><option value="">Todas</option></select></div>
             <div class="form-group filtro-input"><label>🎯 Decisão</label><select id="filtroDecisao"><option value="">Todas</option><option>🟢 ESCALAR</option><option>🟡 TESTAR</option><option>🔴 DESCARTAR</option></select></div>
             <div class="form-group filtro-input"><label>📅 Data inicial</label><input type="date" id="filtroDataInicio"></div>
             <div class="form-group filtro-input"><label>📅 Data final</label><input type="date" id="filtroDataFim"></div>
-            <div class="form-group"><label>&nbsp;</label><button id="btnLimparFiltros" class="btn-reset">🗑️ Limpar Filtros</button></div>
+            <div class="form-group"><label>&nbsp;</label><button id="btnLimparFiltros" class="btn-reset">🗑️ Limpar</button></div>
         </div>
     </div>
 
-    <!-- Tabela de produtos -->
+    <!-- Tabela -->
     <div class="card">
         <div class="botoes-acao">
             <button id="btnExportCSV" class="btn-export">📎 Exportar CSV</button>
             <button id="btnExportJSON" class="btn-export">📋 Exportar JSON</button>
             <button id="btnAtualizarGrafico">📊 Atualizar Gráfico</button>
+            <button id="btnReset" class="btn-reset">🗑️ Limpar Todos</button>
         </div>
         <h3>📋 Produtos Avaliados</h3>
         <div style="overflow-x: auto;">
             <table id="tabelaProdutos">
-                <thead>
-                    <tr><th>Produto</th><th>Cat</th><th>Dem</th><th>Conc</th><th>Log</th><th>Reg</th><th>Dif</th><th>Pos</th><th>Ape</th><th>Fac</th><th>Esc</th><th>Risc</th><th>Score</th><th>Decisão</th><th>Preço Sug.</th><th>Data</th><th>Ação</th></tr>
-                </thead>
-                <tbody id="corpoTabela"><tr><td colspan="17">Nenhum produto adicionado ainda</td></tr></tbody>
+                <thead><tr><th>Produto</th><th>Cat</th><th>Dem</th><th>Conc</th><th>Log</th><th>Reg</th><th>Dif</th><th>Pos</th><th>Ape</th><th>Fac</th><th>Esc</th><th>Risc</th><th>Score</th><th>Decisão</th><th>Preço Sug.</th><th>Data</th><th>Ação</th></tr></thead>
+                <tbody id="corpoTabela"><td><td colspan="17">Carregando...</td></tr></tbody>
             </table>
         </div>
         <div class="grafico-container"><canvas id="graficoScore"></canvas></div>
@@ -168,18 +146,50 @@
     let grafico = null;
     let prompts = { selecao: "", analise: "", compilado: "" };
 
-    async function carregarPrompts() {
-        try {
-            let resposta1 = await fetch('prompts/selecao.txt');
-            if(resposta1.ok) prompts.selecao = await resposta1.text();
-            let resposta2 = await fetch('prompts/analise.txt');
-            if(resposta2.ok) prompts.analise = await resposta2.text();
-            let resposta3 = await fetch('prompts/compilado.txt');
-            if(resposta3.ok) prompts.compilado = await resposta3.text();
-            document.getElementById("prompt1Texto").innerHTML = escapeHtml(prompts.selecao.substring(0, 500) + (prompts.selecao.length > 500 ? "..." : ""));
-            document.getElementById("prompt2Texto").innerHTML = escapeHtml(prompts.analise.substring(0, 500) + (prompts.analise.length > 500 ? "..." : ""));
-            document.getElementById("prompt3Texto").innerHTML = escapeHtml(prompts.compilado.substring(0, 500) + (prompts.compilado.length > 500 ? "..." : ""));
-        } catch(e) { console.log("Erro ao carregar prompts:", e); }
+    // Função para normalizar produtos antigos (compatibilidade)
+    function normalizarProduto(prod) {
+        return {
+            nome: prod.nome || "Sem nome",
+            dataInclusao: prod.dataInclusao || new Date().toLocaleDateString('pt-BR'),
+            categoria: prod.categoria || "",
+            imagemUrl: prod.imagemUrl || "",
+            demanda: prod.demanda || 0,
+            parecerDemanda: prod.parecerDemanda || "",
+            precoMin: prod.precoMin || 0,
+            precoMedio: prod.precoMedio || 0,
+            precoMax: prod.precoMax || 0,
+            precoSugerido: prod.precoSugerido || 0,
+            concorrencia: prod.concorrencia || 0,
+            parecerConcorrencia: prod.parecerConcorrencia || "",
+            oportunidadesConcorrencia: prod.oportunidadesConcorrencia || "",
+            logistica: prod.logistica || 0,
+            parecerLogistica: prod.parecerLogistica || "",
+            alertasLogistica: prod.alertasLogistica || "",
+            regulatorio: prod.regulatorio || 0,
+            parecerRegulatorio: prod.parecerRegulatorio || "",
+            exigenciasRegulatorio: prod.exigenciasRegulatorio || "",
+            diferenciacao: prod.diferenciacao || 0,
+            parecerDiferenciacao: prod.parecerDiferenciacao || "",
+            oportunidadesDiferenciacao: prod.oportunidadesDiferenciacao || "",
+            posicionamento: prod.posicionamento || 0,
+            parecerPosicionamento: prod.parecerPosicionamento || "",
+            precoMedioConcorrentes: prod.precoMedioConcorrentes || 0,
+            precoPremiumSugerido: prod.precoPremiumSugerido || 0,
+            justificativaPreco: prod.justificativaPreco || "",
+            apelo: prod.apelo || 0,
+            parecerApelo: prod.parecerApelo || "",
+            estrategiasApelo: prod.estrategiasApelo || "",
+            facilidade: prod.facilidade || 0,
+            parecerFacilidade: prod.parecerFacilidade || "",
+            alertaGuerraPreco: prod.alertaGuerraPreco || "NÃO",
+            cuidadosFacilidade: prod.cuidadosFacilidade || "",
+            escala: prod.escala || 0,
+            parecerEscala: prod.parecerEscala || "",
+            estrategiasEscala: prod.estrategiasEscala || "",
+            risco: prod.risco || 0,
+            parecerRisco: prod.parecerRisco || "",
+            alertasRisco: prod.alertasRisco || ""
+        };
     }
 
     function calcularScore(prod) {
@@ -231,22 +241,231 @@
         atualizarGrafico();
     }
 
-    function abrirDetalhes(idx) { const p = produtos[idx]; const modal = document.getElementById("modalDetalhesContent"); modal.innerHTML = `<h2>📦 ${escapeHtml(p.nome)}</h2><p><strong>📂 Categoria:</strong> ${p.categoria || '-'}</p><p><strong>📅 Data inclusão:</strong> ${p.dataInclusao || '-'}</p><div class="preco-box"><strong>💰 Análise de Preços:</strong><br>Mínimo: R$ ${p.precoMin?.toFixed(2) || '-'}<br>Médio: R$ ${p.precoMedio?.toFixed(2) || '-'}<br>Máximo: R$ ${p.precoMax?.toFixed(2) || '-'}<br><strong>Sugerido: R$ ${p.precoSugerido?.toFixed(2) || '-'}</strong></div><h3>📊 Notas e Pareceres</h3>${renderParecer("Demanda", p.demanda, p.parecerDemanda)}${renderParecer("Concorrência", p.concorrencia, p.parecerConcorrencia)}${renderParecer("Logística", p.logistica, p.parecerLogistica)}${renderParecer("Regulatório", p.regulatorio, p.parecerRegulatorio)}${renderParecer("Diferenciação", p.diferenciacao, p.parecerDiferenciacao)}${renderParecer("Posicionamento", p.posicionamento, p.parecerPosicionamento)}${renderParecer("Apelo de Venda", p.apelo, p.parecerApelo)}${renderParecer("Facilidade de Venda", p.facilidade, p.parecerFacilidade)}${renderParecer("Escala e Recorrência", p.escala, p.parecerEscala)}${renderParecer("Risco", p.risco, p.parecerRisco)}<div style="text-align:right;margin-top:20px;"><button onclick="fecharModal()" class="btn-reset">Fechar</button></div>`; document.getElementById("modalDetalhes").style.display = "flex"; }
-    function renderParecer(titulo, nota, texto) { return `<div style="margin-bottom:12px;border-bottom:1px solid #ddd;padding-bottom:8px;"><strong>${titulo}</strong> (${nota})<br><span style="font-size:0.8rem;">${escapeHtml(texto||'-')}</span></div>`; }
+    function abrirDetalhes(idx) { 
+        const p = produtos[idx]; 
+        const modal = document.getElementById("modalDetalhesContent"); 
+        modal.innerHTML = `<h2>📦 ${escapeHtml(p.nome)}</h2><p><strong>📂 Categoria:</strong> ${p.categoria || '-'}</p><p><strong>📅 Data inclusão:</strong> ${p.dataInclusao || '-'}</p><div class="preco-box"><strong>💰 Análise de Preços:</strong><br>Mínimo: R$ ${p.precoMin?.toFixed(2) || '-'}<br>Médio: R$ ${p.precoMedio?.toFixed(2) || '-'}<br>Máximo: R$ ${p.precoMax?.toFixed(2) || '-'}<br><strong>Sugerido: R$ ${p.precoSugerido?.toFixed(2) || '-'}</strong></div><h3>📊 Notas e Pareceres</h3>${renderParecer("Demanda", p.demanda, p.parecerDemanda)}${renderParecer("Concorrência", p.concorrencia, p.parecerConcorrencia)}${renderParecer("Logística", p.logistica, p.parecerLogistica)}${renderParecer("Regulatório", p.regulatorio, p.parecerRegulatorio)}${renderParecer("Diferenciação", p.diferenciacao, p.parecerDiferenciacao)}${renderParecer("Posicionamento", p.posicionamento, p.parecerPosicionamento)}${renderParecer("Apelo de Venda", p.apelo, p.parecerApelo)}${renderParecer("Facilidade de Venda", p.facilidade, p.parecerFacilidade)}${renderParecer("Escala e Recorrência", p.escala, p.parecerEscala)}${renderParecer("Risco", p.risco, p.parecerRisco)}<div style="text-align:right;margin-top:20px;"><button onclick="fecharModal()" class="btn-reset">Fechar</button></div>`; 
+        document.getElementById("modalDetalhes").style.display = "flex"; 
+    }
+    
+    function renderParecer(titulo, nota, texto) { 
+        return `<div style="margin-bottom:12px;border-bottom:1px solid #ddd;padding-bottom:8px;"><strong>${titulo}</strong> (${nota})<br><span style="font-size:0.8rem;">${escapeHtml(texto||'-')}</span></div>`; 
+    }
+    
     function fecharModal() { document.getElementById("modalDetalhes").style.display = "none"; fecharModalEdicao(); }
     function fecharModalEdicao() { document.getElementById("modalEditar").style.display = "none"; }
-    function abrirModal(idx) { let p=produtos[idx]; document.getElementById("editIndex").value=idx; document.getElementById("editNome").value=p.nome; document.getElementById("editDemanda").value=p.demanda; document.getElementById("editConcorrencia").value=p.concorrencia; document.getElementById("editLogistica").value=p.logistica; document.getElementById("editRegulatorio").value=p.regulatorio; document.getElementById("editDiferenciacao").value=p.diferenciacao; document.getElementById("editPosicionamento").value=p.posicionamento; document.getElementById("editApelo").value=p.apelo; document.getElementById("editFacilidade").value=p.facilidade; document.getElementById("editEscala").value=p.escala; document.getElementById("editRisco").value=p.risco; document.getElementById("editPrecoSugerido").value=p.precoSugerido; document.getElementById("modalEditar").style.display="flex"; }
-    function salvarEdicao() { let idx=parseInt(document.getElementById("editIndex").value); if(idx>=0&&idx<produtos.length) { produtos[idx].nome=document.getElementById("editNome").value; produtos[idx].demanda=parseFloat(document.getElementById("editDemanda").value); produtos[idx].concorrencia=parseFloat(document.getElementById("editConcorrencia").value); produtos[idx].logistica=parseFloat(document.getElementById("editLogistica").value); produtos[idx].regulatorio=parseFloat(document.getElementById("editRegulatorio").value); produtos[idx].diferenciacao=parseFloat(document.getElementById("editDiferenciacao").value); produtos[idx].posicionamento=parseFloat(document.getElementById("editPosicionamento").value); produtos[idx].apelo=parseFloat(document.getElementById("editApelo").value); produtos[idx].facilidade=parseFloat(document.getElementById("editFacilidade").value); produtos[idx].escala=parseFloat(document.getElementById("editEscala").value); produtos[idx].risco=parseFloat(document.getElementById("editRisco").value); produtos[idx].precoSugerido=parseFloat(document.getElementById("editPrecoSugerido").value); renderizarTabela(); salvarLocal(); } fecharModalEdicao(); }
-    function atualizarGrafico() { const ctx = document.getElementById('graficoScore').getContext('2d'); if(grafico) grafico.destroy(); const filtrados = aplicarFiltros(); if(filtrados.length===0) { grafico=new Chart(ctx,{type:'bar',data:{labels:['Nenhum'],datasets:[{label:'Score',data:[0]}]}}); return; } const labels=filtrados.map(p=>p.nome.length>18?p.nome.slice(0,15)+"...":p.nome); const scores=filtrados.map(p=>calcularScore(p).score); const cores=scores.map(s=>s>=95?'#22c55e':(s>=75?'#eab308':'#ef4444')); grafico=new Chart(ctx,{type:'bar',data:{labels,datasets:[{label:'Score (máx 120)',data:scores,backgroundColor:cores,borderRadius:8}]},options:{responsive:true,maintainAspectRatio:true}}); }
-    function atualizarFiltrosCategoria() { let categorias = [...new Set(produtos.map(p=>p.categoria).filter(c=>c))]; let select = document.getElementById("filtroCategoria"); select.innerHTML = '<option value="">Todas</option>' + categorias.map(c=>`<option>${escapeHtml(c)}</option>`).join(''); }
-    function importarJSON(jsonText) { try { let data = JSON.parse(jsonText); let produto = { nome: data.nome || "Produto IA", dataInclusao: new Date().toLocaleDateString('pt-BR'), categoria: data.categoria || "", imagemUrl: data.imagemUrl || "", demanda: data.demanda?.nota || 0, parecerDemanda: data.demanda?.parecer || "", precoMin: data.demanda?.precoMin || 0, precoMedio: data.demanda?.precoMedio || 0, precoMax: data.demanda?.precoMax || 0, precoSugerido: data.demanda?.precoSugerido || 0, concorrencia: data.concorrencia?.nota || 0, parecerConcorrencia: data.concorrencia?.parecer || "", oportunidadesConcorrencia: Array.isArray(data.concorrencia?.oportunidades) ? data.concorrencia.oportunidades.join('\n') : "", logistica: data.logistica?.nota || 0, parecerLogistica: data.logistica?.parecer || "", alertasLogistica: Array.isArray(data.logistica?.alertas) ? data.logistica.alertas.join('\n') : (data.logistica?.alertas || ""), regulatorio: data.regulatorio?.nota || 0, parecerRegulatorio: data.regulatorio?.parecer || "", exigenciasRegulatorio: data.regulatorio?.exigencias || "", diferenciacao: data.diferenciacao?.nota || 0, parecerDiferenciacao: data.diferenciacao?.parecer || "", oportunidadesDiferenciacao: Array.isArray(data.diferenciacao?.oportunidades) ? data.diferenciacao.oportunidades.join('\n') : "", posicionamento: data.posicionamento?.nota || 0, parecerPosicionamento: data.posicionamento?.parecer || "", precoMedioConcorrentes: data.posicionamento?.precoMedioConcorrentes || 0, precoPremiumSugerido: data.posicionamento?.precoPremiumSugerido || 0, justificativaPreco: data.posicionamento?.justificativaPreco || "", apelo: data.apelo?.nota || 0, parecerApelo: data.apelo?.parecer || "", estrategiasApelo: Array.isArray(data.apelo?.estrategias) ? data.apelo.estrategias.join('\n') : "", facilidade: data.facilidade?.nota || 0, parecerFacilidade: data.facilidade?.parecer || "", alertaGuerraPreco: data.facilidade?.alertaGuerraPreco || "NÃO", cuidadosFacilidade: Array.isArray(data.facilidade?.cuidados) ? data.facilidade.cuidados.join('\n') : "", escala: data.escala?.nota || 0, parecerEscala: data.escala?.parecer || "", estrategiasEscala: Array.isArray(data.escala?.estrategias) ? data.escala.estrategias.join('\n') : "", risco: data.risco?.nota || 0, parecerRisco: data.risco?.parecer || "", alertasRisco: Array.isArray(data.risco?.alertas) ? data.risco.alertas.join('\n') : "" }; produtos.push(produto); renderizarTabela(); salvarLocal(); atualizarFiltrosCategoria(); alert(`Produto "${produto.nome}" importado com sucesso!`); } catch(e) { alert("Erro ao ler JSON: "+e.message); } }
-    function exportarCSV() { if(produtos.length===0){alert("Nenhum produto");return;} let rows=[["Nome","Categoria","Data","PreçoMin","PreçoMedio","PreçoMax","PreçoSug","Demanda","ParecerDem","Concorrencia","ParecerConc","Logistica","ParecerLog","Regulatorio","ParecerReg","Diferenciacao","ParecerDif","Posicionamento","ParecerPos","Apelo","ParecerApe","Facilidade","ParecerFac","Escala","ParecerEsc","Risco","ParecerRisc","Score","Decisão"]]; produtos.forEach(p=>{let {score,decisao}=calcularScore(p); rows.push([p.nome,p.categoria,p.dataInclusao,p.precoMin,p.precoMedio,p.precoMax,p.precoSugerido,p.demanda,p.parecerDemanda,p.concorrencia,p.parecerConcorrencia,p.logistica,p.parecerLogistica,p.regulatorio,p.parecerRegulatorio,p.diferenciacao,p.parecerDiferenciacao,p.posicionamento,p.parecerPosicionamento,p.apelo,p.parecerApelo,p.facilidade,p.parecerFacilidade,p.escala,p.parecerEscala,p.risco,p.parecerRisco,score,decisao]);}); let csv=rows.map(row=>row.map(c=>`"${String(c).replace(/"/g,'""')}"`).join(",")).join("\n"); let blob=new Blob(["\uFEFF"+csv],{type:"text/csv"}); let a=document.createElement("a"); a.href=URL.createObjectURL(blob); a.download="produtos.csv"; a.click(); URL.revokeObjectURL(blob.href); }
-    function exportarJSON() { let dados=produtos.map(p=>{let{score,decisao}=calcularScore(p); return {...p,score_calculado:score,decisao};}); let blob=new Blob([JSON.stringify(dados,null,2)],{type:"application/json"}); let a=document.createElement("a"); a.href=URL.createObjectURL(blob); a.download="produtos.json"; a.click(); URL.revokeObjectURL(blob.href); }
-    function resetarTudo() { if(confirm("Apagar todos os produtos?")){produtos=[];renderizarTabela();salvarLocal();atualizarFiltrosCategoria();} }
-    function salvarLocal() { localStorage.setItem("checklistProdutos",JSON.stringify(produtos)); }
-    function carregarLocal() { let dados=localStorage.getItem("checklistProdutos"); if(dados) { try{produtos=JSON.parse(dados);renderizarTabela();atualizarFiltrosCategoria();}catch(e){} } }
+    
+    function abrirModal(idx) { 
+        let p=produtos[idx]; 
+        document.getElementById("editIndex").value=idx; 
+        document.getElementById("editNome").value=p.nome; 
+        document.getElementById("editDemanda").value=p.demanda; 
+        document.getElementById("editConcorrencia").value=p.concorrencia; 
+        document.getElementById("editLogistica").value=p.logistica; 
+        document.getElementById("editRegulatorio").value=p.regulatorio; 
+        document.getElementById("editDiferenciacao").value=p.diferenciacao; 
+        document.getElementById("editPosicionamento").value=p.posicionamento; 
+        document.getElementById("editApelo").value=p.apelo; 
+        document.getElementById("editFacilidade").value=p.facilidade; 
+        document.getElementById("editEscala").value=p.escala; 
+        document.getElementById("editRisco").value=p.risco; 
+        document.getElementById("editPrecoSugerido").value=p.precoSugerido; 
+        document.getElementById("modalEditar").style.display="flex"; 
+    }
+    
+    function salvarEdicao() { 
+        let idx=parseInt(document.getElementById("editIndex").value); 
+        if(idx>=0&&idx<produtos.length) { 
+            produtos[idx].nome=document.getElementById("editNome").value; 
+            produtos[idx].demanda=parseFloat(document.getElementById("editDemanda").value); 
+            produtos[idx].concorrencia=parseFloat(document.getElementById("editConcorrencia").value); 
+            produtos[idx].logistica=parseFloat(document.getElementById("editLogistica").value); 
+            produtos[idx].regulatorio=parseFloat(document.getElementById("editRegulatorio").value); 
+            produtos[idx].diferenciacao=parseFloat(document.getElementById("editDiferenciacao").value); 
+            produtos[idx].posicionamento=parseFloat(document.getElementById("editPosicionamento").value); 
+            produtos[idx].apelo=parseFloat(document.getElementById("editApelo").value); 
+            produtos[idx].facilidade=parseFloat(document.getElementById("editFacilidade").value); 
+            produtos[idx].escala=parseFloat(document.getElementById("editEscala").value); 
+            produtos[idx].risco=parseFloat(document.getElementById("editRisco").value); 
+            produtos[idx].precoSugerido=parseFloat(document.getElementById("editPrecoSugerido").value); 
+            renderizarTabela(); 
+            salvarLocal(); 
+        } 
+        fecharModalEdicao(); 
+    }
+    
+    function atualizarGrafico() { 
+        const ctx = document.getElementById('graficoScore').getContext('2d'); 
+        if(grafico) grafico.destroy(); 
+        const filtrados = aplicarFiltros(); 
+        if(filtrados.length===0) { grafico=new Chart(ctx,{type:'bar',data:{labels:['Nenhum'],datasets:[{label:'Score',data:[0]}]}}); return; } 
+        const labels=filtrados.map(p=>p.nome.length>18?p.nome.slice(0,15)+"...":p.nome); 
+        const scores=filtrados.map(p=>calcularScore(p).score); 
+        const cores=scores.map(s=>s>=95?'#22c55e':(s>=75?'#eab308':'#ef4444')); 
+        grafico=new Chart(ctx,{type:'bar',data:{labels,datasets:[{label:'Score (máx 120)',data:scores,backgroundColor:cores,borderRadius:8}]},options:{responsive:true,maintainAspectRatio:true}}); 
+    }
+    
+    function atualizarFiltrosCategoria() { 
+        let categorias = [...new Set(produtos.map(p=>p.categoria).filter(c=>c))]; 
+        let select = document.getElementById("filtroCategoria"); 
+        select.innerHTML = '<option value="">Todas</option>' + categorias.map(c=>`<option>${escapeHtml(c)}</option>`).join(''); 
+    }
+    
+    function importarJSON(jsonText) { 
+        try { 
+            let data = JSON.parse(jsonText); 
+            let produto = { 
+                nome: data.nome || "Produto IA", 
+                dataInclusao: new Date().toLocaleDateString('pt-BR'), 
+                categoria: data.categoria || "", 
+                imagemUrl: data.imagemUrl || "", 
+                demanda: data.demanda?.nota || 0, 
+                parecerDemanda: data.demanda?.parecer || "", 
+                precoMin: data.demanda?.precoMin || 0, 
+                precoMedio: data.demanda?.precoMedio || 0, 
+                precoMax: data.demanda?.precoMax || 0, 
+                precoSugerido: data.demanda?.precoSugerido || 0, 
+                concorrencia: data.concorrencia?.nota || 0, 
+                parecerConcorrencia: data.concorrencia?.parecer || "", 
+                oportunidadesConcorrencia: Array.isArray(data.concorrencia?.oportunidades) ? data.concorrencia.oportunidades.join('\n') : "", 
+                logistica: data.logistica?.nota || 0, 
+                parecerLogistica: data.logistica?.parecer || "", 
+                alertasLogistica: Array.isArray(data.logistica?.alertas) ? data.logistica.alertas.join('\n') : (data.logistica?.alertas || ""), 
+                regulatorio: data.regulatorio?.nota || 0, 
+                parecerRegulatorio: data.regulatorio?.parecer || "", 
+                exigenciasRegulatorio: data.regulatorio?.exigencias || "", 
+                diferenciacao: data.diferenciacao?.nota || 0, 
+                parecerDiferenciacao: data.diferenciacao?.parecer || "", 
+                oportunidadesDiferenciacao: Array.isArray(data.diferenciacao?.oportunidades) ? data.diferenciacao.oportunidades.join('\n') : "", 
+                posicionamento: data.posicionamento?.nota || 0, 
+                parecerPosicionamento: data.posicionamento?.parecer || "", 
+                precoMedioConcorrentes: data.posicionamento?.precoMedioConcorrentes || 0, 
+                precoPremiumSugerido: data.posicionamento?.precoPremiumSugerido || 0, 
+                justificativaPreco: data.posicionamento?.justificativaPreco || "", 
+                apelo: data.apelo?.nota || 0, 
+                parecerApelo: data.apelo?.parecer || "", 
+                estrategiasApelo: Array.isArray(data.apelo?.estrategias) ? data.apelo.estrategias.join('\n') : "", 
+                facilidade: data.facilidade?.nota || 0, 
+                parecerFacilidade: data.facilidade?.parecer || "", 
+                alertaGuerraPreco: data.facilidade?.alertaGuerraPreco || "NÃO", 
+                cuidadosFacilidade: Array.isArray(data.facilidade?.cuidados) ? data.facilidade.cuidados.join('\n') : "", 
+                escala: data.escala?.nota || 0, 
+                parecerEscala: data.escala?.parecer || "", 
+                estrategiasEscala: Array.isArray(data.escala?.estrategias) ? data.escala.estrategias.join('\n') : "", 
+                risco: data.risco?.nota || 0, 
+                parecerRisco: data.risco?.parecer || "", 
+                alertasRisco: Array.isArray(data.risco?.alertas) ? data.risco.alertas.join('\n') : "" 
+            }; 
+            produtos.push(produto); 
+            renderizarTabela(); 
+            salvarLocal(); 
+            atualizarFiltrosCategoria(); 
+            alert(`Produto "${produto.nome}" importado com sucesso!`); 
+        } catch(e) { alert("Erro ao ler JSON: "+e.message); } 
+    }
+    
+    function exportarCSV() { 
+        if(produtos.length===0){alert("Nenhum produto");return;} 
+        let rows=[["Nome","Categoria","Data","PreçoMin","PreçoMedio","PreçoMax","PreçoSug","Demanda","ParecerDem","Concorrencia","ParecerConc","Logistica","ParecerLog","Regulatorio","ParecerReg","Diferenciacao","ParecerDif","Posicionamento","ParecerPos","Apelo","ParecerApe","Facilidade","ParecerFac","Escala","ParecerEsc","Risco","ParecerRisc","Score","Decisão"]]; 
+        produtos.forEach(p=>{let {score,decisao}=calcularScore(p); rows.push([p.nome,p.categoria,p.dataInclusao,p.precoMin,p.precoMedio,p.precoMax,p.precoSugerido,p.demanda,p.parecerDemanda,p.concorrencia,p.parecerConcorrencia,p.logistica,p.parecerLogistica,p.regulatorio,p.parecerRegulatorio,p.diferenciacao,p.parecerDiferenciacao,p.posicionamento,p.parecerPosicionamento,p.apelo,p.parecerApelo,p.facilidade,p.parecerFacilidade,p.escala,p.parecerEscala,p.risco,p.parecerRisco,score,decisao]);}); 
+        let csv=rows.map(row=>row.map(c=>`"${String(c).replace(/"/g,'""')}"`).join(",")).join("\n"); 
+        let blob=new Blob(["\uFEFF"+csv],{type:"text/csv"}); 
+        let a=document.createElement("a"); 
+        a.href=URL.createObjectURL(blob); 
+        a.download="produtos.csv"; 
+        a.click(); 
+        URL.revokeObjectURL(blob.href); 
+    }
+    
+    function exportarJSON() { 
+        let dados=produtos.map(p=>{let{score,decisao}=calcularScore(p); return {...p,score_calculado:score,decisao};}); 
+        let blob=new Blob([JSON.stringify(dados,null,2)],{type:"application/json"}); 
+        let a=document.createElement("a"); 
+        a.href=URL.createObjectURL(blob); 
+        a.download="produtos.json"; 
+        a.click(); 
+        URL.revokeObjectURL(blob.href); 
+    }
+    
+    function resetarTudo() { 
+        if(confirm("Apagar todos os produtos?")){produtos=[];renderizarTabela();salvarLocal();atualizarFiltrosCategoria();} 
+    }
+    
+    function salvarLocal() { 
+        localStorage.setItem("checklistProdutos",JSON.stringify(produtos)); 
+    }
+    
+    function carregarLocal() { 
+        let dados=localStorage.getItem("checklistProdutos"); 
+        if(dados) { 
+            try{ 
+                let parsed = JSON.parse(dados); 
+                produtos = parsed.map(p => normalizarProduto(p)); 
+                renderizarTabela(); 
+                atualizarFiltrosCategoria(); 
+            } catch(e){ console.log("Erro ao carregar:", e); } 
+        } else { 
+            renderizarTabela(); 
+        } 
+    }
+    
+    async function carregarPrompts() {
+        const container = document.getElementById("promptsContainer");
+        try {
+            const selecao = await fetch('prompts/selecao.txt');
+            const analise = await fetch('prompts/analise.txt');
+            const compilado = await fetch('prompts/compilado.txt');
+            
+            const selecaoText = selecao.ok ? await selecao.text() : "Arquivo não encontrado";
+            const analiseText = analise.ok ? await analise.text() : "Arquivo não encontrado";
+            const compiladoText = compilado.ok ? await compilado.text() : "Arquivo não encontrado";
+            
+            container.innerHTML = `
+                <div class="prompt-card">
+                    <h4>📌 PROMPT 1: SELECIONAR 5 ANÚNCIOS</h4>
+                    <p>📸 Anexe os PRINTS da página de busca do Mercado Livre e cole este prompt. A IA vai escolher 5 anúncios para você analisar.</p>
+                    <code>${escapeHtml(selecaoText.substring(0, 800))}${selecaoText.length > 800 ? '...' : ''}</code>
+                    <button class="btn-copiar" data-prompt="selecao" style="margin-top: 8px;">📋 Copiar Prompt 1</button>
+                </div>
+                <div class="prompt-card">
+                    <h4>🔗 PROMPT 2: ANALISAR OS 5 LINKS</h4>
+                    <p>🔗 Abra os 5 links sugeridos, cole as informações e cole este prompt. A IA vai analisar a qualidade da concorrência.</p>
+                    <code>${escapeHtml(analiseText.substring(0, 800))}${analiseText.length > 800 ? '...' : ''}</code>
+                    <button class="btn-copiar" data-prompt="analise" style="margin-top: 8px;">📋 Copiar Prompt 2</button>
+                </div>
+                <div class="prompt-card">
+                    <h4>📦 PROMPT 3: GERAR JSON COMPLETO</h4>
+                    <p>🤖 Cole este prompt após ter todas as informações. A IA vai gerar o JSON completo para importar no app.</p>
+                    <code>${escapeHtml(compiladoText.substring(0, 800))}${compiladoText.length > 800 ? '...' : ''}</code>
+                    <button class="btn-copiar" data-prompt="compilado" style="margin-top: 8px;">📋 Copiar Prompt 3</button>
+                </div>
+            `;
+            
+            prompts.selecao = selecaoText;
+            prompts.analise = analiseText;
+            prompts.compilado = compiladoText;
+            
+            document.querySelectorAll(".btn-copiar").forEach(btn => {
+                btn.addEventListener("click", () => copiarPrompt(btn.dataset.prompt));
+            });
+        } catch(e) {
+            container.innerHTML = `<div class="erro-prompts">⚠️ Erro ao carregar prompts. Verifique se a pasta "prompts" existe e contém os arquivos selecao.txt, analise.txt e compilado.txt</div>`;
+        }
+    }
+    
+    async function copiarPrompt(tipo) {
+        let texto = prompts[tipo];
+        if(texto && texto !== "Arquivo não encontrado") {
+            await navigator.clipboard.writeText(texto);
+            alert(`Prompt ${tipo} copiado!`);
+        } else {
+            alert(`Prompt ${tipo} não disponível`);
+        }
+    }
+    
     function escapeHtml(s){if(!s)return"";return s.replace(/[&<>]/g,function(m){return m==='&'?'&amp;':m==='<'?'&lt;':'&gt;';});}
-    async function copiarPrompt(criterio) { let texto = prompts[criterio]; if(texto) { await navigator.clipboard.writeText(texto); alert(`Prompt ${criterio} copiado!`); } else alert(`Prompt não carregado`); }
+    
+    // Event listeners
     document.getElementById("btnImportarJSON").addEventListener("click",()=>{let txt=document.getElementById("jsonImport").value; if(txt.trim())importarJSON(txt); else alert("Cole um JSON primeiro");});
     document.getElementById("btnImportarArquivo").addEventListener("click",()=>{let file=document.getElementById("fileImport").files[0]; if(!file){alert("Selecione um arquivo .json");return;} let reader=new FileReader(); reader.onload=e=>importarJSON(e.target.result); reader.readAsText(file);});
     document.getElementById("btnExportCSV").addEventListener("click",exportarCSV);
@@ -262,7 +481,7 @@
     document.getElementById("filtroDataInicio").addEventListener("change",()=>renderizarTabela());
     document.getElementById("filtroDataFim").addEventListener("change",()=>renderizarTabela());
     window.addEventListener("click",e=>{if(e.target===document.getElementById("modalDetalhes"))fecharModal(); if(e.target===document.getElementById("modalEditar"))fecharModalEdicao();});
-    document.querySelectorAll(".btn-copiar").forEach(btn=>{btn.addEventListener("click",()=>copiarPrompt(btn.dataset.prompt));});
+    
     carregarPrompts();
     carregarLocal();
 </script>
