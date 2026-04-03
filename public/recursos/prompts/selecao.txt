@@ -1,8 +1,17 @@
 COM BASE APENAS NOS PRINTS DA PÁGINA DE BUSCA DO MERCADO LIVRE que eu anexei, você deve SELECIONAR 5 ANÚNCIOS para eu abrir e analisar a CONCORRÊNCIA com foco em QUALIDADE DE EXECUÇÃO.
 
-⚠️ LEMBRETE: Quantidade de vendedores NÃO é problema. O que importa é a QUALIDADE.
+ ***IMPORTANTE*** ANÚNCIOS PARA DESCONSIDERAR DA ANÁLISE: Os resultados de busca no Mercado Livre podem incluir produtos anômalos — ou seja, itens que não correspondem ao padrão predominante do produto pesquisado. Em alguns casos, podem ser produtos apenas relacionados ou semelhantes, mas não equivalentes ao que foi buscado. Sua tarefa é identificar qual é o padrão real do produto dominante na busca e desconsiderar da análise todos os anúncios que não se encaixam nesse padrão. Ao final da resposta, liste separadamente todos os anúncios desconsiderados.
 
 📊 CRITÉRIOS DE SELEÇÃO (use estes para escolher 5 anúncios com PROPÓSITOS DIFERENTES):
+
+Antes de escolher os 5 anúncios, você deve avaliar TODOS os anúncios visíveis nos prints que não foram desconsiderados para análise (os que são fora de padrão). Faça isso mentalmente (NÃO mostrar essa análise. Usar apenas para tomar decisão mais precisa).
+
+⚠️ Para cada anúncio, identifique nos prints:
+- Marca/nome do produto
+- Preço atual
+- Quantidade de vendas
+- Avaliação (estrelas)
+- Se é kit (quantas peças)
 
 | Prioridade | Propósito | O que procurar |
 |------------|-----------|----------------|
@@ -19,21 +28,29 @@ COM BASE APENAS NOS PRINTS DA PÁGINA DE BUSCA DO MERCADO LIVRE que eu anexei, v
 - 1 anúncio DIFERENCIADO (inovação)
 - 1 anúncio com PROBLEMAS CLAROS (para identificar o que evitar)
 
-📤 FORMATO DE RESPOSTA (somente isto):
+📤 FORMATO DE RESPOSTA (OBRIGATÓRIO — NÃO RESUMIR, NÃO SIMPLIFICAR)
 
 ANÚNCIOS PARA ABRIR:
 
-1. [MARCA/NOME] - Preço: R$X - Vendas: X - Motivo: [propósito]
-2. [MARCA/NOME] - Preço: R$X - Vendas: X - Motivo: [propósito]
-3. [MARCA/NOME] - Preço: R$X - Vendas: X - Motivo: [propósito]
-4. [MARCA/NOME] - Preço: R$X - Vendas: X - Motivo: [propósito]
-5. [MARCA/NOME] - Preço: R$X - Vendas: X - Motivo: [propósito]
+Para cada anúncio selecionado, você deve REPLICAR o card do Mercado Livre o mais fiel possível com base no print. Cada item deve conter:
 
-⚠️ Para cada anúncio, identifique nos prints:
-- Marca/nome do produto
-- Preço atual
-- Quantidade de vendas
-- Avaliação (estrelas)
-- Se é kit (quantas peças)
+🖼️ [imagem do produto]
+📝 Organizador De Geladeira Transparente Com Cesto 5L
+💰 R$ 29,90
+⭐ 4.8 ⭐ | +1200 avaliações
+📦 +5000 vendidos
+🏷️ FULL | Frete grátis
+📦 Unidade
+🎯 Motivo: MAIS VENDIDO (líder claro de volume)
 
-RESPONDA APENAS com a lista acima.
+
+Ao final da resposta, listar separadamente:
+
+ANÚNCIOS FORA DE PADRÃO (os que foram desconsiderados para a análise):
+
+Para cada um:
+
+🖼️ Imagem do produto
+📝 Nome/título
+❌ Motivo pelo qual foi desconsiderado (produto diferente do padrão da busca)
+

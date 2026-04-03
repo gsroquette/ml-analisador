@@ -28,11 +28,11 @@
         .btn-export:hover { background: #166534; }
         .btn-import { background: #7c3aed; }
         .btn-import:hover { background: #6d28d9; }
-        .criteria-card { background: #f8fafc; border-radius: 20px; padding: 16px; margin-bottom: 20px; border: 1px solid #e2e8f0; }
-        .criteria-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 10px; }
-        .criteria-title { font-weight: bold; font-size: 1.1rem; color: #1e293b; }
-        .criteria-note-row { display: flex; gap: 16px; align-items: center; flex-wrap: wrap; margin-bottom: 12px; }
-        .criteria-note-row input { width: 80px; }
+        .prompt-card { background: #fef3c7; border-left: 4px solid #f59e0b; padding: 12px 16px; margin-bottom: 16px; border-radius: 16px; }
+        .prompt-card h4 { margin: 0 0 8px 0; font-size: 0.9rem; }
+        .prompt-card p { margin: 0 0 8px 0; font-size: 0.75rem; color: #555; }
+        .prompt-card code { background: #fff; padding: 8px; display: block; border-radius: 8px; font-size: 0.7rem; white-space: pre-wrap; word-break: break-all; font-family: monospace; }
+        .filtros { display: flex; flex-wrap: wrap; gap: 16px; margin-bottom: 20px; align-items: flex-end; background: #f8fafc; padding: 16px; border-radius: 20px; }
         table { width: 100%; border-collapse: collapse; overflow-x: auto; display: block; }
         th, td { border: 1px solid #ddd; padding: 10px 8px; text-align: center; font-size: 0.75rem; }
         th { background: #1e293b; color: white; position: sticky; top: 0; }
@@ -41,7 +41,8 @@
         .score-verde { background: #bbf7d0; font-weight: bold; }
         .score-amarelo { background: #fef08a; font-weight: bold; }
         .score-vermelho { background: #fecaca; font-weight: bold; }
-        .excluir { background: #dc2626; color: white; border: none; border-radius: 30px; padding: 4px 12px; cursor: pointer; font-size: 0.7rem; }
+        .editar, .excluir { background: #f59e0b; color: white; border: none; border-radius: 30px; padding: 4px 12px; cursor: pointer; font-size: 0.7rem; margin: 0 2px; }
+        .excluir { background: #dc2626; }
         .legenda { display: flex; gap: 20px; flex-wrap: wrap; margin-top: 16px; font-size: 0.75rem; }
         .grafico-container { max-width: 100%; height: 300px; margin-top: 20px; }
         canvas { max-height: 280px; }
@@ -51,21 +52,48 @@
         .produto-detalhe-imagem { max-width: 200px; border-radius: 16px; margin-bottom: 16px; }
         .preco-box { background: #f1f5f9; padding: 12px; border-radius: 16px; margin: 12px 0; }
         .area-import { background: #f3e8ff; border: 2px dashed #7c3aed; border-radius: 20px; padding: 16px; margin-bottom: 20px; }
+        .filtro-input { min-width: 150px; }
         @media (max-width: 700px) { th, td { font-size: 0.65rem; padding: 6px 4px; } .form-group { min-width: 140px; } }
     </style>
 </head>
 <body>
 <div class="container">
     <h1>🚀 Checklist de Produtos</h1>
-    <div class="sub">Sistema DeepSeek - Importação de JSON completo com notas e pareceres</div>
+    <div class="sub">Sistema DeepSeek - Análise completa de produtos para Mercado Livre</div>
+
+    <!-- Área de prompts -->
+    <div class="card">
+        <h3>📋 Passo a Passo - Use os prompts abaixo com sua IA (ChatGPT/DeepSeek)</h3>
+        
+        <div class="prompt-card">
+            <h4>📌 PROMPT 1: SELECIONAR 5 ANÚNCIOS</h4>
+            <p>📸 Anexe os PRINTS da página de busca do Mercado Livre e cole este prompt. A IA vai escolher 5 anúncios para você analisar.</p>
+            <code id="prompt1Texto">Carregando...</code>
+            <button class="btn-copiar" data-prompt="selecao" style="margin-top: 8px;">📋 Copiar Prompt 1</button>
+        </div>
+
+        <div class="prompt-card">
+            <h4>🔗 PROMPT 2: ANALISAR OS 5 LINKS</h4>
+            <p>🔗 Abra os 5 links sugeridos, colete as informações e cole os links neste prompt. A IA vai analisar a qualidade da concorrência.</p>
+            <code id="prompt2Texto">Carregando...</code>
+            <button class="btn-copiar" data-prompt="analise" style="margin-top: 8px;">📋 Copiar Prompt 2</button>
+        </div>
+
+        <div class="prompt-card">
+            <h4>📦 PROMPT 3: GERAR JSON COMPLETO</h4>
+            <p>🤖 Cole este prompt após ter todas as informações. A IA vai gerar o JSON completo para importar no app.</p>
+            <code id="prompt3Texto">Carregando...</code>
+            <button class="btn-copiar" data-prompt="compilado" style="margin-top: 8px;">📋 Copiar Prompt 3</button>
+        </div>
+    </div>
 
     <!-- Área de importação JSON -->
     <div class="card">
-        <h3>📥 Importar análise completa (JSON)</h3>
+        <h3>📥 Importar análise completa (JSON gerado pelo Prompt 3)</h3>
         <div class="area-import">
             <div class="form-row">
                 <div class="form-group" style="flex:3">
-                    <label>📋 Cole o JSON gerado pela IA (Prompt 3)</label>
+                    <label>📋 Cole o JSON gerado pela IA</label>
                     <textarea id="jsonImport" rows="6" placeholder='Cole aqui o JSON completo gerado pela IA...' style="width:100%; border-radius:16px; padding:12px; font-family:monospace; font-size:0.75rem;"></textarea>
                 </div>
                 <div class="form-group">
@@ -86,116 +114,16 @@
         </div>
     </div>
 
-    <!-- Card de cadastro manual (expandido) -->
+    <!-- Filtros -->
     <div class="card">
-        <h3>➕ Novo Produto (preenchimento manual)</h3>
-        <div class="form-row">
-            <div class="form-group"><label>📛 Nome do produto *</label><input type="text" id="produtoNome" placeholder="Ex: Organizador de Geladeira"></div>
-            <div class="form-group"><label>🖼️ URL da imagem</label><input type="text" id="produtoImagem" placeholder="https://..."></div>
-            <div class="form-group"><label>📂 Categoria</label><select id="produtoCategoria">
-                <option value="">Selecione...</option>
-                <option>Casa, Móveis e Decoração</option><option>Acessórios para Veículos</option><option>Beleza e Cuidado Pessoal</option>
-                <option>Ferramentas</option><option>Esportes e Fitness</option><option>Bebês</option><option>Brinquedos e Hobbies</option>
-                <option>Calçados, Roupas e Bolsas</option><option>Agro</option><option>Animais</option><option>Construção</option>
-                <option>Indústria e Comércio</option><option>Joias e Relógios</option><option>Arte, Papelaria e Armarinho</option>
-                <option>Games</option><option>Eletrodomésticos</option><option>Eletrônicos, Áudio e Vídeo</option><option>Informática</option>
-                <option>Celulares e Telefones</option><option>Saúde</option><option>Alimentos e Bebidas</option><option>Veículos</option>
-                <option>Imóveis</option><option>Serviços</option><option>Antiguidades e Coleções</option><option>Música, Filmes e Seriados</option>
-                <option>Livros, Revistas e Comics</option>
-            </select></div>
-        </div>
-
-        <!-- DEMANDA -->
-        <div class="criteria-card">
-            <div class="criteria-header"><span class="criteria-title">📊 1. DEMANDA</span></div>
-            <div class="criteria-note-row"><div class="form-group"><label>Nota (0-5.5)</label><input type="number" id="demanda" step="0.5" min="0" max="5.5" value="3"></div></div>
-            <div class="form-row">
-                <div class="form-group"><label>Preço mínimo (R$)</label><input type="number" id="precoMin" step="0.01"></div>
-                <div class="form-group"><label>Preço médio (R$)</label><input type="number" id="precoMedio" step="0.01"></div>
-                <div class="form-group"><label>Preço máximo (R$)</label><input type="number" id="precoMax" step="0.01"></div>
-                <div class="form-group"><label>Preço sugerido (R$)</label><input type="number" id="precoSugerido" step="0.01"></div>
-            </div>
-            <div class="form-group-full"><label>📝 Parecer</label><textarea id="parecerDemanda" rows="2"></textarea></div>
-        </div>
-
-        <!-- CONCORRÊNCIA -->
-        <div class="criteria-card">
-            <div class="criteria-header"><span class="criteria-title">⚔️ 2. CONCORRÊNCIA</span></div>
-            <div class="criteria-note-row"><div class="form-group"><label>Nota (0-5)</label><input type="number" id="concorrencia" step="0.5" min="0" max="5" value="3"></div></div>
-            <div class="form-group-full"><label>📝 Parecer</label><textarea id="parecerConcorrencia" rows="2"></textarea></div>
-            <div class="form-group-full"><label>💡 Oportunidades (uma por linha)</label><textarea id="oportunidadesConcorrencia" rows="2" placeholder="Item 1&#10;Item 2&#10;Item 3"></textarea></div>
-        </div>
-
-        <!-- LOGÍSTICA -->
-        <div class="criteria-card">
-            <div class="criteria-header"><span class="criteria-title">📦 3. LOGÍSTICA</span></div>
-            <div class="criteria-note-row"><div class="form-group"><label>Nota (0-5)</label><input type="number" id="logistica" step="0.5" min="0" max="5" value="3"></div></div>
-            <div class="form-group-full"><label>📝 Parecer</label><textarea id="parecerLogistica" rows="2"></textarea></div>
-            <div class="form-group-full"><label>⚠️ Alertas</label><textarea id="alertasLogistica" rows="1" placeholder="Alertas ou 'nenhum'"></textarea></div>
-        </div>
-
-        <!-- REGULATÓRIO -->
-        <div class="criteria-card">
-            <div class="criteria-header"><span class="criteria-title">⚖️ 4. REGULATÓRIO</span></div>
-            <div class="criteria-note-row"><div class="form-group"><label>Nota (0-5)</label><input type="number" id="regulatorio" step="0.5" min="0" max="5" value="3"></div></div>
-            <div class="form-group-full"><label>📝 Parecer</label><textarea id="parecerRegulatorio" rows="2"></textarea></div>
-            <div class="form-group-full"><label>📋 Exigências</label><textarea id="exigenciasRegulatorio" rows="1" placeholder="Exigências ou 'nenhuma'"></textarea></div>
-        </div>
-
-        <!-- DIFERENCIAÇÃO -->
-        <div class="criteria-card">
-            <div class="criteria-header"><span class="criteria-title">🎨 5. DIFERENCIAÇÃO</span></div>
-            <div class="criteria-note-row"><div class="form-group"><label>Nota (0-5)</label><input type="number" id="diferenciacao" step="0.5" min="0" max="5" value="3"></div></div>
-            <div class="form-group-full"><label>📝 Parecer</label><textarea id="parecerDiferenciacao" rows="2"></textarea></div>
-            <div class="form-group-full"><label>💡 Oportunidades (uma por linha)</label><textarea id="oportunidadesDiferenciacao" rows="2" placeholder="Item 1&#10;Item 2&#10;Item 3"></textarea></div>
-        </div>
-
-        <!-- POSICIONAMENTO -->
-        <div class="criteria-card">
-            <div class="criteria-header"><span class="criteria-title">🎯 6. POSICIONAMENTO</span></div>
-            <div class="criteria-note-row"><div class="form-group"><label>Nota (0-5)</label><input type="number" id="posicionamento" step="0.5" min="0" max="5" value="3"></div></div>
-            <div class="form-group-full"><label>📝 Parecer</label><textarea id="parecerPosicionamento" rows="2"></textarea></div>
-            <div class="form-row"><div class="form-group"><label>Preço médio concorrentes</label><input type="number" id="precoMedioConcorrentes" step="0.01"></div>
-            <div class="form-group"><label>Preço premium sugerido</label><input type="number" id="precoPremiumSugerido" step="0.01"></div></div>
-            <div class="form-group-full"><label>Justificativa do preço</label><textarea id="justificativaPreco" rows="1"></textarea></div>
-        </div>
-
-        <!-- APELO DE VENDA -->
-        <div class="criteria-card">
-            <div class="criteria-header"><span class="criteria-title">🔥 7. APELO DE VENDA</span></div>
-            <div class="criteria-note-row"><div class="form-group"><label>Nota (0-5)</label><input type="number" id="apelo" step="0.5" min="0" max="5" value="3"></div></div>
-            <div class="form-group-full"><label>📝 Parecer</label><textarea id="parecerApelo" rows="2"></textarea></div>
-            <div class="form-group-full"><label>🎯 Estratégias (uma por linha)</label><textarea id="estrategiasApelo" rows="2" placeholder="Item 1&#10;Item 2&#10;Item 3"></textarea></div>
-        </div>
-
-        <!-- FACILIDADE DE VENDA -->
-        <div class="criteria-card">
-            <div class="criteria-header"><span class="criteria-title">🟢 8. FACILIDADE DE VENDA</span></div>
-            <div class="criteria-note-row"><div class="form-group"><label>Nota (0-5)</label><input type="number" id="facilidade" step="0.5" min="0" max="5" value="3"></div></div>
-            <div class="form-group-full"><label>📝 Parecer</label><textarea id="parecerFacilidade" rows="2"></textarea></div>
-            <div class="form-row"><div class="form-group"><label>Alerta guerra de preço</label><select id="alertaGuerraPreco"><option>NÃO</option><option>SIM</option></select></div></div>
-            <div class="form-group-full"><label>⚠️ Cuidados (uma por linha)</label><textarea id="cuidadosFacilidade" rows="2" placeholder="Item 1&#10;Item 2"></textarea></div>
-        </div>
-
-        <!-- ESCALA E RECORRÊNCIA -->
-        <div class="criteria-card">
-            <div class="criteria-header"><span class="criteria-title">📈 9. ESCALA E RECORRÊNCIA</span></div>
-            <div class="criteria-note-row"><div class="form-group"><label>Nota (0-5)</label><input type="number" id="escala" step="0.5" min="0" max="5" value="3"></div></div>
-            <div class="form-group-full"><label>📝 Parecer</label><textarea id="parecerEscala" rows="2"></textarea></div>
-            <div class="form-group-full"><label>🚀 Estratégias de escala (uma por linha)</label><textarea id="estrategiasEscala" rows="2" placeholder="Item 1&#10;Item 2&#10;Item 3"></textarea></div>
-        </div>
-
-        <!-- RISCO -->
-        <div class="criteria-card">
-            <div class="criteria-header"><span class="criteria-title">⚠️ 10. RISCO</span></div>
-            <div class="criteria-note-row"><div class="form-group"><label>Nota (0-5)</label><input type="number" id="risco" step="0.5" min="0" max="5" value="3"></div></div>
-            <div class="form-group-full"><label>📝 Parecer</label><textarea id="parecerRisco" rows="2"></textarea></div>
-            <div class="form-group-full"><label>⚠️ Alertas finais (uma por linha)</label><textarea id="alertasRisco" rows="2" placeholder="Item 1&#10;Item 2"></textarea></div>
-        </div>
-
-        <div style="display: flex; gap: 12px; justify-content: flex-end; margin-top: 20px;">
-            <button id="btnAdicionar">✅ Adicionar Produto</button>
-            <button id="btnReset" class="btn-reset">🗑️ Limpar Todos</button>
+        <h3>🔍 Filtrar Produtos</h3>
+        <div class="filtros">
+            <div class="form-group filtro-input"><label>🔎 Nome do produto</label><input type="text" id="filtroNome" placeholder="Digite para buscar..."></div>
+            <div class="form-group filtro-input"><label>📂 Categoria</label><select id="filtroCategoria"><option value="">Todas</option></select></div>
+            <div class="form-group filtro-input"><label>🎯 Decisão</label><select id="filtroDecisao"><option value="">Todas</option><option>🟢 ESCALAR</option><option>🟡 TESTAR</option><option>🔴 DESCARTAR</option></select></div>
+            <div class="form-group filtro-input"><label>📅 Data inicial</label><input type="date" id="filtroDataInicio"></div>
+            <div class="form-group filtro-input"><label>📅 Data final</label><input type="date" id="filtroDataFim"></div>
+            <div class="form-group"><label>&nbsp;</label><button id="btnLimparFiltros" class="btn-reset">🗑️ Limpar Filtros</button></div>
         </div>
     </div>
 
@@ -209,8 +137,10 @@
         <h3>📋 Produtos Avaliados</h3>
         <div style="overflow-x: auto;">
             <table id="tabelaProdutos">
-                <thead><tr><th>Produto</th><th>Cat</th><th>Dem</th><th>Conc</th><th>Log</th><th>Reg</th><th>Dif</th><th>Pos</th><th>Ape</th><th>Fac</th><th>Esc</th><th>Risc</th><th>Score</th><th>Decisão</th><th>Preço Sug.</th><th>Ação</th></tr></thead>
-                <tbody id="corpoTabela"><tr><td colspan="16">Nenhum produto adicionado ainda</td></tr></tbody>
+                <thead>
+                    <tr><th>Produto</th><th>Cat</th><th>Dem</th><th>Conc</th><th>Log</th><th>Reg</th><th>Dif</th><th>Pos</th><th>Ape</th><th>Fac</th><th>Esc</th><th>Risc</th><th>Score</th><th>Decisão</th><th>Preço Sug.</th><th>Data</th><th>Ação</th></tr>
+                </thead>
+                <tbody id="corpoTabela"><tr><td colspan="17">Nenhum produto adicionado ainda</td></tr></tbody>
             </table>
         </div>
         <div class="grafico-container"><canvas id="graficoScore"></canvas></div>
@@ -224,10 +154,33 @@
 <!-- Modal de detalhes -->
 <div id="modalDetalhes" class="modal"><div class="modal-content" id="modalDetalhesContent"></div></div>
 
+<!-- Modal de edição -->
+<div id="modalEditar" class="modal"><div class="modal-content"><h3>✏️ Editar Produto</h3><input type="hidden" id="editIndex">
+<div class="form-row"><div class="form-group"><label>Nome</label><input type="text" id="editNome"></div></div>
+<div class="form-row"><div class="form-group"><label>Demanda</label><input type="number" id="editDemanda" step="0.5" min="0" max="5.5"></div><div class="form-group"><label>Concorrência</label><input type="number" id="editConcorrencia" step="0.5" min="0" max="5"></div><div class="form-group"><label>Logística</label><input type="number" id="editLogistica" step="0.5" min="0" max="5"></div><div class="form-group"><label>Regulatório</label><input type="number" id="editRegulatorio" step="0.5" min="0" max="5"></div></div>
+<div class="form-row"><div class="form-group"><label>Diferenciação</label><input type="number" id="editDiferenciacao" step="0.5" min="0" max="5"></div><div class="form-group"><label>Posicionamento</label><input type="number" id="editPosicionamento" step="0.5" min="0" max="5"></div><div class="form-group"><label>Apelo</label><input type="number" id="editApelo" step="0.5" min="0" max="5"></div><div class="form-group"><label>Facilidade</label><input type="number" id="editFacilidade" step="0.5" min="0" max="5"></div></div>
+<div class="form-row"><div class="form-group"><label>Escala</label><input type="number" id="editEscala" step="0.5" min="0" max="5"></div><div class="form-group"><label>Risco</label><input type="number" id="editRisco" step="0.5" min="0" max="5"></div><div class="form-group"><label>Preço Sugerido</label><input type="number" id="editPrecoSugerido" step="0.01"></div></div>
+<div style="display: flex; gap: 12px; justify-content: flex-end;"><button id="btnSalvarEdicao">💾 Salvar</button><button id="btnFecharModal" class="btn-reset">Cancelar</button></div></div></div>
+
 <script>
     const pesos = { demanda:3, concorrencia:2, logistica:2, regulatorio:2, diferenciacao:2, posicionamento:2, apelo:2, facilidade:1, escala:2, risco:3 };
     let produtos = [];
     let grafico = null;
+    let prompts = { selecao: "", analise: "", compilado: "" };
+
+    async function carregarPrompts() {
+        try {
+            let resposta1 = await fetch('prompts/selecao.txt');
+            if(resposta1.ok) prompts.selecao = await resposta1.text();
+            let resposta2 = await fetch('prompts/analise.txt');
+            if(resposta2.ok) prompts.analise = await resposta2.text();
+            let resposta3 = await fetch('prompts/compilado.txt');
+            if(resposta3.ok) prompts.compilado = await resposta3.text();
+            document.getElementById("prompt1Texto").innerHTML = escapeHtml(prompts.selecao.substring(0, 500) + (prompts.selecao.length > 500 ? "..." : ""));
+            document.getElementById("prompt2Texto").innerHTML = escapeHtml(prompts.analise.substring(0, 500) + (prompts.analise.length > 500 ? "..." : ""));
+            document.getElementById("prompt3Texto").innerHTML = escapeHtml(prompts.compilado.substring(0, 500) + (prompts.compilado.length > 500 ? "..." : ""));
+        } catch(e) { console.log("Erro ao carregar prompts:", e); }
+    }
 
     function calcularScore(prod) {
         const score = (prod.demanda*3)+(prod.concorrencia*2)+(prod.logistica*2)+(prod.regulatorio*2)+(prod.diferenciacao*2)+(prod.posicionamento*2)+(prod.apelo*2)+(prod.facilidade*1)+(prod.escala*2)+(prod.risco*3);
@@ -236,167 +189,81 @@
         return { score, decisao };
     }
 
+    function aplicarFiltros() {
+        const nomeFiltro = document.getElementById("filtroNome").value.toLowerCase();
+        const categoriaFiltro = document.getElementById("filtroCategoria").value;
+        const decisaoFiltro = document.getElementById("filtroDecisao").value;
+        const dataInicio = document.getElementById("filtroDataInicio").value;
+        const dataFim = document.getElementById("filtroDataFim").value;
+        
+        return produtos.filter(prod => {
+            if(nomeFiltro && !prod.nome.toLowerCase().includes(nomeFiltro)) return false;
+            if(categoriaFiltro && prod.categoria !== categoriaFiltro) return false;
+            if(decisaoFiltro && calcularScore(prod).decisao !== decisaoFiltro) return false;
+            if(dataInicio && prod.dataInclusao) {
+                let [dia, mes, ano] = prod.dataInclusao.split('/');
+                let dataProd = `${ano}-${mes}-${dia}`;
+                if(dataProd < dataInicio) return false;
+            }
+            if(dataFim && prod.dataInclusao) {
+                let [dia, mes, ano] = prod.dataInclusao.split('/');
+                let dataProd = `${ano}-${mes}-${dia}`;
+                if(dataProd > dataFim) return false;
+            }
+            return true;
+        });
+    }
+
     function renderizarTabela() {
         const corpo = document.getElementById("corpoTabela");
-        if (produtos.length===0) { corpo.innerHTML='<tr><td colspan="16">Nenhum produto adicionado ainda</td></tr>'; atualizarGrafico(); return; }
+        const filtrados = aplicarFiltros();
+        if (filtrados.length===0) { corpo.innerHTML='<tr><td colspan="17">Nenhum produto encontrado</td></tr>'; atualizarGrafico(); return; }
         corpo.innerHTML = "";
-        produtos.forEach((prod, idx) => {
+        filtrados.forEach((prod, idx) => {
+            const originalIdx = produtos.findIndex(p => p.nome === prod.nome && p.dataInclusao === prod.dataInclusao);
             const { score, decisao } = calcularScore(prod);
             const classeScore = score>=95?"score-verde":(score>=75?"score-amarelo":"score-vermelho");
-            corpo.insertAdjacentHTML("beforeend", `<tr><td class="produto-nome" data-idx="${idx}">${escapeHtml(prod.nome)}</td><td>${escapeHtml(prod.categoria||'-')}</td><td>${prod.demanda}</td><td>${prod.concorrencia}</td><td>${prod.logistica}</td><td>${prod.regulatorio}</td><td>${prod.diferenciacao}</td><td>${prod.posicionamento}</td><td>${prod.apelo}</td><td>${prod.facilidade}</td><td>${prod.escala}</td><td>${prod.risco}</td><td class="${classeScore}">${score}</td><td>${decisao}</td><td>${prod.precoSugerido ? 'R$ '+prod.precoSugerido.toFixed(2) : '-'}</td><td><button class="excluir" data-index="${idx}">🗑️</button></td></tr>`);
+            corpo.insertAdjacentHTML("beforeend", `<tr><td class="produto-nome" data-idx="${originalIdx}">${escapeHtml(prod.nome)}</td><td>${escapeHtml(prod.categoria||'-')}</td><td>${prod.demanda}</td><td>${prod.concorrencia}</td><td>${prod.logistica}</td><td>${prod.regulatorio}</td><td>${prod.diferenciacao}</td><td>${prod.posicionamento}</td><td>${prod.apelo}</td><td>${prod.facilidade}</td><td>${prod.escala}</td><td>${prod.risco}</td><td class="${classeScore}">${score}</td><td>${decisao}</td><td>${prod.precoSugerido ? 'R$ '+prod.precoSugerido.toFixed(2) : '-'}</td><td>${prod.dataInclusao || '-'}</td><td><button class="editar" data-index="${originalIdx}">✏️</button><button class="excluir" data-index="${originalIdx}">🗑️</button></td></tr>`);
         });
         document.querySelectorAll(".produto-nome").forEach(el=>el.addEventListener("click",(e)=>abrirDetalhes(parseInt(el.dataset.idx))));
-        document.querySelectorAll(".excluir").forEach(btn=>btn.addEventListener("click",(e)=>{ produtos.splice(parseInt(btn.dataset.index),1); renderizarTabela(); salvarLocal(); }));
+        document.querySelectorAll(".editar").forEach(btn=>btn.addEventListener("click",(e)=>abrirModal(parseInt(btn.dataset.index))));
+        document.querySelectorAll(".excluir").forEach(btn=>btn.addEventListener("click",(e)=>{ produtos.splice(parseInt(btn.dataset.index),1); renderizarTabela(); salvarLocal(); atualizarFiltrosCategoria(); }));
         atualizarGrafico();
     }
 
-    function abrirDetalhes(idx) {
-        const p = produtos[idx];
-        const modal = document.getElementById("modalDetalhesContent");
-        modal.innerHTML = `
-            <h2>📦 ${escapeHtml(p.nome)}</h2>
-            ${p.imagemUrl ? `<img src="${escapeHtml(p.imagemUrl)}" class="produto-detalhe-imagem" onerror="this.style.display='none'">` : ''}
-            <p><strong>📂 Categoria:</strong> ${p.categoria || '-'}</p>
-            <p><strong>📅 Data inclusão:</strong> ${p.dataInclusao || '-'}</p>
-            <div class="preco-box"><strong>💰 Análise de Preços:</strong><br>
-            Mínimo: R$ ${p.precoMin?.toFixed(2) || '-'}<br>
-            Médio: R$ ${p.precoMedio?.toFixed(2) || '-'}<br>
-            Máximo: R$ ${p.precoMax?.toFixed(2) || '-'}<br>
-            <strong>Sugerido: R$ ${p.precoSugerido?.toFixed(2) || '-'}</strong>
-            </div>
-            <h3>📊 Notas e Pareceres</h3>
-            ${renderParecer("Demanda", p.demanda, p.parecerDemanda)}
-            ${renderParecer("Concorrência", p.concorrencia, p.parecerConcorrencia, p.oportunidadesConcorrencia)}
-            ${renderParecer("Logística", p.logistica, p.parecerLogistica, null, p.alertasLogistica)}
-            ${renderParecer("Regulatório", p.regulatorio, p.parecerRegulatorio, null, p.exigenciasRegulatorio)}
-            ${renderParecer("Diferenciação", p.diferenciacao, p.parecerDiferenciacao, p.oportunidadesDiferenciacao)}
-            ${renderParecer("Posicionamento", p.posicionamento, p.parecerPosicionamento, null, null, `Preço médio concorrentes: R$ ${p.precoMedioConcorrentes?.toFixed(2) || '-'}<br>Preço premium sugerido: R$ ${p.precoPremiumSugerido?.toFixed(2) || '-'}<br>${p.justificativaPreco || ''}`)}
-            ${renderParecer("Apelo de Venda", p.apelo, p.parecerApelo, p.estrategiasApelo)}
-            ${renderParecer("Facilidade de Venda", p.facilidade, p.parecerFacilidade, p.cuidadosFacilidade, `Alerta guerra de preço: ${p.alertaGuerraPreco || 'NÃO'}`)}
-            ${renderParecer("Escala e Recorrência", p.escala, p.parecerEscala, p.estrategiasEscala)}
-            ${renderParecer("Risco", p.risco, p.parecerRisco, null, p.alertasRisco)}
-            <div style="text-align: right; margin-top: 20px;"><button onclick="fecharModal()" class="btn-reset">Fechar</button></div>
-        `;
-        document.getElementById("modalDetalhes").style.display = "flex";
-    }
-
-    function renderParecer(titulo, nota, texto, lista, extra1, extra2) {
-        let html = `<div style="margin-bottom: 12px; border-bottom: 1px solid #ddd; padding-bottom: 8px;"><strong>${titulo}</strong> (${nota})<br><span style="font-size:0.8rem;">${escapeHtml(texto||'-')}</span>`;
-        if(lista && lista.length) html += `<br><em>${titulo === "Concorrência" ? "Oportunidades:" : titulo === "Diferenciação" ? "Oportunidades:" : titulo === "Apelo de Venda" ? "Estratégias:" : titulo === "Escala" ? "Estratégias:" : "Itens:"}</em><ul>${lista.split('\n').map(i=>`<li>${escapeHtml(i)}</li>`).join('')}</ul>`;
-        if(extra1) html += `<br><span style="font-size:0.75rem;">${escapeHtml(extra1)}</span>`;
-        if(extra2) html += `<br><span style="font-size:0.75rem;">${escapeHtml(extra2)}</span>`;
-        html += `</div>`;
-        return html;
-    }
-
-    function fecharModal() { document.getElementById("modalDetalhes").style.display = "none"; }
-
-    function atualizarGrafico() {
-        const ctx = document.getElementById('graficoScore').getContext('2d');
-        if(grafico) grafico.destroy();
-        if(produtos.length===0) { grafico=new Chart(ctx,{type:'bar',data:{labels:['Nenhum'],datasets:[{label:'Score',data:[0]}]}}); return; }
-        const labels=produtos.map(p=>p.nome.length>18?p.nome.slice(0,15)+"...":p.nome);
-        const scores=produtos.map(p=>calcularScore(p).score);
-        const cores=scores.map(s=>s>=95?'#22c55e':(s>=75?'#eab308':'#ef4444'));
-        grafico=new Chart(ctx,{type:'bar',data:{labels,datasets:[{label:'Score (máx 120)',data:scores,backgroundColor:cores,borderRadius:8}]},options:{responsive:true,maintainAspectRatio:true}});
-    }
-
-    function importarJSON(jsonText) {
-        try {
-            let data = JSON.parse(jsonText);
-            let produto = {
-                nome: data.nome || "Produto IA",
-                dataInclusao: new Date().toLocaleDateString('pt-BR'),
-                categoria: data.categoria || "",
-                imagemUrl: data.imagemUrl || "",
-                demanda: data.demanda?.nota || 0,
-                parecerDemanda: data.demanda?.parecer || "",
-                precoMin: data.demanda?.precoMin || 0,
-                precoMedio: data.demanda?.precoMedio || 0,
-                precoMax: data.demanda?.precoMax || 0,
-                precoSugerido: data.demanda?.precoSugerido || 0,
-                concorrencia: data.concorrencia?.nota || 0,
-                parecerConcorrencia: data.concorrencia?.parecer || "",
-                oportunidadesConcorrencia: Array.isArray(data.concorrencia?.oportunidades) ? data.concorrencia.oportunidades.join('\n') : "",
-                logistica: data.logistica?.nota || 0,
-                parecerLogistica: data.logistica?.parecer || "",
-                alertasLogistica: Array.isArray(data.logistica?.alertas) ? data.logistica.alertas.join('\n') : (data.logistica?.alertas || ""),
-                regulatorio: data.regulatorio?.nota || 0,
-                parecerRegulatorio: data.regulatorio?.parecer || "",
-                exigenciasRegulatorio: data.regulatorio?.exigencias || "",
-                diferenciacao: data.diferenciacao?.nota || 0,
-                parecerDiferenciacao: data.diferenciacao?.parecer || "",
-                oportunidadesDiferenciacao: Array.isArray(data.diferenciacao?.oportunidades) ? data.diferenciacao.oportunidades.join('\n') : "",
-                posicionamento: data.posicionamento?.nota || 0,
-                parecerPosicionamento: data.posicionamento?.parecer || "",
-                precoMedioConcorrentes: data.posicionamento?.precoMedioConcorrentes || 0,
-                precoPremiumSugerido: data.posicionamento?.precoPremiumSugerido || 0,
-                justificativaPreco: data.posicionamento?.justificativaPreco || "",
-                apelo: data.apelo?.nota || 0,
-                parecerApelo: data.apelo?.parecer || "",
-                estrategiasApelo: Array.isArray(data.apelo?.estrategias) ? data.apelo.estrategias.join('\n') : "",
-                facilidade: data.facilidade?.nota || 0,
-                parecerFacilidade: data.facilidade?.parecer || "",
-                alertaGuerraPreco: data.facilidade?.alertaGuerraPreco || "NÃO",
-                cuidadosFacilidade: Array.isArray(data.facilidade?.cuidados) ? data.facilidade.cuidados.join('\n') : "",
-                escala: data.escala?.nota || 0,
-                parecerEscala: data.escala?.parecer || "",
-                estrategiasEscala: Array.isArray(data.escala?.estrategias) ? data.escala.estrategias.join('\n') : "",
-                risco: data.risco?.nota || 0,
-                parecerRisco: data.risco?.parecer || "",
-                alertasRisco: Array.isArray(data.risco?.alertas) ? data.risco.alertas.join('\n') : ""
-            };
-            produtos.push(produto);
-            renderizarTabela();
-            salvarLocal();
-            alert(`Produto "${produto.nome}" importado com sucesso!`);
-        } catch(e) { alert("Erro ao ler JSON: "+e.message); }
-    }
-
-    function adicionarManual() {
-        let nome = document.getElementById("produtoNome").value.trim();
-        if(!nome){ alert("Digite o nome do produto"); return; }
-        produtos.push({
-            nome, dataInclusao: new Date().toLocaleDateString('pt-BR'), categoria: document.getElementById("produtoCategoria").value,
-            imagemUrl: document.getElementById("produtoImagem").value.trim(),
-            demanda: parseFloat(document.getElementById("demanda").value), precoMin: parseFloat(document.getElementById("precoMin").value)||0, precoMedio: parseFloat(document.getElementById("precoMedio").value)||0, precoMax: parseFloat(document.getElementById("precoMax").value)||0, precoSugerido: parseFloat(document.getElementById("precoSugerido").value)||0,
-            parecerDemanda: document.getElementById("parecerDemanda").value,
-            concorrencia: parseFloat(document.getElementById("concorrencia").value), parecerConcorrencia: document.getElementById("parecerConcorrencia").value, oportunidadesConcorrencia: document.getElementById("oportunidadesConcorrencia").value,
-            logistica: parseFloat(document.getElementById("logistica").value), parecerLogistica: document.getElementById("parecerLogistica").value, alertasLogistica: document.getElementById("alertasLogistica").value,
-            regulatorio: parseFloat(document.getElementById("regulatorio").value), parecerRegulatorio: document.getElementById("parecerRegulatorio").value, exigenciasRegulatorio: document.getElementById("exigenciasRegulatorio").value,
-            diferenciacao: parseFloat(document.getElementById("diferenciacao").value), parecerDiferenciacao: document.getElementById("parecerDiferenciacao").value, oportunidadesDiferenciacao: document.getElementById("oportunidadesDiferenciacao").value,
-            posicionamento: parseFloat(document.getElementById("posicionamento").value), parecerPosicionamento: document.getElementById("parecerPosicionamento").value, precoMedioConcorrentes: parseFloat(document.getElementById("precoMedioConcorrentes").value)||0, precoPremiumSugerido: parseFloat(document.getElementById("precoPremiumSugerido").value)||0, justificativaPreco: document.getElementById("justificativaPreco").value,
-            apelo: parseFloat(document.getElementById("apelo").value), parecerApelo: document.getElementById("parecerApelo").value, estrategiasApelo: document.getElementById("estrategiasApelo").value,
-            facilidade: parseFloat(document.getElementById("facilidade").value), parecerFacilidade: document.getElementById("parecerFacilidade").value, alertaGuerraPreco: document.getElementById("alertaGuerraPreco").value, cuidadosFacilidade: document.getElementById("cuidadosFacilidade").value,
-            escala: parseFloat(document.getElementById("escala").value), parecerEscala: document.getElementById("parecerEscala").value, estrategiasEscala: document.getElementById("estrategiasEscala").value,
-            risco: parseFloat(document.getElementById("risco").value), parecerRisco: document.getElementById("parecerRisco").value, alertasRisco: document.getElementById("alertasRisco").value
-        });
-        renderizarTabela(); salvarLocal(); limparFormulario();
-    }
-
-    function limparFormulario() {
-        document.getElementById("produtoNome").value = ""; document.getElementById("produtoImagem").value = ""; document.getElementById("produtoCategoria").value = "";
-        document.querySelectorAll("input[type=number], textarea").forEach(el => { if(el.id !== "produtoNome") el.value = ""; });
-        document.getElementById("demanda").value = 3; document.getElementById("concorrencia").value = 3; document.getElementById("logistica").value = 3;
-        document.getElementById("regulatorio").value = 3; document.getElementById("diferenciacao").value = 3; document.getElementById("posicionamento").value = 3;
-        document.getElementById("apelo").value = 3; document.getElementById("facilidade").value = 3; document.getElementById("escala").value = 3; document.getElementById("risco").value = 3;
-    }
-
+    function abrirDetalhes(idx) { const p = produtos[idx]; const modal = document.getElementById("modalDetalhesContent"); modal.innerHTML = `<h2>📦 ${escapeHtml(p.nome)}</h2><p><strong>📂 Categoria:</strong> ${p.categoria || '-'}</p><p><strong>📅 Data inclusão:</strong> ${p.dataInclusao || '-'}</p><div class="preco-box"><strong>💰 Análise de Preços:</strong><br>Mínimo: R$ ${p.precoMin?.toFixed(2) || '-'}<br>Médio: R$ ${p.precoMedio?.toFixed(2) || '-'}<br>Máximo: R$ ${p.precoMax?.toFixed(2) || '-'}<br><strong>Sugerido: R$ ${p.precoSugerido?.toFixed(2) || '-'}</strong></div><h3>📊 Notas e Pareceres</h3>${renderParecer("Demanda", p.demanda, p.parecerDemanda)}${renderParecer("Concorrência", p.concorrencia, p.parecerConcorrencia)}${renderParecer("Logística", p.logistica, p.parecerLogistica)}${renderParecer("Regulatório", p.regulatorio, p.parecerRegulatorio)}${renderParecer("Diferenciação", p.diferenciacao, p.parecerDiferenciacao)}${renderParecer("Posicionamento", p.posicionamento, p.parecerPosicionamento)}${renderParecer("Apelo de Venda", p.apelo, p.parecerApelo)}${renderParecer("Facilidade de Venda", p.facilidade, p.parecerFacilidade)}${renderParecer("Escala e Recorrência", p.escala, p.parecerEscala)}${renderParecer("Risco", p.risco, p.parecerRisco)}<div style="text-align:right;margin-top:20px;"><button onclick="fecharModal()" class="btn-reset">Fechar</button></div>`; document.getElementById("modalDetalhes").style.display = "flex"; }
+    function renderParecer(titulo, nota, texto) { return `<div style="margin-bottom:12px;border-bottom:1px solid #ddd;padding-bottom:8px;"><strong>${titulo}</strong> (${nota})<br><span style="font-size:0.8rem;">${escapeHtml(texto||'-')}</span></div>`; }
+    function fecharModal() { document.getElementById("modalDetalhes").style.display = "none"; fecharModalEdicao(); }
+    function fecharModalEdicao() { document.getElementById("modalEditar").style.display = "none"; }
+    function abrirModal(idx) { let p=produtos[idx]; document.getElementById("editIndex").value=idx; document.getElementById("editNome").value=p.nome; document.getElementById("editDemanda").value=p.demanda; document.getElementById("editConcorrencia").value=p.concorrencia; document.getElementById("editLogistica").value=p.logistica; document.getElementById("editRegulatorio").value=p.regulatorio; document.getElementById("editDiferenciacao").value=p.diferenciacao; document.getElementById("editPosicionamento").value=p.posicionamento; document.getElementById("editApelo").value=p.apelo; document.getElementById("editFacilidade").value=p.facilidade; document.getElementById("editEscala").value=p.escala; document.getElementById("editRisco").value=p.risco; document.getElementById("editPrecoSugerido").value=p.precoSugerido; document.getElementById("modalEditar").style.display="flex"; }
+    function salvarEdicao() { let idx=parseInt(document.getElementById("editIndex").value); if(idx>=0&&idx<produtos.length) { produtos[idx].nome=document.getElementById("editNome").value; produtos[idx].demanda=parseFloat(document.getElementById("editDemanda").value); produtos[idx].concorrencia=parseFloat(document.getElementById("editConcorrencia").value); produtos[idx].logistica=parseFloat(document.getElementById("editLogistica").value); produtos[idx].regulatorio=parseFloat(document.getElementById("editRegulatorio").value); produtos[idx].diferenciacao=parseFloat(document.getElementById("editDiferenciacao").value); produtos[idx].posicionamento=parseFloat(document.getElementById("editPosicionamento").value); produtos[idx].apelo=parseFloat(document.getElementById("editApelo").value); produtos[idx].facilidade=parseFloat(document.getElementById("editFacilidade").value); produtos[idx].escala=parseFloat(document.getElementById("editEscala").value); produtos[idx].risco=parseFloat(document.getElementById("editRisco").value); produtos[idx].precoSugerido=parseFloat(document.getElementById("editPrecoSugerido").value); renderizarTabela(); salvarLocal(); } fecharModalEdicao(); }
+    function atualizarGrafico() { const ctx = document.getElementById('graficoScore').getContext('2d'); if(grafico) grafico.destroy(); const filtrados = aplicarFiltros(); if(filtrados.length===0) { grafico=new Chart(ctx,{type:'bar',data:{labels:['Nenhum'],datasets:[{label:'Score',data:[0]}]}}); return; } const labels=filtrados.map(p=>p.nome.length>18?p.nome.slice(0,15)+"...":p.nome); const scores=filtrados.map(p=>calcularScore(p).score); const cores=scores.map(s=>s>=95?'#22c55e':(s>=75?'#eab308':'#ef4444')); grafico=new Chart(ctx,{type:'bar',data:{labels,datasets:[{label:'Score (máx 120)',data:scores,backgroundColor:cores,borderRadius:8}]},options:{responsive:true,maintainAspectRatio:true}}); }
+    function atualizarFiltrosCategoria() { let categorias = [...new Set(produtos.map(p=>p.categoria).filter(c=>c))]; let select = document.getElementById("filtroCategoria"); select.innerHTML = '<option value="">Todas</option>' + categorias.map(c=>`<option>${escapeHtml(c)}</option>`).join(''); }
+    function importarJSON(jsonText) { try { let data = JSON.parse(jsonText); let produto = { nome: data.nome || "Produto IA", dataInclusao: new Date().toLocaleDateString('pt-BR'), categoria: data.categoria || "", imagemUrl: data.imagemUrl || "", demanda: data.demanda?.nota || 0, parecerDemanda: data.demanda?.parecer || "", precoMin: data.demanda?.precoMin || 0, precoMedio: data.demanda?.precoMedio || 0, precoMax: data.demanda?.precoMax || 0, precoSugerido: data.demanda?.precoSugerido || 0, concorrencia: data.concorrencia?.nota || 0, parecerConcorrencia: data.concorrencia?.parecer || "", oportunidadesConcorrencia: Array.isArray(data.concorrencia?.oportunidades) ? data.concorrencia.oportunidades.join('\n') : "", logistica: data.logistica?.nota || 0, parecerLogistica: data.logistica?.parecer || "", alertasLogistica: Array.isArray(data.logistica?.alertas) ? data.logistica.alertas.join('\n') : (data.logistica?.alertas || ""), regulatorio: data.regulatorio?.nota || 0, parecerRegulatorio: data.regulatorio?.parecer || "", exigenciasRegulatorio: data.regulatorio?.exigencias || "", diferenciacao: data.diferenciacao?.nota || 0, parecerDiferenciacao: data.diferenciacao?.parecer || "", oportunidadesDiferenciacao: Array.isArray(data.diferenciacao?.oportunidades) ? data.diferenciacao.oportunidades.join('\n') : "", posicionamento: data.posicionamento?.nota || 0, parecerPosicionamento: data.posicionamento?.parecer || "", precoMedioConcorrentes: data.posicionamento?.precoMedioConcorrentes || 0, precoPremiumSugerido: data.posicionamento?.precoPremiumSugerido || 0, justificativaPreco: data.posicionamento?.justificativaPreco || "", apelo: data.apelo?.nota || 0, parecerApelo: data.apelo?.parecer || "", estrategiasApelo: Array.isArray(data.apelo?.estrategias) ? data.apelo.estrategias.join('\n') : "", facilidade: data.facilidade?.nota || 0, parecerFacilidade: data.facilidade?.parecer || "", alertaGuerraPreco: data.facilidade?.alertaGuerraPreco || "NÃO", cuidadosFacilidade: Array.isArray(data.facilidade?.cuidados) ? data.facilidade.cuidados.join('\n') : "", escala: data.escala?.nota || 0, parecerEscala: data.escala?.parecer || "", estrategiasEscala: Array.isArray(data.escala?.estrategias) ? data.escala.estrategias.join('\n') : "", risco: data.risco?.nota || 0, parecerRisco: data.risco?.parecer || "", alertasRisco: Array.isArray(data.risco?.alertas) ? data.risco.alertas.join('\n') : "" }; produtos.push(produto); renderizarTabela(); salvarLocal(); atualizarFiltrosCategoria(); alert(`Produto "${produto.nome}" importado com sucesso!`); } catch(e) { alert("Erro ao ler JSON: "+e.message); } }
     function exportarCSV() { if(produtos.length===0){alert("Nenhum produto");return;} let rows=[["Nome","Categoria","Data","PreçoMin","PreçoMedio","PreçoMax","PreçoSug","Demanda","ParecerDem","Concorrencia","ParecerConc","Logistica","ParecerLog","Regulatorio","ParecerReg","Diferenciacao","ParecerDif","Posicionamento","ParecerPos","Apelo","ParecerApe","Facilidade","ParecerFac","Escala","ParecerEsc","Risco","ParecerRisc","Score","Decisão"]]; produtos.forEach(p=>{let {score,decisao}=calcularScore(p); rows.push([p.nome,p.categoria,p.dataInclusao,p.precoMin,p.precoMedio,p.precoMax,p.precoSugerido,p.demanda,p.parecerDemanda,p.concorrencia,p.parecerConcorrencia,p.logistica,p.parecerLogistica,p.regulatorio,p.parecerRegulatorio,p.diferenciacao,p.parecerDiferenciacao,p.posicionamento,p.parecerPosicionamento,p.apelo,p.parecerApelo,p.facilidade,p.parecerFacilidade,p.escala,p.parecerEscala,p.risco,p.parecerRisco,score,decisao]);}); let csv=rows.map(row=>row.map(c=>`"${String(c).replace(/"/g,'""')}"`).join(",")).join("\n"); let blob=new Blob(["\uFEFF"+csv],{type:"text/csv"}); let a=document.createElement("a"); a.href=URL.createObjectURL(blob); a.download="produtos.csv"; a.click(); URL.revokeObjectURL(blob.href); }
     function exportarJSON() { let dados=produtos.map(p=>{let{score,decisao}=calcularScore(p); return {...p,score_calculado:score,decisao};}); let blob=new Blob([JSON.stringify(dados,null,2)],{type:"application/json"}); let a=document.createElement("a"); a.href=URL.createObjectURL(blob); a.download="produtos.json"; a.click(); URL.revokeObjectURL(blob.href); }
-    function resetarTudo() { if(confirm("Apagar todos os produtos?")){produtos=[];renderizarTabela();salvarLocal();} }
+    function resetarTudo() { if(confirm("Apagar todos os produtos?")){produtos=[];renderizarTabela();salvarLocal();atualizarFiltrosCategoria();} }
     function salvarLocal() { localStorage.setItem("checklistProdutos",JSON.stringify(produtos)); }
-    function carregarLocal() { let dados=localStorage.getItem("checklistProdutos"); if(dados) { try{produtos=JSON.parse(dados);renderizarTabela();}catch(e){} } }
+    function carregarLocal() { let dados=localStorage.getItem("checklistProdutos"); if(dados) { try{produtos=JSON.parse(dados);renderizarTabela();atualizarFiltrosCategoria();}catch(e){} } }
     function escapeHtml(s){if(!s)return"";return s.replace(/[&<>]/g,function(m){return m==='&'?'&amp;':m==='<'?'&lt;':'&gt;';});}
-
-    document.getElementById("btnAdicionar").addEventListener("click",adicionarManual);
-    document.getElementById("btnReset").addEventListener("click",resetarTudo);
+    async function copiarPrompt(criterio) { let texto = prompts[criterio]; if(texto) { await navigator.clipboard.writeText(texto); alert(`Prompt ${criterio} copiado!`); } else alert(`Prompt não carregado`); }
+    document.getElementById("btnImportarJSON").addEventListener("click",()=>{let txt=document.getElementById("jsonImport").value; if(txt.trim())importarJSON(txt); else alert("Cole um JSON primeiro");});
+    document.getElementById("btnImportarArquivo").addEventListener("click",()=>{let file=document.getElementById("fileImport").files[0]; if(!file){alert("Selecione um arquivo .json");return;} let reader=new FileReader(); reader.onload=e=>importarJSON(e.target.result); reader.readAsText(file);});
     document.getElementById("btnExportCSV").addEventListener("click",exportarCSV);
     document.getElementById("btnExportJSON").addEventListener("click",exportarJSON);
     document.getElementById("btnAtualizarGrafico").addEventListener("click",()=>atualizarGrafico());
-    document.getElementById("btnImportarJSON").addEventListener("click",()=>{let txt=document.getElementById("jsonImport").value; if(txt.trim())importarJSON(txt); else alert("Cole um JSON primeiro");});
-    document.getElementById("btnImportarArquivo").addEventListener("click",()=>{let file=document.getElementById("fileImport").files[0]; if(!file){alert("Selecione um arquivo .json");return;} let reader=new FileReader(); reader.onload=e=>importarJSON(e.target.result); reader.readAsText(file);});
-    window.addEventListener("click",e=>{if(e.target===document.getElementById("modalDetalhes"))fecharModal();});
+    document.getElementById("btnReset").addEventListener("click",resetarTudo);
+    document.getElementById("btnSalvarEdicao").addEventListener("click",salvarEdicao);
+    document.getElementById("btnFecharModal").addEventListener("click",fecharModalEdicao);
+    document.getElementById("btnLimparFiltros").addEventListener("click",()=>{document.getElementById("filtroNome").value="";document.getElementById("filtroCategoria").value="";document.getElementById("filtroDecisao").value="";document.getElementById("filtroDataInicio").value="";document.getElementById("filtroDataFim").value="";renderizarTabela();});
+    document.getElementById("filtroNome").addEventListener("input",()=>renderizarTabela());
+    document.getElementById("filtroCategoria").addEventListener("change",()=>renderizarTabela());
+    document.getElementById("filtroDecisao").addEventListener("change",()=>renderizarTabela());
+    document.getElementById("filtroDataInicio").addEventListener("change",()=>renderizarTabela());
+    document.getElementById("filtroDataFim").addEventListener("change",()=>renderizarTabela());
+    window.addEventListener("click",e=>{if(e.target===document.getElementById("modalDetalhes"))fecharModal(); if(e.target===document.getElementById("modalEditar"))fecharModalEdicao();});
+    document.querySelectorAll(".btn-copiar").forEach(btn=>{btn.addEventListener("click",()=>copiarPrompt(btn.dataset.prompt));});
+    carregarPrompts();
     carregarLocal();
 </script>
 </body>

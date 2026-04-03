@@ -5,6 +5,36 @@ Com base nas informações que já coletamos (prints da busca + análise dos 5 l
 ⚠️ IMPORTANTE: Use as regras de pontuação abaixo para cada critério.
 
 ═══════════════════════════════════════════════════════════
+📊 CATEGORIA E URL DA IMAGEM
+═══════════════════════════════════════════════════════════
+
+CATEGORIA: Use APENAS o primeiro nível da categoria do Mercado Livre.
+Exemplos válidos:
+- "Esportes e Fitness"
+- "Casa, Móveis e Decoração"
+- "Eletrodomésticos"
+- "Beleza e Cuidado Pessoal"
+- "Ferramentas"
+- "Brinquedos e Hobbies"
+- "Informática"
+- "Celulares e Telefones"
+
+IMAGEM_URL: Preencha com um LINK DIRETO e VÁLIDO de uma imagem do produto.
+A URL deve abrir a imagem diretamente no navegador (arquivo .png, .jpg, .webp ou similar).
+Não use:
+- link de página de produto
+- link de busca
+- termo de busca
+- URL incompleta ou inferida
+
+Pode ser uma imagem genérica que represente bem o produto, apenas para ilustração.
+Exemplo válido:
+https://cdn.awsli.com.br/1709/1709525/produto/76990007/classic-black-maximum_01-cec6ilzv4b.png
+
+⚠️ "imagemUrl" deve conter obrigatoriamente uma URL direta de imagem, começando com http/https e terminando em extensão de imagem (.png, .jpg, .jpeg, .webp) ou outro link que abra diretamente o arquivo da imagem.
+⚠️ Não aceitar termo de busca, página de produto ou campo vazio, salvo se realmente não houver nenhuma imagem válida disponível.
+
+═══════════════════════════════════════════════════════════
 📊 CRITÉRIO 1: DEMANDA (use os dados da sua análise)
 ═══════════════════════════════════════════════════════════
 
@@ -96,8 +126,8 @@ FÓRMULA: Média dos 6 critérios
 
 {
   "nome": "nome do produto",
-  "categoria": "categoria do ML",
-  "imagemUrl": "",
+  "categoria": "PRIMEIRO_NIVEL_APENAS",
+  "imagemUrl": "URL DIRETA DE UMA IMAGEM DO PRODUTO (não página, não busca, não texto)",
   "demanda": {"nota": 0, "parecer": "", "precoMin": 0, "precoMedio": 0, "precoMax": 0, "precoSugerido": 0},
   "concorrencia": {"nota": 0, "parecer": "", "oportunidades": []},
   "logistica": {"nota": 0, "parecer": "", "alertas": []},
