@@ -1,3 +1,4 @@
+// server.js
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
@@ -9,15 +10,25 @@ dotenv.config();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const publicDir = path.join(__dirname, "public");
+const validadorDir = path.join(publicDir, "validador");
 
 const app = express();
 
 app.use(cors());
 app.use(express.json({ limit: "1mb" }));
 app.use(express.static(publicDir));
+// Adiciona suporte para servir arquivos da pasta validador também
+app.use("/validador", express.static(validadorDir));
 
+// Rota principal - tenta primeiro na pasta validador
 app.get("/", (req, res) => {
-  res.sendFile(path.join(publicDir, "index.html"));
+  const indexPath = path.join(validadorDir, "index.html");
+  res.sendFile(indexPath);
+});
+
+// Rota alternativa para /validador
+app.get("/validador", (req, res) => {
+  res.sendFile(path.join(validadorDir, "index.html"));
 });
 
 const PORT = Number(process.env.PORT || 3000);
@@ -308,13 +319,9 @@ function parsePriceAndOriginalPrice(html) {
 
 function parseSoldQuantity(html) {
   const patterns = [
-    // Padrão para "+5mil vendidos", "5mil vendidos", "+5k vendidos"
     /\+?\s*(\d+(?:[.,]\d+)?)\s*(?:mil|k)\s*vendidos?/i,
-    // Padrão para "Mais de 5 mil vendidos"
     /Mais de\s+(\d+(?:[.,]\d+)?)\s*(?:mil|k)?\s*vendidos?/i,
-    // Padrão para "5 vendidos", "+5 vendidos"
     /(\d+(?:[.,]\d+)?)\s*vendidos?/i,
-    // Padrão para "5 unidades vendidas"
     /(\d+(?:[.,]\d+)?)\s*unidades?\s*vendidas?/i
   ];
 
@@ -323,18 +330,15 @@ function parseSoldQuantity(html) {
     if (match) {
       let numberStr = match[1];
       
-      // Converte vírgula decimal para ponto
       numberStr = numberStr.replace(",", ".");
       
       let quantity = parseFloat(numberStr);
       
       if (Number.isFinite(quantity)) {
-        // Verifica se tem "mil" ou "k" no texto capturado
         const fullMatch = match[0];
         if (fullMatch.match(/(mil|k)/i) && quantity < 1000) {
           quantity = quantity * 1000;
         }
-        // Arredonda para inteiro
         return Math.round(quantity);
       }
     }
@@ -591,11 +595,9 @@ function recommendationText({ demand, margin, price, competitorPrice, myPrice })
 }
 
 function calculateAnalysis(reference, simulation) {
-  // Processa a reputação do concorrente considerando a flag profissional
   let refReputation = normalizeReputation(reference.reputation || "red");
   let refExposure = normalizeExposure(reference.exposure || "classic");
   
-  // Se a flag profissional estiver marcada, força premium e verde
   const assumeProfessionalCompetitor = reference.assumeProfessionalCompetitor === true || 
                                         reference.assumeProfessionalCompetitor === "true";
   
@@ -630,10 +632,8 @@ function calculateAnalysis(reference, simulation) {
   let refShippingReputationUsed = refReputation;
   let refExposureUsed = refExposure;
 
-  // Lógica de frete do concorrente: prioridade para manual
   if (refShippingFree) {
     if (refManualShippingCost > 0) {
-      // PRIORIDADE: valor manual preenchido
       refShippingCost = toMoney(refManualShippingCost);
       refShippingCostSource = "manual";
     } else if (assumeProfessionalCompetitor) {
@@ -672,17 +672,13 @@ function calculateAnalysis(reference, simulation) {
   let myFreightApplied = 0;
   let myFreightSource = "não_aplicado";
 
-  // ✅ LÓGICA CORRIGIDA: Checkbox indica se o VENDEDOR paga o frete
   const sellerPaysFreight = myShippingFree;
   
   if (sellerPaysFreight) {
-    // Vendedor vai pagar o frete - entra no custo
     if (myShippingCostSellerEntered > 0) {
-      // PRIORIDADE: valor manual informado
       myFreightApplied = myShippingCostSellerEntered;
       myFreightSource = "manual";
     } else if (CONFIG.dynamicShippingEnabled) {
-      // Cálculo dinâmico baseado em peso, reputação, exposição e preço
       myFreightApplied = calculateDynamicShippingCost({
         price: mySalePrice,
         weightCategory: myWeightCategory,
@@ -695,8 +691,6 @@ function calculateAnalysis(reference, simulation) {
       myFreightSource = "disabled";
     }
   } else {
-    // Vendedor NÃO paga frete - comprador paga
-    // NÃO entra no custo do vendedor
     myFreightApplied = 0;
     myFreightSource = "comprador_paga";
   }
