@@ -1,8 +1,6 @@
 ANÁLISE DE CONCORRÊNCIA - QUALIDADE DE EXECUÇÃO
 
-Com base nas imagens anteriores e nos links dos 5 anúncios que vou anexar, analise a QUALIDADE da concorrência.
-
-***IMPORTANTE: só me dê a interpretação final depois de eu te passar todos os links dos anúncios.
+Com base nos 5 anúncios que vou enviar os links, analise a QUALIDADE da concorrência.
 
 ⚠️ LEMBRE-SE: Qualidade BAIXA dos concorrentes é BOM para mim (oportunidade de destacar).
 
@@ -22,11 +20,11 @@ Com base nas imagens anteriores e nos links dos 5 anúncios que vou anexar, anal
 
 | Nota | Significado | O que fazer |
 |------|-------------|-------------|
-| 0-2 | Execução FRACA | 🟢 OPORTUNIDADE GRANDE - Você pode fazer muito melhor |
-| 2.1-3.5 | Execução MÉDIA | 🟡 OPORTUNIDADE - Dá para ganhar com pequenas melhorias |
-| 3.6-5 | Execução FORTE | 🔴 MERCADO DIFÍCIL - Precisa de diferencial significativo |
+| 0-2 | Execução FRACA | 🟢 OPORTUNIDADE GRANDE |
+| 2.1-3.5 | Execução MÉDIA | 🟡 OPORTUNIDADE |
+| 3.6-5 | Execução FORTE | 🔴 MERCADO DIFÍCIL |
 
-RESPONDA APENAS com este formato:
+📤 FORMATO DE RESPOSTA:
 
 NOTAS POR CRITÉRIO:
 Fotos: [0-5]
@@ -46,4 +44,5 @@ O QUE EU DEVO FAZER NO MEU ANÚNCIO PARA ME DESTACAR:
 - Item 1: [melhoria específica]
 - Item 2: [melhoria específica]
 - Item 3: [melhoria específica]
-- Item 4: [melhoria específica]
+
+RESPONDA APENAS com este formato.

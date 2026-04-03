@@ -1,0 +1,39 @@
+COM BASE APENAS NOS PRINTS DA PÁGINA DE BUSCA DO MERCADO LIVRE que eu anexei, você deve SELECIONAR 5 ANÚNCIOS para eu abrir e analisar a CONCORRÊNCIA com foco em QUALIDADE DE EXECUÇÃO.
+
+⚠️ LEMBRETE: Quantidade de vendedores NÃO é problema. O que importa é a QUALIDADE.
+
+📊 CRITÉRIOS DE SELEÇÃO (use estes para escolher 5 anúncios com PROPÓSITOS DIFERENTES):
+
+| Prioridade | Propósito | O que procurar |
+|------------|-----------|----------------|
+| 1 | MELHOR EXECUÇÃO | Anúncio com melhor título, avaliação alta, marca forte |
+| 2 | PIOR EXECUÇÃO | Anúncio com título ruim, avaliação baixa, genérico |
+| 3 | MAIS VENDIDO | O líder em volume (referência de mercado) |
+| 4 | DIFERENCIADO | Algo único (kit grande, funcionalidade especial) |
+| 5 | PROBLEMAS VISÍVEIS | Título truncado, informação faltando, preço fora da curva |
+
+🎯 OBJETIVO: Ter uma amostra que inclua:
+- 1 anúncio de ALTA QUALIDADE (referência)
+- 1 anúncio de BAIXA QUALIDADE (oportunidade)
+- 1 anúncio LÍDER (volume)
+- 1 anúncio DIFERENCIADO (inovação)
+- 1 anúncio com PROBLEMAS CLAROS (para identificar o que evitar)
+
+📤 FORMATO DE RESPOSTA (somente isto):
+
+ANÚNCIOS PARA ABRIR:
+
+1. [MARCA/NOME] - Preço: R$X - Vendas: X - Motivo: [propósito]
+2. [MARCA/NOME] - Preço: R$X - Vendas: X - Motivo: [propósito]
+3. [MARCA/NOME] - Preço: R$X - Vendas: X - Motivo: [propósito]
+4. [MARCA/NOME] - Preço: R$X - Vendas: X - Motivo: [propósito]
+5. [MARCA/NOME] - Preço: R$X - Vendas: X - Motivo: [propósito]
+
+⚠️ Para cada anúncio, identifique nos prints:
+- Marca/nome do produto
+- Preço atual
+- Quantidade de vendas
+- Avaliação (estrelas)
+- Se é kit (quantas peças)
+
+RESPONDA APENAS com a lista acima.

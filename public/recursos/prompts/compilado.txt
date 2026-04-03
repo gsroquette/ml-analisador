@@ -1,0 +1,116 @@
+COMPILAR ANÁLISE COMPLETA DO PRODUTO - GERAR JSON
+
+Com base nas informações que já coletamos (prints da busca + análise dos 5 links + sua própria avaliação do produto), compile uma análise COMPLETA em formato JSON.
+
+⚠️ IMPORTANTE: Use as regras de pontuação abaixo para cada critério.
+
+═══════════════════════════════════════════════════════════
+📊 CRITÉRIO 1: DEMANDA (use os dados da sua análise)
+═══════════════════════════════════════════════════════════
+
+Preencha com os dados que você já extraiu dos prints da busca:
+
+PRECO_MIN: R$ [valor]
+PRECO_MEDIO: R$ [valor]  
+PRECO_MAX: R$ [valor]
+PRECO_SUGERIDO: R$ [valor]
+
+REGRAS DEMANDA:
+Nota 0 = nenhuma venda visível
+Nota 1 = líder com menos de 100 vendas
+Nota 2 = líder com 100-500 vendas
+Nota 3 = líder com 500-1000 vendas
+Nota 4 = líder com 1000-5000 vendas
+Nota 5 = líder com mais de 5000 vendas
+BÔNUS: +0.5 se houver 3+ anúncios com +500 vendas
+
+═══════════════════════════════════════════════════════════
+📊 CRITÉRIO 2: CONCORRÊNCIA (use a resposta do Prompt 2)
+═══════════════════════════════════════════════════════════
+
+Use a NOTA, PARECER e OPORTUNIDADES que você já recebeu.
+
+═══════════════════════════════════════════════════════════
+📊 CRITÉRIO 3: LOGÍSTICA (avalie agora)
+═══════════════════════════════════════════════════════════
+
+TABELA: Tamanho (<10cm=5, 10-20cm=4, 20-30cm=3, 30-40cm=2, >40cm=1)
+Peso (<100g=5, 100-300g=4, 300-600g=3, 600g-1kg=2, >1kg=1)
+Compacidade (Perfeito=5, Bom=4, Médio=3, Irregular=2, Não empilha=1)
+Fragilidade (Inquebrável=5, Baixa=4, Média=3, Alta=2, Extremamente=1)
+FÓRMULA: Média dos 6 critérios
+
+═══════════════════════════════════════════════════════════
+📊 CRITÉRIO 4: REGULATÓRIO (avalie agora)
+═══════════════════════════════════════════════════════════
+
+CRITÉRIOS (0-5): Anvisa, Inmetro, Certificação, Homologação, Risco legal
+FÓRMULA: Média dos 5 critérios
+
+═══════════════════════════════════════════════════════════
+📊 CRITÉRIO 5: DIFERENCIAÇÃO (avalie agora)
+═══════════════════════════════════════════════════════════
+
+CRITÉRIOS (0-5): Melhorar produto, Criar kit, Melhorar embalagem, Nichar público, Resolver dor melhor
+FÓRMULA: Média dos 5 critérios
+
+═══════════════════════════════════════════════════════════
+📊 CRITÉRIO 6: POSICIONAMENTO (avalie agora)
+═══════════════════════════════════════════════════════════
+
+CRITÉRIOS (0-5): Percepção valor atual, Potencial premium, Espaço aumento, Concorrentes mal posicionados, Sair do genérico
+FÓRMULA: Média dos 5 critérios
+
+═══════════════════════════════════════════════════════════
+📊 CRITÉRIO 7: APELO DE VENDA (avalie agora)
+═══════════════════════════════════════════════════════════
+
+CRITÉRIOS (0-5): Resolve problema claro, Benefício imediato, Antes/depois possível, Visual forte, Demonstração fácil, Entendimento rápido
+FÓRMULA: Média dos 6 critérios
+
+═══════════════════════════════════════════════════════════
+📊 CRITÉRIO 8: FACILIDADE DE VENDA (avalie agora)
+═══════════════════════════════════════════════════════════
+
+CRITÉRIOS (0-5): Produto simples, Baixa dúvida, Baixa devolução, Expectativa realista, Funciona 1ª vez
+FÓRMULA: Média dos 5 critérios
+ALERTA GUERRA PREÇO: SIM se (simples nota 5 + preço médio < R$50 + demanda alta + dif baixa)
+
+═══════════════════════════════════════════════════════════
+📊 CRITÉRIO 9: ESCALA E RECORRÊNCIA (avalie agora)
+═══════════════════════════════════════════════════════════
+
+CRITÉRIOS (0-5): Compra mais de 1, Criar kits, Complementos, Aumenta ticket, Linha produtos, Não é compra única
+FÓRMULA: Média dos 6 critérios
+
+═══════════════════════════════════════════════════════════
+📊 CRITÉRIO 10: RISCO (avalie agora)
+═══════════════════════════════════════════════════════════
+
+CRITÉRIOS (0-5): Quebra, Devolução, Avaliação negativa, Frustração, Problema crônico, Garantia/suporte
+FÓRMULA: Média dos 6 critérios
+
+═══════════════════════════════════════════════════════════
+📤 FORMATO DE RESPOSTA OBRIGATÓRIO (APENAS o JSON)
+═══════════════════════════════════════════════════════════
+
+{
+  "nome": "nome do produto",
+  "categoria": "categoria do ML",
+  "imagemUrl": "",
+  "demanda": {"nota": 0, "parecer": "", "precoMin": 0, "precoMedio": 0, "precoMax": 0, "precoSugerido": 0},
+  "concorrencia": {"nota": 0, "parecer": "", "oportunidades": []},
+  "logistica": {"nota": 0, "parecer": "", "alertas": []},
+  "regulatorio": {"nota": 0, "parecer": "", "exigencias": ""},
+  "diferenciacao": {"nota": 0, "parecer": "", "oportunidades": []},
+  "posicionamento": {"nota": 0, "parecer": "", "precoMedioConcorrentes": 0, "precoPremiumSugerido": 0},
+  "apelo": {"nota": 0, "parecer": "", "estrategias": []},
+  "facilidade": {"nota": 0, "parecer": "", "alertaGuerraPreco": "", "cuidados": []},
+  "escala": {"nota": 0, "parecer": "", "estrategias": []},
+  "risco": {"nota": 0, "parecer": "", "alertas": []
+}
+
+⚠️ NÃO adicione texto fora do JSON.
+⚠️ Use as regras de pontuação acima.
+
+Agora, preencha o JSON com base no produto que estamos analisando.
