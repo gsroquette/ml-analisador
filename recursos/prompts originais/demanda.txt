@@ -1,0 +1,37 @@
+ANALISE DE DEMANDA PARA PRODUTO NO MERCADO LIVRE
+
+OLHE para a página de busca do Mercado Livre que você está vendo agora (anexo).
+
+IDENTIFIQUE:
+1. Quantos anúncios têm vendas visíveis (ex: "500 vendidos")
+2. Qual o MAIOR número de vendas entre todos os anúncios
+3. Quantos anúncios têm MAIS DE 500 vendas
+
+REGRAS DE PONTUAÇÃO (use APENAS esta tabela):
+
+Nota 0 = nenhum anúncio com vendas visíveis
+Nota 1 = maior venda é menos de 100
+Nota 2 = maior venda é entre 100 e 500
+Nota 3 = maior venda é entre 500 e 1000
+Nota 4 = maior venda é entre 1000 e 5000
+Nota 5 = maior venda é acima de 5000
+
+BÔNUS: +0.5 se houver 3 ou mais anúncios com mais de 500 vendas
+PENALIDADE: -0.5 se houver menos de 50 resultados no total
+
+⚠️ NUNCA ultrapasse 5.5. Se líder tiver 5000+ e bônus aplicado = 5.5.
+
+CALCULE a nota final (0 a 5.5)
+
+RESPONDA APENAS:
+
+Demanda validada: SIM ou NÃO
+Nota final: [número]
+Justificativa: [uma frase curta]
+
+⚠️ Além disso, extraia os preços dos principais concorrentes e sugira um preço de venda estratégico:
+
+PREÇO MÍNIMO: R$ [valor]
+PREÇO MÉDIO: R$ [valor]
+PREÇO MÁXIMO: R$ [valor]
+PREÇO SUGERIDO: R$ [valor]

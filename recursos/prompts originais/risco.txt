@@ -1,0 +1,33 @@
+ANÁLISE DE RISCO - PRODUTO PARA IMPORTAÇÃO
+
+Avalie o RISCO OPERACIONAL do produto.
+
+📊 CRITÉRIOS (0-5):
+1. RISCO DE QUEBRA: (0=muito frágil, 5=inquebrável)
+2. RISCO DE DEVOLUÇÃO: (0=alta, 5=zero)
+3. RISCO AVALIAÇÃO NEGATIVA: (0=frustra fácil, 5=sempre satisfeito)
+4. RISCO DE FRUSTRAÇÃO: (0=promessa difícil, 5=entrega exato)
+5. RISCO PROBLEMA CRÔNICO: (0=defeito famoso, 5=sem histórico)
+6. RISCO GARANTIA/SUPORTE: (0=precisa suporte, 5=nunca precisa)
+
+📊 INTERPRETAÇÃO:
+0-2 → 🔴 RISCO ALTO
+2.1-3.5 → 🟡 RISCO MÉDIO
+3.6-5 → 🟢 RISCO BAIXO
+
+RESPONDA APENAS:
+
+Risco de quebra: [0-5]
+Risco de devolução: [0-5]
+Risco avaliação negativa: [0-5]
+Risco de frustração: [0-5]
+Risco problema crônico: [0-5]
+Risco garantia/suporte: [0-5]
+
+NOTA FINAL: [0-5]
+CLASSIFICAÇÃO: [ALTO/MÉDIO/BAIXO]
+
+PARECER: [2-3 frases]
+ALERTAS FINAIS:
+- [alerta 1]
+- [ou "nenhum alerta significativo"]

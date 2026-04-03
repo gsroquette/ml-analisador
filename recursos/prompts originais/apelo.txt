@@ -1,0 +1,34 @@
+ANÁLISE DE APELO DE VENDA - PRODUTO PARA IMPORTAÇÃO
+
+Avalie o POTENCIAL DE APELO DE VENDA do produto.
+
+📊 CRITÉRIOS (0-5):
+1. RESOLVE PROBLEMA CLARO: (0=não, 5=universal)
+2. BENEFÍCIO IMEDIATO: (0=demorado, 5=visível na hora)
+3. ANTES/DEPOIS POSSÍVEL: (0=não, 5=transformação óbvia)
+4. VISUAL FORTE: (0=feio, 5=instagramável)
+5. DEMONSTRAÇÃO FÁCIL: (0=precisa explicar, 5=30s resolve)
+6. ENTENDIMENTO RÁPIDO: (0=não entende, 5=3 segundos)
+
+📊 INTERPRETAÇÃO:
+0-2 → 🔴 APELO FRACO
+2.1-3.5 → 🟡 APELO MÉDIO
+3.6-5 → 🟢 APELO FORTE
+
+RESPONDA APENAS:
+
+Resolve problema claro: [0-5]
+Benefício imediato: [0-5]
+Antes/depois possível: [0-5]
+Visual forte: [0-5]
+Demonstração fácil: [0-5]
+Entendimento rápido: [0-5]
+
+NOTA FINAL: [0-5]
+CLASSIFICAÇÃO: [FRACO/MÉDIO/FORTE]
+
+PARECER: [2-3 frases]
+ESTRATÉGIAS PARA EXPLORAR O APELO:
+- Item 1: [como usar no anúncio]
+- Item 2: [como usar no vídeo]
+- Item 3: [como usar nas fotos]

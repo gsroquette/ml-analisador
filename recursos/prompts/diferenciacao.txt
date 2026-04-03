@@ -1,0 +1,23 @@
+ANÁLISE DE DIFERENCIAÇÃO - PRODUTO PARA IMPORTAÇÃO
+
+Com base nos concorrentes, avalie o POTENCIAL DE DIFERENCIAÇÃO.
+
+CRITÉRIOS (0-5):
+- Melhorar produto: 5=muito espaço, 0=nada a melhorar
+- Criar kit: 5=ninguém faz, 0=todos já fazem
+- Melhorar embalagem: 5=genérica, 0=já excelente
+- Nichar público: 5=nicho não atendido, 0=já segmentado
+- Resolver dor melhor: 5=todos ignoram, 0=já resolvem bem
+
+FÓRMULA: Média dos 5 critérios
+
+⚠️ FORMATO DE RESPOSTA OBRIGATÓRIO (copie exatamente assim):
+
+NOTA: [número de 0 a 5]
+
+PARECER: [2-3 frases sobre oportunidades de diferenciação]
+
+OPORTUNIDADES:
+- Item 1: [oportunidade específica]
+- Item 2: [oportunidade específica]
+- Item 3: [oportunidade específica]

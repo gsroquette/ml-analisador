@@ -1,0 +1,23 @@
+ANÁLISE DE RISCO - PRODUTO PARA IMPORTAÇÃO
+
+Avalie o RISCO OPERACIONAL do produto.
+
+CRITÉRIOS (0-5):
+- Risco de quebra: 5=inquebrável, 0=muito frágil
+- Risco de devolução: 5=zero, 0=alta
+- Risco avaliação negativa: 5=sempre satisfeito, 0=frustra fácil
+- Risco de frustração: 5=entrega exato, 0=promessa difícil
+- Risco problema crônico: 5=sem histórico, 0=defeito famoso
+- Risco garantia/suporte: 5=nunca precisa, 0=sempre precisa
+
+FÓRMULA: Média dos 6 critérios
+
+⚠️ FORMATO DE RESPOSTA OBRIGATÓRIO (copie exatamente assim):
+
+NOTA: [número de 0 a 5]
+
+PARECER: [2-3 frases sobre os principais riscos]
+
+ALERTAS:
+- [alerta mais importante]
+- [ou "nenhum alerta significativo"]

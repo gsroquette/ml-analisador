@@ -1,0 +1,22 @@
+ANÁLISE DE POSICIONAMENTO - PRODUTO PARA IMPORTAÇÃO
+
+Avalie o POTENCIAL DE POSICIONAMENTO PREMIUM.
+
+CRITÉRIOS (0-5):
+- Percepção de valor atual: 5=todos genéricos, 0=já premium
+- Potencial de premium: 5=fácil premiumizar, 0=commodity
+- Espaço para aumento: 5=espaço enorme, 0=apertado
+- Concorrentes mal posicionados: 5=todos mal, 0=todos bem
+- Dá para sair do genérico: 5=cria marca forte, 0=inerente genérico
+
+FÓRMULA: Média dos 5 critérios
+
+⚠️ FORMATO DE RESPOSTA OBRIGATÓRIO (copie exatamente assim):
+
+NOTA: [número de 0 a 5]
+
+PARECER: [2-3 frases sobre potencial de vender mais caro]
+
+PRECO_MEDIO_CONCORRENTES: R$ [valor]
+PRECO_PREMIUM_SUGERIDO: R$ [valor]
+JUSTIFICATIVA_PRECO: [por que o cliente pagaria mais]

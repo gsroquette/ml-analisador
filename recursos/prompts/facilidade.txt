@@ -1,0 +1,24 @@
+ANÁLISE DE FACILIDADE DE VENDA - PRODUTO PARA IMPORTAÇÃO
+
+Avalie a FACILIDADE DE VENDA e o RISCO DE DEVOLUÇÃO.
+
+CRITÉRIOS (0-5):
+- Produto simples: 5=sem manual, 0=complexo
+- Baixa dúvida: 5=zero dúvidas, 0=muitas dúvidas
+- Baixa devolução: 5=zero devolução, 0=alta devolução
+- Expectativa realista: 5=entrega exato, 0=frustra
+- Funciona 1ª vez: 5=perfeito, 0=falha
+
+FÓRMULA: Média dos 5 critérios
+
+⚠️ FORMATO DE RESPOSTA OBRIGATÓRIO (copie exatamente assim):
+
+NOTA: [número de 0 a 5]
+
+PARECER: [2-3 frases sobre risco de devolução]
+
+ALERTA_GUERRA_PRECO: [SIM/NÃO]
+
+CUIDADOS:
+- Item 1: [como evitar devolução]
+- Item 2: [como evitar frustração]
