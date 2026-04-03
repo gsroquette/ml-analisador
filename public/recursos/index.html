@@ -54,6 +54,7 @@
         .area-import { background: #f3e8ff; border: 2px dashed #7c3aed; border-radius: 20px; padding: 16px; margin-bottom: 20px; }
         .filtro-input { min-width: 150px; }
         .erro-prompts { background: #fee2e2; color: #dc2626; padding: 12px; border-radius: 16px; margin-top: 12px; font-size: 0.75rem; }
+        .status-firebase { position: fixed; bottom: 16px; right: 16px; background: #1e293b; color: white; padding: 8px 16px; border-radius: 40px; font-size: 0.7rem; z-index: 1000; }
         @media (max-width: 700px) { th, td { font-size: 0.65rem; padding: 6px 4px; } .form-group { min-width: 140px; } }
     </style>
 </head>
@@ -120,8 +121,8 @@
         <div style="overflow-x: auto;">
             <table id="tabelaProdutos">
                 <thead><tr><th>Produto</th><th>Cat</th><th>Dem</th><th>Conc</th><th>Log</th><th>Reg</th><th>Dif</th><th>Pos</th><th>Ape</th><th>Fac</th><th>Esc</th><th>Risc</th><th>Score</th><th>Decisão</th><th>Preço Sug.</th><th>Data</th><th>Ação</th></tr></thead>
-                <tbody id="corpoTabela"><td><td colspan="17">Carregando......</td></tr></tbody>
-             </table>
+                <tbody id="corpoTabela"><tr><td colspan="17">Carregando...</td></tr></tbody>
+            </table>
         </div>
         <div class="grafico-container"><canvas id="graficoScore"></canvas></div>
         <div class="legenda">
@@ -130,6 +131,8 @@
         </div>
     </div>
 </div>
+
+<div class="status-firebase" id="statusFirebase">🟡 Conectando ao Firebase...</div>
 
 <!-- Modal de detalhes -->
 <div id="modalDetalhes" class="modal"><div class="modal-content" id="modalDetalhesContent"></div></div>
@@ -142,11 +145,38 @@
 <div class="form-row"><div class="form-group"><label>Escala</label><input type="number" id="editEscala" step="0.5" min="0" max="5"></div><div class="form-group"><label>Risco</label><input type="number" id="editRisco" step="0.5" min="0" max="5"></div><div class="form-group"><label>Preço Sugerido</label><input type="number" id="editPrecoSugerido" step="0.01"></div></div>
 <div style="display: flex; gap: 12px; justify-content: flex-end;"><button id="btnSalvarEdicao">💾 Salvar</button><button id="btnFecharModal" class="btn-reset">Cancelar</button></div></div></div>
 
-<script>
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+    import {
+        getDatabase,
+        ref,
+        set,
+        get
+    } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-database.js";
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyB0vlqe5UCA4UKq1xk6RtyiqTAEs7QXFpg",
+        authDomain: "analise-produto-ml.firebaseapp.com",
+        databaseURL: "https://analise-produto-ml-default-rtdb.firebaseio.com",
+        projectId: "analise-produto-ml",
+        storageBucket: "analise-produto-ml.firebasestorage.app",
+        messagingSenderId: "610537997073",
+        appId: "1:610537997073:web:c49aba1bb32a2a740f42b0"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+    
     const pesos = { demanda:3, concorrencia:2, logistica:2, regulatorio:2, diferenciacao:2, posicionamento:2, apelo:2, facilidade:1, escala:2, risco:3 };
     let produtos = [];
     let grafico = null;
     let prompts = { selecao: "", analise: "", compilado: "" };
+    const statusDiv = document.getElementById("statusFirebase");
+
+    function atualizarStatus(texto, cor) {
+        statusDiv.innerHTML = texto;
+        statusDiv.style.background = cor;
+    }
 
     function normalizarProduto(prod) {
         return {
@@ -154,6 +184,7 @@
             dataInclusao: prod.dataInclusao || new Date().toLocaleDateString('pt-BR'),
             categoria: prod.categoria || "",
             imagemUrl: prod.imagemUrl || "",
+            descricaoImagem: prod.descricaoImagem || "",
             demanda: prod.demanda || 0,
             parecerDemanda: prod.parecerDemanda || "",
             precoMin: prod.precoMin || 0,
@@ -237,12 +268,12 @@
             corpo.insertAdjacentHTML("beforeend", `<tr><td class="produto-nome" data-idx="${originalIdx}">${escapeHtml(prod.nome)}</td><td>${escapeHtml(prod.categoria||'-')}</td><td>${prod.demanda}</td><td>${prod.concorrencia}</td><td>${prod.logistica}</td><td>${prod.regulatorio}</td><td>${prod.diferenciacao}</td><td>${prod.posicionamento}</td><td>${prod.apelo}</td><td>${prod.facilidade}</td><td>${prod.escala}</td><td>${prod.risco}</td><td class="${classeScore}">${score}</td><td>${decisao}</td><td>${prod.precoSugerido ? 'R$ '+prod.precoSugerido.toFixed(2) : '-'}</td><td>${prod.dataInclusao || '-'}</td><td><button class="editar" data-index="${originalIdx}">✏️</button><button class="excluir" data-index="${originalIdx}">🗑️</button></td></tr>`);
         });
         document.querySelectorAll(".produto-nome").forEach(el=>el.addEventListener("click",(e)=>abrirDetalhes(parseInt(el.dataset.idx))));
-        document.querySelectorAll(".editar").forEach(btn=>btn.addEventListener("click",(e)=>abrirModal(parseInt(btn.dataset.index))));
-        document.querySelectorAll(".excluir").forEach(btn=>btn.addEventListener("click",(e)=>{ 
+        document.querySelectorAll(".editar").forEach(btn=>btn.addEventListener("click",async (e)=>{ abrirModal(parseInt(btn.dataset.index)); }));
+        document.querySelectorAll(".excluir").forEach(btn=>btn.addEventListener("click",async (e)=>{ 
             if(confirm("⚠️ Tem certeza que deseja deletar este produto?")) {
                 produtos.splice(parseInt(btn.dataset.index),1); 
                 renderizarTabela(); 
-                salvarLocal(); 
+                await salvarFirebase();
                 atualizarFiltrosCategoria();
             }
         }));
@@ -261,7 +292,7 @@
         return `<div style="margin-bottom:12px;border-bottom:1px solid #ddd;padding-bottom:8px;"><strong>${titulo}</strong> (${nota})<br><span style="font-size:0.8rem;">${escapeHtml(texto||'-')}</span></div>`; 
     }
     
-    function fecharModal() { document.getElementById("modalDetalhes").style.display = "none"; fecharModalEdicao(); }
+    window.fecharModal = function() { document.getElementById("modalDetalhes").style.display = "none"; fecharModalEdicao(); }
     function fecharModalEdicao() { document.getElementById("modalEditar").style.display = "none"; }
     
     function abrirModal(idx) { 
@@ -282,7 +313,7 @@
         document.getElementById("modalEditar").style.display="flex"; 
     }
     
-    function salvarEdicao() { 
+    async function salvarEdicao() { 
         let idx=parseInt(document.getElementById("editIndex").value); 
         if(idx>=0&&idx<produtos.length) { 
             produtos[idx].nome=document.getElementById("editNome").value; 
@@ -298,7 +329,7 @@
             produtos[idx].risco=parseFloat(document.getElementById("editRisco").value); 
             produtos[idx].precoSugerido=parseFloat(document.getElementById("editPrecoSugerido").value); 
             renderizarTabela(); 
-            salvarLocal(); 
+            await salvarFirebase(); 
         } 
         fecharModalEdicao(); 
     }
@@ -320,7 +351,7 @@
         select.innerHTML = '<option value="">Todas</option>' + categorias.map(c=>`<option>${escapeHtml(c)}</option>`).join(''); 
     }
     
-    function importarJSON(jsonText) { 
+    async function importarJSON(jsonText) { 
         try { 
             let data = JSON.parse(jsonText); 
             let produto = { 
@@ -368,7 +399,7 @@
             }; 
             produtos.push(produto); 
             renderizarTabela(); 
-            salvarLocal(); 
+            await salvarFirebase();
             atualizarFiltrosCategoria(); 
             alert(`Produto "${produto.nome}" importado com sucesso!`); 
         } catch(e) { alert("Erro ao ler JSON: "+e.message); } 
@@ -397,26 +428,40 @@
         URL.revokeObjectURL(blob.href); 
     }
     
-    function resetarTudo() { 
-        if(confirm("⚠️ Tem certeza que deseja apagar TODOS os produtos?")){produtos=[];renderizarTabela();salvarLocal();atualizarFiltrosCategoria();} 
+    async function resetarTudo() { 
+        if(confirm("⚠️ Tem certeza que deseja apagar TODOS os produtos?")){produtos=[];renderizarTabela();await salvarFirebase();atualizarFiltrosCategoria();} 
     }
     
-    function salvarLocal() { 
-        localStorage.setItem("checklistProdutos",JSON.stringify(produtos)); 
+    async function salvarFirebase() {
+        try {
+            await set(ref(db, "produtos"), produtos);
+            atualizarStatus("✅ Dados salvos no Firebase!", "#15803d");
+            setTimeout(() => atualizarStatus("✅ Firebase conectado", "#1e293b"), 2000);
+        } catch (e) {
+            console.error("Erro ao salvar:", e);
+            atualizarStatus("❌ Erro ao salvar no Firebase", "#dc2626");
+        }
     }
     
-    function carregarLocal() { 
-        let dados=localStorage.getItem("checklistProdutos"); 
-        if(dados) { 
-            try{ 
-                let parsed = JSON.parse(dados); 
-                produtos = parsed.map(p => normalizarProduto(p)); 
-                renderizarTabela(); 
-                atualizarFiltrosCategoria(); 
-            } catch(e){ console.log("Erro ao carregar:", e); } 
-        } else { 
-            renderizarTabela(); 
-        } 
+    async function carregarFirebase() {
+        try {
+            const snapshot = await get(ref(db, "produtos"));
+            if (snapshot.exists()) {
+                const dados = snapshot.val();
+                produtos = Array.isArray(dados) ? dados.map(p => normalizarProduto(p)) : [];
+            } else {
+                produtos = [];
+            }
+            renderizarTabela();
+            atualizarFiltrosCategoria();
+            atualizarStatus("✅ Firebase conectado", "#1e293b");
+        } catch (e) {
+            console.error("Erro ao carregar:", e);
+            produtos = [];
+            renderizarTabela();
+            atualizarFiltrosCategoria();
+            atualizarStatus("❌ Erro ao conectar Firebase", "#dc2626");
+        }
     }
     
     async function carregarPrompts() {
@@ -481,7 +526,7 @@
     document.getElementById("btnExportJSON").addEventListener("click",exportarJSON);
     document.getElementById("btnAtualizarGrafico").addEventListener("click",()=>atualizarGrafico());
     document.getElementById("btnReset").addEventListener("click",resetarTudo);
-    document.getElementById("btnSalvarEdicao").addEventListener("click",salvarEdicao);
+    document.getElementById("btnSalvarEdicao").addEventListener("click",async () => { await salvarEdicao(); });
     document.getElementById("btnFecharModal").addEventListener("click",fecharModalEdicao);
     document.getElementById("btnLimparFiltros").addEventListener("click",()=>{document.getElementById("filtroNome").value="";document.getElementById("filtroCategoria").value="";document.getElementById("filtroDecisao").value="";document.getElementById("filtroDataInicio").value="";document.getElementById("filtroDataFim").value="";renderizarTabela();});
     document.getElementById("filtroNome").addEventListener("input",()=>renderizarTabela());
@@ -489,10 +534,10 @@
     document.getElementById("filtroDecisao").addEventListener("change",()=>renderizarTabela());
     document.getElementById("filtroDataInicio").addEventListener("change",()=>renderizarTabela());
     document.getElementById("filtroDataFim").addEventListener("change",()=>renderizarTabela());
-    window.addEventListener("click",e=>{if(e.target===document.getElementById("modalDetalhes"))fecharModal(); if(e.target===document.getElementById("modalEditar"))fecharModalEdicao();});
+    window.addEventListener("click",e=>{if(e.target===document.getElementById("modalDetalhes"))window.fecharModal(); if(e.target===document.getElementById("modalEditar"))fecharModalEdicao();});
     
     carregarPrompts();
-    carregarLocal();
+    carregarFirebase();
 </script>
 </body>
 </html>
