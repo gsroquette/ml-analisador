@@ -565,13 +565,13 @@
             container.innerHTML = `
                 <div class="prompt-card">
                     <h4>📌 PROMPT 1: SELECIONAR 5 ANÚNCIOS</h4>
-                    <p>📸 Anexe os PRINTS da página de busca do Mercado Livre e cole este prompt. A IA vai escolher 5 anúncios para você analisar.</p>
+                    <p>📸Anexe os PRINTS da página de busca do Mercado Livre (com todos os cards visíveis) e cole este prompt + o texto de todos os cards. A IA selecionará 5 anúncios para análise.</p>
                     <code>${escapeHtml(selecaoText.substring(0, 800))}${selecaoText.length > 800 ? '...' : ''}</code>
                     <button class="btn-copiar" data-prompt="selecao" style="margin-top: 8px;">📋 Copiar Prompt 1</button>
                 </div>
                 <div class="prompt-card">
                     <h4>🔗 PROMPT 2: ANALISAR OS 5 LINKS</h4>
-                    <p>🔗 Abra os 5 links sugeridos, cole as informações e cole este prompt. A IA vai analisar a qualidade da concorrência.</p>
+                    <p>🔗 Envie este prompt para a IA. Abra os 5 anúncios sugeridos e, para cada produto (um por mensagem), envie imagens suficientes para exibir todas as informações do anúncio + o texto da descrição copiado. A IA analisará a qualidade da concorrência.</p>
                     <code>${escapeHtml(analiseText.substring(0, 800))}${analiseText.length > 800 ? '...' : ''}</code>
                     <button class="btn-copiar" data-prompt="analise" style="margin-top: 8px;">📋 Copiar Prompt 2</button>
                 </div>
