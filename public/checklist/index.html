@@ -35,6 +35,8 @@
         .prompt-card p { margin: 0 0 8px 0; font-size: 0.75rem; color: #555; }
         .prompt-card code { background: #fff; padding: 8px; display: block; border-radius: 8px; font-size: 0.7rem; white-space: pre-wrap; word-break: break-all; font-family: monospace; max-height: 150px; overflow-y: auto; }
         .filtros { display: flex; flex-wrap: wrap; gap: 16px; margin-bottom: 20px; align-items: flex-end; background: #f8fafc; padding: 16px; border-radius: 20px; }
+        .ordenacao { display: flex; align-items: flex-end; gap: 12px; background: #f8fafc; padding: 12px 16px; border-radius: 20px; margin-bottom: 20px; }
+        .ordenacao select { width: auto; min-width: 200px; }
         table { width: 100%; border-collapse: collapse; overflow-x: auto; display: block; }
         th, td { border: 1px solid #ddd; padding: 10px 8px; text-align: center; font-size: 0.75rem; }
         th { background: #1e293b; color: white; position: sticky; top: 0; }
@@ -124,7 +126,7 @@
         </div>
     </div>
 
-    <!-- Tabela -->
+    <!-- Tabela com Ordenação -->
     <div class="card">
         <div class="botoes-acao">
             <button id="btnExportCSV" class="btn-export">📎 Exportar CSV</button>
@@ -132,6 +134,27 @@
             <button id="btnAtualizarGrafico">📊 Atualizar Gráfico</button>
             <button id="btnReset" class="btn-reset">🗑️ Limpar Todos</button>
         </div>
+        
+        <!-- Seletor de Ordenação -->
+        <div class="ordenacao">
+            <div class="form-group" style="margin-bottom:0; min-width:200px;">
+                <label>📊 Organizar por:</label>
+                <select id="ordenacaoSelect">
+                    <option value="score_desc">🎯 Score (maior primeiro)</option>
+                    <option value="score_asc">🎯 Score (menor primeiro)</option>
+                    <option value="data_desc">📅 Data (mais recente)</option>
+                    <option value="data_asc">📅 Data (mais antigo)</option>
+                    <option value="nome_asc">📝 Nome (A-Z)</option>
+                    <option value="nome_desc">📝 Nome (Z-A)</option>
+                    <option value="decisao">🎨 Decisão (Escalar → Testar → Descartar)</option>
+                </select>
+            </div>
+            <div class="form-group" style="margin-bottom:0;">
+                <label>&nbsp;</label>
+                <button id="btnAplicarOrdenacao" style="background:#4b5563;">🔄 Aplicar</button>
+            </div>
+        </div>
+        
         <h3>📋 Produtos Avaliados</h3>
         <div style="overflow-x: auto;">
             <table id="tabelaProdutos">
@@ -204,63 +227,40 @@
     // ═══════════════════════════════════════════════════════════════════════════
     // 🔧 FÓRMULA CORRIGIDA - Score máximo = 100% (percentual)
     // ═══════════════════════════════════════════════════════════════════════════
-    // 
-    // CRITÉRIOS NORMAIS (nota alta = BOM para o negócio):
-    // - Demanda, Logística, Regulatório, Diferenciação, Posicionamento, 
-    //   Apelo, Facilidade, Escala, Risco
-    //
-    // CRITÉRIOS INVERTIDOS (nota baixa = BOM para o negócio):
-    // - Concorrência: nota 1 = mercado vazio (bom), nota 5 = mercado saturado (ruim)
-    //
-    // Fórmula para invertidos: (5 - nota) × peso
-    // Score final = (soma total / 120) × 100 = percentual
-    // ═══════════════════════════════════════════════════════════════════════════
     
     function calcularScore(prod) {
         // Critérios NORMAIS (nota alta = bom)
-        const demandaPontos = prod.demanda * 3;           // máx 15
-        const logisticaPontos = prod.logistica * 2;       // máx 10
-        const regulatorioPontos = prod.regulatorio * 2;   // máx 10 (nota alta = fácil)
-        const diferenciacaoPontos = prod.diferenciacao * 2; // máx 10
-        const posicionamentoPontos = prod.posicionamento * 2; // máx 10
-        const apeloPontos = prod.apelo * 2;               // máx 10
-        const facilidadePontos = prod.facilidade * 1;     // máx 5
-        const escalaPontos = prod.escala * 2;             // máx 10
-        const riscoPontos = prod.risco * 3;               // máx 15 (nota alta = seguro)
+        const demandaPontos = prod.demanda * 3;
+        const logisticaPontos = prod.logistica * 2;
+        const regulatorioPontos = prod.regulatorio * 2;
+        const diferenciacaoPontos = prod.diferenciacao * 2;
+        const posicionamentoPontos = prod.posicionamento * 2;
+        const apeloPontos = prod.apelo * 2;
+        const facilidadePontos = prod.facilidade * 1;
+        const escalaPontos = prod.escala * 2;
+        const riscoPontos = prod.risco * 3;
         
         // Critérios INVERTIDOS (nota baixa = bom) - apenas CONCORRÊNCIA
-        const concorrenciaPontos = (5 - prod.concorrencia) * 2; // máx 10
+        const concorrenciaPontos = (5 - prod.concorrencia) * 2;
         
-        // Soma total (máximo possível = 120)
         const somaTotal = demandaPontos + logisticaPontos + regulatorioPontos + 
                           diferenciacaoPontos + posicionamentoPontos + apeloPontos + 
                           facilidadePontos + escalaPontos + riscoPontos + concorrenciaPontos;
         
-        // Converte para percentual (máximo 120 → 100)
         let scorePercentual = (somaTotal / 120) * 100;
-        
-        // Arredonda para 1 casa decimal
         scorePercentual = Math.round(scorePercentual * 10) / 10;
         
-        // ═══════════════════════════════════════════════════════════════════════
-        // REGRA DE DESCARTE AUTOMÁTICO (CORRIGIDA)
-        // ═══════════════════════════════════════════════════════════════════════
-        // Para critérios NORMAIS: descarta se nota ≤ 1 (muito ruim)
-        // Para critérios INVERTIDOS: descarta se nota ≥ 4 (muito ruim)
-        
         const temNotaCritica = 
-            // Critérios normais - nota baixa é ruim
             prod.demanda <= 1 ||
             prod.logistica <= 1 ||
-            prod.regulatorio <= 1 ||      // regulatório difícil é ruim
+            prod.regulatorio <= 1 ||
             prod.diferenciacao <= 1 ||
             prod.posicionamento <= 1 ||
             prod.apelo <= 1 ||
             prod.facilidade <= 1 ||
             prod.escala <= 1 ||
-            prod.risco <= 1 ||            // risco alto é ruim
-            // Critérios invertidos - nota alta é ruim
-            prod.concorrencia >= 4;        // concorrência forte é ruim
+            prod.risco <= 1 ||
+            prod.concorrencia >= 4;
         
         let decisao;
         if (temNotaCritica) {
@@ -280,10 +280,53 @@
     let grafico = null;
     let prompts = { selecao: "", analise: "", compilado: "", dominacao: "" };
     const statusDiv = document.getElementById("statusFirebase");
+    let ordemAtual = "score_desc"; // padrão: score maior primeiro
 
     function atualizarStatus(texto, cor) {
         statusDiv.innerHTML = texto;
         statusDiv.style.background = cor;
+    }
+
+    // Função de ordenação
+    function ordenarProdutos(produtosArray, criterio) {
+        const produtosComScore = produtosArray.map(p => {
+            const { score, decisao } = calcularScore(p);
+            return { ...p, scoreCalculado: score, decisaoCalculada: decisao };
+        });
+        
+        switch(criterio) {
+            case "score_desc":
+                return produtosComScore.sort((a, b) => b.scoreCalculado - a.scoreCalculado);
+            case "score_asc":
+                return produtosComScore.sort((a, b) => a.scoreCalculado - b.scoreCalculado);
+            case "data_desc":
+                return produtosComScore.sort((a, b) => {
+                    const parseData = (d) => {
+                        if (!d) return new Date(0);
+                        let partes = d.split('/');
+                        return new Date(partes[2], partes[1]-1, partes[0]);
+                    };
+                    return parseData(b.dataInclusao) - parseData(a.dataInclusao);
+                });
+            case "data_asc":
+                return produtosComScore.sort((a, b) => {
+                    const parseData = (d) => {
+                        if (!d) return new Date(0);
+                        let partes = d.split('/');
+                        return new Date(partes[2], partes[1]-1, partes[0]);
+                    };
+                    return parseData(a.dataInclusao) - parseData(b.dataInclusao);
+                });
+            case "nome_asc":
+                return produtosComScore.sort((a, b) => a.nome.localeCompare(b.nome));
+            case "nome_desc":
+                return produtosComScore.sort((a, b) => b.nome.localeCompare(a.nome));
+            case "decisao":
+                const ordemDecisao = { "🟢 ESCALAR": 1, "🟡 TESTAR": 2, "🔴 DESCARTAR": 3 };
+                return produtosComScore.sort((a, b) => ordemDecisao[a.decisaoCalculada] - ordemDecisao[b.decisaoCalculada]);
+            default:
+                return produtosComScore;
+        }
     }
 
     function normalizarProduto(prod) {
@@ -340,7 +383,7 @@
         const dataInicio = document.getElementById("filtroDataInicio").value;
         const dataFim = document.getElementById("filtroDataFim").value;
         
-        return produtos.filter(prod => {
+        let filtrados = produtos.filter(prod => {
             if(nomeFiltro && !prod.nome.toLowerCase().includes(nomeFiltro)) return false;
             if(categoriaFiltro && prod.categoria !== categoriaFiltro) return false;
             if(decisaoFiltro && calcularScore(prod).decisao !== decisaoFiltro) return false;
@@ -356,6 +399,9 @@
             }
             return true;
         });
+        
+        // Aplica ordenação
+        return ordenarProdutos(filtrados, ordemAtual);
     }
 
     function abrirMapaDominacao(idx) {
@@ -374,9 +420,9 @@
         const filtrados = aplicarFiltros();
         if (filtrados.length===0) { corpo.innerHTML='<tr><td colspan="17">Nenhum produto encontrado</td></tr>'; atualizarGrafico(); return; }
         corpo.innerHTML = "";
-        filtrados.forEach((prod, idx) => {
+        filtrados.forEach((prod) => {
             const originalIdx = produtos.findIndex(p => p.nome === prod.nome && p.dataInclusao === prod.dataInclusao);
-            const { score, decisao } = calcularScore(prod);
+            const { score, decisao } = { score: prod.scoreCalculado, decisao: prod.decisaoCalculada };
             const classeScore = score>=80?"score-verde":(score>=60?"score-amarelo":"score-vermelho");
             const temMapa = prod.mapaDominacao && prod.mapaDominacao.trim().length > 0;
             corpo.insertAdjacentHTML("beforeend", `
@@ -478,7 +524,7 @@
         const filtrados = aplicarFiltros(); 
         if(filtrados.length===0) { grafico=new Chart(ctx,{type:'bar',data:{labels:['Nenhum'],datasets:[{label:'Score (%)',data:[0]}]}}); return; } 
         const labels=filtrados.map(p=>p.nome.length>18?p.nome.slice(0,15)+"...":p.nome); 
-        const scores=filtrados.map(p=>calcularScore(p).score); 
+        const scores=filtrados.map(p=>p.scoreCalculado); 
         const cores=scores.map(s=>s>=80?'#22c55e':(s>=60?'#eab308':'#ef4444')); 
         grafico=new Chart(ctx,{type:'bar',data:{labels,datasets:[{label:'Score (%)',data:scores,backgroundColor:cores,borderRadius:8}]},options:{responsive:true,maintainAspectRatio:true}}); 
     }
@@ -685,6 +731,7 @@
     
     function escapeHtml(s){if(!s)return"";return s.replace(/[&<>]/g,function(m){return m==='&'?'&amp;':m==='<'?'&lt;':m==='>'?'&gt;':m;});}
     
+    // Event listeners
     document.getElementById("btnImportarJSON").addEventListener("click", async () => {
         const jsonText = document.getElementById("jsonImport").value;
         const mapaTexto = document.getElementById("mapaDominacaoImport").value;
@@ -714,6 +761,11 @@
             }; 
             reader.readAsText(file);
         };
+    });
+    
+    document.getElementById("btnAplicarOrdenacao").addEventListener("click", () => {
+        ordemAtual = document.getElementById("ordenacaoSelect").value;
+        renderizarTabela();
     });
     
     document.getElementById("btnExportCSV").addEventListener("click",exportarCSV);
