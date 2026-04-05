@@ -87,6 +87,7 @@
                 <div class="form-group">
                     <label>&nbsp;</label>
                     <button id="btnImportarArquivo" class="btn-import">📂 Carregar arquivo JSON</button>
+                    <input type="file" id="fileImport" accept=".json" style="display:none;">
                 </div>
             </div>
             
@@ -134,16 +135,18 @@
         <h3>📋 Produtos Avaliados</h3>
         <div style="overflow-x: auto;">
             <table id="tabelaProdutos">
-                <thead><tr><th>Produto</th><th>Cat</th><th>Dem</th><th>Conc</th><th>Log</th><th>Reg</th><th>Dif</th><th>Pos</th><th>Ape</th><th>Fac</th><th>Esc</th><th>Risc</th><th>Score</th><th>Decisão</th><th>Preço Sug.</th><th>Data</th><th>Ação</th></tr>
+                <thead>
+                    <tr><th>Produto</th><th>Cat</th><th>Dem</th><th>Conc</th><th>Log</th><th>Reg</th><th>Dif</th><th>Pos</th><th>Ape</th><th>Fac</th><th>Esc</th><th>Risc</th><th>Score</th><th>Decisão</th><th>Preço Sug.</th><th>Data</th><th>Ação</th></tr>
                 </thead>
-                <tbody id="corpoTabela"><tr><td colspan="17">Carregando...</td></tr>
+                <tbody id="corpoTabela">
+                    <tr><td colspan="17">Carregando...</td></tr>
                 </tbody>
             </table>
         </div>
         <div class="grafico-container"><canvas id="graficoScore"></canvas></div>
         <div class="legenda">
             <span>🟢 Score ≥ 95 → ESCALAR</span><span>🟡 Score 75–94 → TESTAR</span>
-            <span>🔴 Score < 75 → DESCARTAR</span><span>❌ Nota ≤ 1 → DESCARTE AUTOMÁTICO</span>
+            <span>🔴 Score < 75 → DESCARTAR</span><span>❌ Nota crítica (Demanda≤1 ou Risco≥4 ou Concorrência≥4) → DESCARTE AUTOMÁTICO</span>
             <span>⚔️ Mapa de Dominação disponível</span>
         </div>
     </div>
@@ -196,7 +199,79 @@
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
     
-    const pesos = { demanda:3, concorrencia:2, logistica:2, regulatorio:2, diferenciacao:2, posicionamento:2, apelo:2, facilidade:1, escala:2, risco:3 };
+    // ═══════════════════════════════════════════════════════════════════════════
+    // 🔧 FÓRMULA CORRIGIDA - Critérios com direção invertida
+    // ═══════════════════════════════════════════════════════════════════════════
+    // 
+    // CRITÉRIOS NORMAIS (nota alta = BOM para o negócio):
+    // - Demanda, Logística, Diferenciação, Posicionamento, Apelo, Facilidade, Escala
+    //
+    // CRITÉRIOS INVERTIDOS (nota baixa = BOM para o negócio):
+    // - Concorrência: nota 1 = mercado vazio (bom), nota 5 = mercado saturado (ruim)
+    // - Regulatório: nota 1 = liberado (bom), nota 5 = cheio de burocracia (ruim)
+    // - Risco: nota 1 = risco baixo (bom), nota 5 = risco altíssimo (ruim)
+    //
+    // Fórmula para invertidos: (5 - nota) × peso
+    // ═══════════════════════════════════════════════════════════════════════════
+    
+    function calcularScore(prod) {
+        // Critérios NORMAIS (nota alta = bom) - multiplica normal
+        const demandaPontos = prod.demanda * 3;
+        const logisticaPontos = prod.logistica * 2;
+        const diferenciacaoPontos = prod.diferenciacao * 2;
+        const posicionamentoPontos = prod.posicionamento * 2;
+        const apeloPontos = prod.apelo * 2;
+        const facilidadePontos = prod.facilidade * 1;
+        const escalaPontos = prod.escala * 2;
+        
+        // Critérios INVERTIDOS (nota baixa = bom) - usa (5 - nota)
+        // Quanto menor a nota original, maior a pontuação final
+        const concorrenciaPontos = (5 - prod.concorrencia) * 2;
+        const regulatorioPontos = (5 - prod.regulatorio) * 2;
+        const riscoPontos = (5 - prod.risco) * 3;
+        
+        const score = demandaPontos + logisticaPontos + diferenciacaoPontos + 
+                      posicionamentoPontos + apeloPontos + facilidadePontos + 
+                      escalaPontos + concorrenciaPontos + regulatorioPontos + 
+                      riscoPontos;
+        
+        // ═══════════════════════════════════════════════════════════════════════
+        // REGRA DE DESCARTE AUTOMÁTICO (CORRIGIDA)
+        // ═══════════════════════════════════════════════════════════════════════
+        // Para critérios NORMAIS: descarta se nota ≤ 1 (muito ruim)
+        // Para critérios INVERTIDOS: descarta se nota ≥ 4 (muito ruim)
+        //   - Concorrência ≥ 4 = mercado muito saturado
+        //   - Regulatório ≥ 4 = muitas barreiras burocráticas
+        //   - Risco ≥ 4 = riscos muito altos
+        
+        const temNotaCritica = 
+            // Critérios normais - nota baixa é ruim
+            prod.demanda <= 1 ||
+            prod.logistica <= 1 ||
+            prod.diferenciacao <= 1 ||
+            prod.posicionamento <= 1 ||
+            prod.apelo <= 1 ||
+            prod.facilidade <= 1 ||
+            prod.escala <= 1 ||
+            // Critérios invertidos - nota alta é ruim
+            prod.concorrencia >= 4 ||
+            prod.regulatorio >= 4 ||
+            prod.risco >= 4;
+        
+        let decisao;
+        if (temNotaCritica) {
+            decisao = "🔴 DESCARTAR";
+        } else if (score < 75) {
+            decisao = "🔴 DESCARTAR";
+        } else if (score >= 95) {
+            decisao = "🟢 ESCALAR";
+        } else {
+            decisao = "🟡 TESTAR";
+        }
+        
+        return { score, decisao };
+    }
+
     let produtos = [];
     let grafico = null;
     let prompts = { selecao: "", analise: "", compilado: "", dominacao: "" };
@@ -250,15 +325,8 @@
             risco: prod.risco || 0,
             parecerRisco: prod.parecerRisco || "",
             alertasRisco: prod.alertasRisco || "",
-            mapaDominacao: prod.mapaDominacao || "" // NOVO CAMPO
+            mapaDominacao: prod.mapaDominacao || ""
         };
-    }
-
-    function calcularScore(prod) {
-        const score = (prod.demanda*3)+(prod.concorrencia*2)+(prod.logistica*2)+(prod.regulatorio*2)+(prod.diferenciacao*2)+(prod.posicionamento*2)+(prod.apelo*2)+(prod.facilidade*1)+(prod.escala*2)+(prod.risco*3);
-        const temNotaBaixa = prod.demanda<=1||prod.concorrencia<=1||prod.logistica<=1||prod.regulatorio<=1||prod.diferenciacao<=1||prod.posicionamento<=1||prod.apelo<=1||prod.facilidade<=1||prod.escala<=1||prod.risco<=1;
-        let decisao = temNotaBaixa ? "🔴 DESCARTAR" : (score<75 ? "🔴 DESCARTAR" : (score>=95 ? "🟢 ESCALAR" : "🟡 TESTAR"));
-        return { score, decisao };
     }
 
     function aplicarFiltros() {
@@ -426,7 +494,6 @@
             
             let data = JSON.parse(jsonText);
             
-            // Se mapaTexto estiver vazio, pergunta se quer continuar
             if (!mapaTexto || mapaTexto.trim() === "") {
                 const continuar = confirm("⚠️ Nenhum Mapa de Dominação foi preenchido.\n\nDeseja importar o produto mesmo assim?\n\nClique em OK para continuar ou Cancelar para adicionar o mapa.");
                 if (!continuar) {
@@ -476,7 +543,7 @@
                 risco: data.risco?.nota || 0, 
                 parecerRisco: data.risco?.parecer || "", 
                 alertasRisco: Array.isArray(data.risco?.alertas) ? data.risco.alertas.join('\n') : "",
-                mapaDominacao: mapaTexto || "" // Adiciona o mapa de dominação
+                mapaDominacao: mapaTexto || ""
             }; 
             produtos.push(produto); 
             renderizarTabela(); 
@@ -622,28 +689,29 @@
             return;
         }
         await importarJSON(jsonText, mapaTexto);
-        // Limpa os campos após importação bem-sucedida
         document.getElementById("jsonImport").value = "";
         document.getElementById("mapaDominacaoImport").value = "";
     });
+    
     document.getElementById("btnImportarArquivo").addEventListener("click", () => {
-        let file = document.getElementById("fileImport").files[0]; 
-        if(!file) {
-            alert("❌ Selecione um arquivo .json primeiro");
-            return;
-        }
-        let reader = new FileReader(); 
-        reader.onload = async (e) => {
-            const jsonText = e.target.result;
-            const mapaTexto = document.getElementById("mapaDominacaoImport").value;
-            await importarJSON(jsonText, mapaTexto);
-            // Limpa os campos após importação
-            document.getElementById("jsonImport").value = "";
-            document.getElementById("mapaDominacaoImport").value = "";
-            document.getElementById("fileImport").value = "";
-        }; 
-        reader.readAsText(file);
+        const fileInput = document.getElementById("fileImport");
+        fileInput.click();
+        fileInput.onchange = async (e) => {
+            let file = e.target.files[0];
+            if(!file) return;
+            let reader = new FileReader(); 
+            reader.onload = async (e) => {
+                const jsonText = e.target.result;
+                const mapaTexto = document.getElementById("mapaDominacaoImport").value;
+                await importarJSON(jsonText, mapaTexto);
+                document.getElementById("jsonImport").value = "";
+                document.getElementById("mapaDominacaoImport").value = "";
+                fileInput.value = "";
+            }; 
+            reader.readAsText(file);
+        };
     });
+    
     document.getElementById("btnExportCSV").addEventListener("click",exportarCSV);
     document.getElementById("btnExportJSON").addEventListener("click",exportarJSON);
     document.getElementById("btnAtualizarGrafico").addEventListener("click",()=>atualizarGrafico());
