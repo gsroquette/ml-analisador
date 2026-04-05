@@ -67,7 +67,7 @@
 <body>
 <div class="container">
     <h1>🚀 Checklist de Produtos</h1>
-    <div class="sub">Sistema DeepSeek - Análise completa de produtos para Mercado Livre</div>
+    <div class="sub">Sistema DeepSeek - Análise completa de produtos para Mercado Livre (Score máximo 100%)</div>
 
     <!-- Área de prompts -->
     <div class="card">
@@ -145,8 +145,10 @@
         </div>
         <div class="grafico-container"><canvas id="graficoScore"></canvas></div>
         <div class="legenda">
-            <span>🟢 Score ≥ 95 → ESCALAR</span><span>🟡 Score 75–94 → TESTAR</span>
-            <span>🔴 Score < 75 → DESCARTAR</span><span>❌ Nota crítica (Demanda≤1 ou Risco≥4 ou Concorrência≥4) → DESCARTE AUTOMÁTICO</span>
+            <span>🟢 Score ≥ 80% → ESCALAR</span>
+            <span>🟡 Score 60% a 79% → TESTAR</span>
+            <span>🔴 Score < 60% → DESCARTAR</span>
+            <span>❌ Nota crítica (Demanda≤1 ou Concorrência≥4 ou Risco≤1) → DESCARTE AUTOMÁTICO</span>
             <span>⚔️ Mapa de Dominação disponível</span>
         </div>
     </div>
@@ -200,76 +202,78 @@
     const db = getDatabase(app);
     
     // ═══════════════════════════════════════════════════════════════════════════
-    // 🔧 FÓRMULA CORRIGIDA - Critérios com direção invertida
+    // 🔧 FÓRMULA CORRIGIDA - Score máximo = 100% (percentual)
     // ═══════════════════════════════════════════════════════════════════════════
     // 
     // CRITÉRIOS NORMAIS (nota alta = BOM para o negócio):
-    // - Demanda, Logística, Diferenciação, Posicionamento, Apelo, Facilidade, Escala
+    // - Demanda, Logística, Regulatório, Diferenciação, Posicionamento, 
+    //   Apelo, Facilidade, Escala, Risco
     //
     // CRITÉRIOS INVERTIDOS (nota baixa = BOM para o negócio):
     // - Concorrência: nota 1 = mercado vazio (bom), nota 5 = mercado saturado (ruim)
-    // - Regulatório: nota 1 = liberado (bom), nota 5 = cheio de burocracia (ruim)
-    // - Risco: nota 1 = risco baixo (bom), nota 5 = risco altíssimo (ruim)
     //
     // Fórmula para invertidos: (5 - nota) × peso
+    // Score final = (soma total / 120) × 100 = percentual
     // ═══════════════════════════════════════════════════════════════════════════
     
     function calcularScore(prod) {
-        // Critérios NORMAIS (nota alta = bom) - multiplica normal
-        const demandaPontos = prod.demanda * 3;
-        const logisticaPontos = prod.logistica * 2;
-        const diferenciacaoPontos = prod.diferenciacao * 2;
-        const posicionamentoPontos = prod.posicionamento * 2;
-        const apeloPontos = prod.apelo * 2;
-        const facilidadePontos = prod.facilidade * 1;
-        const escalaPontos = prod.escala * 2;
+        // Critérios NORMAIS (nota alta = bom)
+        const demandaPontos = prod.demanda * 3;           // máx 15
+        const logisticaPontos = prod.logistica * 2;       // máx 10
+        const regulatorioPontos = prod.regulatorio * 2;   // máx 10 (nota alta = fácil)
+        const diferenciacaoPontos = prod.diferenciacao * 2; // máx 10
+        const posicionamentoPontos = prod.posicionamento * 2; // máx 10
+        const apeloPontos = prod.apelo * 2;               // máx 10
+        const facilidadePontos = prod.facilidade * 1;     // máx 5
+        const escalaPontos = prod.escala * 2;             // máx 10
+        const riscoPontos = prod.risco * 3;               // máx 15 (nota alta = seguro)
         
-        // Critérios INVERTIDOS (nota baixa = bom) - usa (5 - nota)
-        // Quanto menor a nota original, maior a pontuação final
-        const concorrenciaPontos = (5 - prod.concorrencia) * 2;
-        const regulatorioPontos = (5 - prod.regulatorio) * 2;
-        const riscoPontos = (5 - prod.risco) * 3;
+        // Critérios INVERTIDOS (nota baixa = bom) - apenas CONCORRÊNCIA
+        const concorrenciaPontos = (5 - prod.concorrencia) * 2; // máx 10
         
-        const score = demandaPontos + logisticaPontos + diferenciacaoPontos + 
-                      posicionamentoPontos + apeloPontos + facilidadePontos + 
-                      escalaPontos + concorrenciaPontos + regulatorioPontos + 
-                      riscoPontos;
+        // Soma total (máximo possível = 120)
+        const somaTotal = demandaPontos + logisticaPontos + regulatorioPontos + 
+                          diferenciacaoPontos + posicionamentoPontos + apeloPontos + 
+                          facilidadePontos + escalaPontos + riscoPontos + concorrenciaPontos;
+        
+        // Converte para percentual (máximo 120 → 100)
+        let scorePercentual = (somaTotal / 120) * 100;
+        
+        // Arredonda para 1 casa decimal
+        scorePercentual = Math.round(scorePercentual * 10) / 10;
         
         // ═══════════════════════════════════════════════════════════════════════
         // REGRA DE DESCARTE AUTOMÁTICO (CORRIGIDA)
         // ═══════════════════════════════════════════════════════════════════════
         // Para critérios NORMAIS: descarta se nota ≤ 1 (muito ruim)
         // Para critérios INVERTIDOS: descarta se nota ≥ 4 (muito ruim)
-        //   - Concorrência ≥ 4 = mercado muito saturado
-        //   - Regulatório ≥ 4 = muitas barreiras burocráticas
-        //   - Risco ≥ 4 = riscos muito altos
         
         const temNotaCritica = 
             // Critérios normais - nota baixa é ruim
             prod.demanda <= 1 ||
             prod.logistica <= 1 ||
+            prod.regulatorio <= 1 ||      // regulatório difícil é ruim
             prod.diferenciacao <= 1 ||
             prod.posicionamento <= 1 ||
             prod.apelo <= 1 ||
             prod.facilidade <= 1 ||
             prod.escala <= 1 ||
+            prod.risco <= 1 ||            // risco alto é ruim
             // Critérios invertidos - nota alta é ruim
-            prod.concorrencia >= 4 ||
-            prod.regulatorio >= 4 ||
-            prod.risco >= 4;
+            prod.concorrencia >= 4;        // concorrência forte é ruim
         
         let decisao;
         if (temNotaCritica) {
             decisao = "🔴 DESCARTAR";
-        } else if (score < 75) {
-            decisao = "🔴 DESCARTAR";
-        } else if (score >= 95) {
+        } else if (scorePercentual >= 80) {
             decisao = "🟢 ESCALAR";
-        } else {
+        } else if (scorePercentual >= 60) {
             decisao = "🟡 TESTAR";
+        } else {
+            decisao = "🔴 DESCARTAR";
         }
         
-        return { score, decisao };
+        return { score: scorePercentual, decisao };
     }
 
     let produtos = [];
@@ -373,7 +377,7 @@
         filtrados.forEach((prod, idx) => {
             const originalIdx = produtos.findIndex(p => p.nome === prod.nome && p.dataInclusao === prod.dataInclusao);
             const { score, decisao } = calcularScore(prod);
-            const classeScore = score>=95?"score-verde":(score>=75?"score-amarelo":"score-vermelho");
+            const classeScore = score>=80?"score-verde":(score>=60?"score-amarelo":"score-vermelho");
             const temMapa = prod.mapaDominacao && prod.mapaDominacao.trim().length > 0;
             corpo.insertAdjacentHTML("beforeend", `
                 <tr>
@@ -384,7 +388,7 @@
                     <td>${prod.diferenciacao}</td><td>${prod.posicionamento}</td>
                     <td>${prod.apelo}</td><td>${prod.facilidade}</td>
                     <td>${prod.escala}</td><td>${prod.risco}</td>
-                    <td class="${classeScore}">${score}</td>
+                    <td class="${classeScore}">${score}%</td>
                     <td>${decisao}</td>
                     <td>${prod.precoSugerido ? 'R$ '+prod.precoSugerido.toFixed(2) : '-'}</td>
                     <td>${prod.dataInclusao || '-'}</td>
@@ -472,11 +476,11 @@
         const ctx = document.getElementById('graficoScore').getContext('2d'); 
         if(grafico) grafico.destroy(); 
         const filtrados = aplicarFiltros(); 
-        if(filtrados.length===0) { grafico=new Chart(ctx,{type:'bar',data:{labels:['Nenhum'],datasets:[{label:'Score',data:[0]}]}}); return; } 
+        if(filtrados.length===0) { grafico=new Chart(ctx,{type:'bar',data:{labels:['Nenhum'],datasets:[{label:'Score (%)',data:[0]}]}}); return; } 
         const labels=filtrados.map(p=>p.nome.length>18?p.nome.slice(0,15)+"...":p.nome); 
         const scores=filtrados.map(p=>calcularScore(p).score); 
-        const cores=scores.map(s=>s>=95?'#22c55e':(s>=75?'#eab308':'#ef4444')); 
-        grafico=new Chart(ctx,{type:'bar',data:{labels,datasets:[{label:'Score (máx 120)',data:scores,backgroundColor:cores,borderRadius:8}]},options:{responsive:true,maintainAspectRatio:true}}); 
+        const cores=scores.map(s=>s>=80?'#22c55e':(s>=60?'#eab308':'#ef4444')); 
+        grafico=new Chart(ctx,{type:'bar',data:{labels,datasets:[{label:'Score (%)',data:scores,backgroundColor:cores,borderRadius:8}]},options:{responsive:true,maintainAspectRatio:true}}); 
     }
     
     function atualizarFiltrosCategoria() { 
@@ -559,7 +563,7 @@
     
     function exportarCSV() { 
         if(produtos.length===0){alert("Nenhum produto");return;} 
-        let rows=[["Nome","Categoria","Data","PreçoMin","PreçoMedio","PreçoMax","PreçoSug","Demanda","ParecerDem","Concorrencia","ParecerConc","Logistica","ParecerLog","Regulatorio","ParecerReg","Diferenciacao","ParecerDif","Posicionamento","ParecerPos","Apelo","ParecerApe","Facilidade","ParecerFac","Escala","ParecerEsc","Risco","ParecerRisc","Score","Decisão","TemMapa"]]; 
+        let rows=[["Nome","Categoria","Data","PreçoMin","PreçoMedio","PreçoMax","PreçoSug","Demanda","ParecerDem","Concorrencia","ParecerConc","Logistica","ParecerLog","Regulatorio","ParecerReg","Diferenciacao","ParecerDif","Posicionamento","ParecerPos","Apelo","ParecerApe","Facilidade","ParecerFac","Escala","ParecerEsc","Risco","ParecerRisc","Score(%)","Decisão","TemMapa"]]; 
         produtos.forEach(p=>{let {score,decisao}=calcularScore(p); rows.push([p.nome,p.categoria,p.dataInclusao,p.precoMin,p.precoMedio,p.precoMax,p.precoSugerido,p.demanda,p.parecerDemanda,p.concorrencia,p.parecerConcorrencia,p.logistica,p.parecerLogistica,p.regulatorio,p.parecerRegulatorio,p.diferenciacao,p.parecerDiferenciacao,p.posicionamento,p.parecerPosicionamento,p.apelo,p.parecerApelo,p.facilidade,p.parecerFacilidade,p.escala,p.parecerEscala,p.risco,p.parecerRisco,score,decisao, p.mapaDominacao ? "Sim" : "Não"]);}); 
         let csv=rows.map(row=>row.map(c=>`"${String(c).replace(/"/g,'""')}"`).join(",")).join("\n"); 
         let blob=new Blob(["\uFEFF"+csv],{type:"text/csv"}); 
