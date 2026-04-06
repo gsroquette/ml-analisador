@@ -522,7 +522,7 @@
     function renderizarTabela() {
         const corpo = document.getElementById("corpoTabela");
         const filtrados = aplicarFiltros();
-        if (filtrados.length===0) { corpo.innerHTML='<td><td colspan="17">Nenhum produto encontrado</td></tr>'; atualizarGrafico(); return; }
+        if (filtrados.length===0) { corpo.innerHTML='<tr><td colspan="17">Nenhum produto encontrado</td></tr>'; atualizarGrafico(); return; }
         corpo.innerHTML = "";
         filtrados.forEach((prod) => {
             const originalIdx = produtos.findIndex(p => p.nome === prod.nome && p.dataInclusao === prod.dataInclusao);
