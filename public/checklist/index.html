@@ -30,6 +30,8 @@
         .btn-import:hover { background: #6d28d9; }
         .btn-salvar-jotacao { background: #0d9488; padding: 8px 16px; font-size: 0.8rem; margin-top: 8px; }
         .btn-salvar-jotacao:hover { background: #0f766e; }
+        .btn-ver-jotacao { background: #6b21a5; padding: 4px 8px; font-size: 0.65rem; margin-left: 4px; }
+        .btn-ver-jotacao:hover { background: #581c87; }
         .prompt-card { background: #fef3c7; border-left: 4px solid #f59e0b; padding: 12px 16px; margin-bottom: 16px; border-radius: 16px; }
         .prompt-card h4 { margin: 0 0 8px 0; font-size: 0.9rem; }
         .prompt-card p { margin: 0 0 8px 0; font-size: 0.75rem; color: #555; }
@@ -61,12 +63,17 @@
         .modal-content { background: white; border-radius: 32px; padding: 24px; max-width: 90%; width: 800px; max-height: 85vh; overflow-y: auto; }
         .produto-detalhe-imagem { max-width: 200px; border-radius: 16px; margin-bottom: 16px; display: block; }
         .preco-box { background: #f1f5f9; padding: 12px; border-radius: 16px; margin: 12px 0; }
+        .jotacao-preview { background: #f3e8ff; padding: 12px; border-radius: 16px; margin-top: 12px; font-size: 0.7rem; }
+        .jotacao-preview pre { white-space: pre-wrap; word-break: break-all; max-height: 200px; overflow-y: auto; background: #f8fafc; padding: 8px; border-radius: 8px; }
         .area-import { background: #f3e8ff; border: 2px dashed #7c3aed; border-radius: 20px; padding: 16px; margin-bottom: 20px; }
         .area-mapa { background: #ecfdf5; border: 2px solid #10b981; border-radius: 20px; padding: 16px; margin-top: 16px; }
         .filtro-input { min-width: 150px; }
         .erro-prompts { background: #fee2e2; color: #dc2626; padding: 12px; border-radius: 16px; margin-top: 12px; font-size: 0.75rem; }
         .status-firebase { position: fixed; bottom: 16px; right: 16px; background: #1e293b; color: white; padding: 8px 16px; border-radius: 40px; font-size: 0.7rem; z-index: 1000; }
         .mapa-texto { white-space: pre-wrap; font-family: monospace; font-size: 0.8rem; line-height: 1.5; background: #f8fafc; padding: 16px; border-radius: 16px; margin-top: 12px; }
+        .detalhe-jotacao { background: #f1f5f9; border-radius: 12px; padding: 12px; margin-bottom: 16px; }
+        .detalhe-jotacao summary { cursor: pointer; font-weight: 600; color: #7c3aed; }
+        .detalhe-jotacao pre { white-space: pre-wrap; word-break: break-all; font-size: 0.65rem; margin-top: 8px; }
         @media (max-width: 700px) { th, td { font-size: 0.65rem; padding: 6px 4px; } .form-group { min-width: 140px; } }
     </style>
 </head>
@@ -151,7 +158,6 @@
             <button id="btnReset" class="btn-reset">🗑️ Limpar Todos</button>
         </div>
         
-        <!-- Seletor de Ordenação -->
         <div class="ordenacao">
             <div class="form-group" style="margin-bottom:0; min-width:200px;">
                 <label>📊 Organizar por:</label>
@@ -220,12 +226,7 @@
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-    import {
-        getDatabase,
-        ref,
-        set,
-        get
-    } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-database.js";
+    import { getDatabase, ref, set, get } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-database.js";
 
     const firebaseConfig = {
         apiKey: "AIzaSyB0vlqe5UCA4UKq1xk6RtyiqTAEs7QXFpg",
@@ -239,10 +240,6 @@
 
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
-    
-    // ═══════════════════════════════════════════════════════════════════════════
-    // 🔧 FÓRMULA CORRIGIDA - Score máximo = 100% (percentual)
-    // ═══════════════════════════════════════════════════════════════════════════
     
     function calcularScore(prod) {
         const demandaPontos = prod.demanda * 3;
@@ -263,21 +260,15 @@
         let scorePercentual = (somaTotal / 120) * 100;
         scorePercentual = Math.round(scorePercentual * 10) / 10;
         
-        const temNotaCritica = 
-            prod.demanda <= 1 || prod.logistica <= 1 || prod.regulatorio <= 1 ||
-            prod.diferenciacao <= 1 || prod.posicionamento <= 1 || prod.apelo <= 1 ||
-            prod.facilidade <= 1 || prod.escala <= 1 || prod.risco <= 1 || prod.concorrencia >= 4;
+        const temNotaCritica = prod.demanda <= 1 || prod.logistica <= 1 || prod.regulatorio <= 1 ||
+                               prod.diferenciacao <= 1 || prod.posicionamento <= 1 || prod.apelo <= 1 ||
+                               prod.facilidade <= 1 || prod.escala <= 1 || prod.risco <= 1 || prod.concorrencia >= 4;
         
         let decisao;
-        if (temNotaCritica) {
-            decisao = "🔴 DESCARTAR";
-        } else if (scorePercentual >= 80) {
-            decisao = "🟢 ESCALAR";
-        } else if (scorePercentual >= 60) {
-            decisao = "🟡 TESTAR";
-        } else {
-            decisao = "🔴 DESCARTAR";
-        }
+        if (temNotaCritica) decisao = "🔴 DESCARTAR";
+        else if (scorePercentual >= 80) decisao = "🟢 ESCALAR";
+        else if (scorePercentual >= 60) decisao = "🟡 TESTAR";
+        else decisao = "🔴 DESCARTAR";
         
         return { score: scorePercentual, decisao };
     }
@@ -295,7 +286,7 @@
     }
 
     // ═══════════════════════════════════════════════════════════════════════════
-    // 🆕 NOVAS FUNÇÕES DE JOTAÇÕES
+    // FUNÇÕES DE JOTAÇÕES
     // ═══════════════════════════════════════════════════════════════════════════
     
     function carregarJotacoesLocal() {
@@ -306,18 +297,22 @@
             jotacoes.j1 = data.j1 || "";
             jotacoes.j2 = data.j2 || "";
             jotacoes.j3 = data.j3 || "";
-            // Sincronizar com inputs se existirem
+            
+            // Sincronizar com inputs dos prompts
             const j1Input = document.getElementById("jotacao1Input");
             const j2Input = document.getElementById("jotacao2Input");
             const j3Input = document.getElementById("jotacao3Input");
             if (j1Input) j1Input.value = jotacoes.j1;
             if (j2Input) j2Input.value = jotacoes.j2;
             if (j3Input) j3Input.value = jotacoes.j3;
+            
             // Sincronizar com área de importação
             const j1Import = document.getElementById("jotacao1Import");
             const j2Import = document.getElementById("jotacao2Import");
-            if (j1Import && jotacoes.j1) j1Import.value = jotacoes.j1;
-            if (j2Import && jotacoes.j2) j2Import.value = jotacoes.j2;
+            const jsonImport = document.getElementById("jsonImport");
+            if (j1Import) j1Import.value = jotacoes.j1;
+            if (j2Import) j2Import.value = jotacoes.j2;
+            if (jsonImport && jotacoes.j3) jsonImport.value = jotacoes.j3;
         } catch(e) {}
     }
     
@@ -326,8 +321,36 @@
     }
     
     function salvarJotacao(chave, valor) {
+        // Validação mínima: não permitir salvar vazio
+        if (!valor || valor.trim() === "") {
+            alert(`⚠️ Não é possível salvar ${chave.toUpperCase()} vazio.`);
+            return false;
+        }
+        
+        // Validação de JSON para J1, J2, J3 (tentar parsear)
+        try {
+            JSON.parse(valor);
+        } catch(e) {
+            const continuar = confirm(`⚠️ O conteúdo não é um JSON válido.\n\nDeseja salvar mesmo assim?`);
+            if (!continuar) return false;
+        }
+        
         jotacoes[chave] = valor || "";
         salvarJotacoesLocal();
+        
+        // Sincronizar campos de importação
+        if (chave === "j1") {
+            const j1Import = document.getElementById("jotacao1Import");
+            if (j1Import) j1Import.value = valor;
+        } else if (chave === "j2") {
+            const j2Import = document.getElementById("jotacao2Import");
+            if (j2Import) j2Import.value = valor;
+        } else if (chave === "j3") {
+            const jsonImport = document.getElementById("jsonImport");
+            if (jsonImport) jsonImport.value = valor;
+        }
+        
+        return true;
     }
     
     function validarJotacoesNecessarias(lista) {
@@ -358,18 +381,21 @@
             await navigator.clipboard.writeText(texto);
             alert(mensagemSucesso);
         } catch(e) {
-            // Fallback para Safari
+            // Fallback
             const textarea = document.createElement("textarea");
             textarea.value = texto;
             document.body.appendChild(textarea);
             textarea.select();
-            document.execCommand("copy");
+            const sucesso = document.execCommand("copy");
             document.body.removeChild(textarea);
-            alert(mensagemSucesso);
+            if (sucesso) {
+                alert(mensagemSucesso);
+            } else {
+                alert("❌ Não foi possível copiar. Copie manualmente.");
+            }
         }
     }
 
-    // Função de ordenação
     function ordenarProdutos(produtosArray, criterio) {
         const produtosComScore = produtosArray.map(p => {
             const { score, decisao } = calcularScore(p);
@@ -377,10 +403,8 @@
         });
         
         switch(criterio) {
-            case "score_desc":
-                return produtosComScore.sort((a, b) => b.scoreCalculado - a.scoreCalculado);
-            case "score_asc":
-                return produtosComScore.sort((a, b) => a.scoreCalculado - b.scoreCalculado);
+            case "score_desc": return produtosComScore.sort((a, b) => b.scoreCalculado - a.scoreCalculado);
+            case "score_asc": return produtosComScore.sort((a, b) => a.scoreCalculado - b.scoreCalculado);
             case "data_desc":
                 return produtosComScore.sort((a, b) => {
                     const parseData = (d) => {
@@ -399,15 +423,12 @@
                     };
                     return parseData(a.dataInclusao) - parseData(b.dataInclusao);
                 });
-            case "nome_asc":
-                return produtosComScore.sort((a, b) => a.nome.localeCompare(b.nome));
-            case "nome_desc":
-                return produtosComScore.sort((a, b) => b.nome.localeCompare(a.nome));
+            case "nome_asc": return produtosComScore.sort((a, b) => a.nome.localeCompare(b.nome));
+            case "nome_desc": return produtosComScore.sort((a, b) => b.nome.localeCompare(a.nome));
             case "decisao":
                 const ordemDecisao = { "🟢 ESCALAR": 1, "🟡 TESTAR": 2, "🔴 DESCARTAR": 3 };
                 return produtosComScore.sort((a, b) => ordemDecisao[a.decisaoCalculada] - ordemDecisao[b.decisaoCalculada]);
-            default:
-                return produtosComScore;
+            default: return produtosComScore;
         }
     }
 
@@ -484,7 +505,6 @@
             }
             return true;
         });
-        
         return ordenarProdutos(filtrados, ordemAtual);
     }
 
@@ -502,7 +522,7 @@
     function renderizarTabela() {
         const corpo = document.getElementById("corpoTabela");
         const filtrados = aplicarFiltros();
-        if (filtrados.length===0) { corpo.innerHTML='<tr><td colspan="17">Nenhum produto encontrado</td></tr>'; atualizarGrafico(); return; }
+        if (filtrados.length===0) { corpo.innerHTML='<td><td colspan="17">Nenhum produto encontrado</td></tr>'; atualizarGrafico(); return; }
         corpo.innerHTML = "";
         filtrados.forEach((prod) => {
             const originalIdx = produtos.findIndex(p => p.nome === prod.nome && p.dataInclusao === prod.dataInclusao);
@@ -551,8 +571,28 @@
     function abrirDetalhes(idx) { 
         const p = produtos[idx]; 
         const imagemHtml = p.imagemUrl ? `<img src="${escapeHtml(p.imagemUrl)}" class="produto-detalhe-imagem" onerror="this.style.display='none'">` : (p.descricaoImagem ? `<p><strong>🖼️ Sugestão de imagem:</strong> ${escapeHtml(p.descricaoImagem)}</p>` : '<p>⚠️ Nenhuma imagem cadastrada</p>');
+        
+        // Montar Jotações para exibição
+        const jotacoesHtml = `
+            <div style="margin-top: 20px; border-top: 2px solid #7c3aed; padding-top: 16px;">
+                <h3>📋 Trilha Analítica (Jotações)</h3>
+                <details class="detalhe-jotacao">
+                    <summary>📌 Jotação 1 (JSON Prompt 1)</summary>
+                    <pre>${escapeHtml(p.jotacao1 || 'Não disponível')}</pre>
+                </details>
+                <details class="detalhe-jotacao">
+                    <summary>🔗 Jotação 2 (JSON Consolidado Prompt 2)</summary>
+                    <pre>${escapeHtml(p.jotacao2 || 'Não disponível')}</pre>
+                </details>
+                <details class="detalhe-jotacao">
+                    <summary>📦 Jotação 3 (JSON Final Prompt 3)</summary>
+                    <pre>${escapeHtml(p.jotacao3 || 'Não disponível')}</pre>
+                </details>
+            </div>
+        `;
+        
         const modal = document.getElementById("modalDetalhesContent"); 
-        modal.innerHTML = `<h2>📦 ${escapeHtml(p.nome)}</h2>${imagemHtml}<p><strong>📂 Categoria:</strong> ${p.categoria || '-'}</p><p><strong>📅 Data inclusão:</strong> ${p.dataInclusao || '-'}</p><div class="preco-box"><strong>💰 Análise de Preços:</strong><br>Mínimo: R$ ${p.precoMin?.toFixed(2) || '-'}<br>Médio: R$ ${p.precoMedio?.toFixed(2) || '-'}<br>Máximo: R$ ${p.precoMax?.toFixed(2) || '-'}<br><strong>Sugerido: R$ ${p.precoSugerido?.toFixed(2) || '-'}</strong></div><h3>📊 Notas e Pareceres</h3>${renderParecer("Demanda", p.demanda, p.parecerDemanda)}${renderParecer("Concorrência", p.concorrencia, p.parecerConcorrencia)}${renderParecer("Logística", p.logistica, p.parecerLogistica)}${renderParecer("Regulatório", p.regulatorio, p.parecerRegulatorio)}${renderParecer("Diferenciação", p.diferenciacao, p.parecerDiferenciacao)}${renderParecer("Posicionamento", p.posicionamento, p.parecerPosicionamento)}${renderParecer("Apelo de Venda", p.apelo, p.parecerApelo)}${renderParecer("Facilidade de Venda", p.facilidade, p.parecerFacilidade)}${renderParecer("Escala e Recorrência", p.escala, p.parecerEscala)}${renderParecer("Risco", p.risco, p.parecerRisco)}<div style="text-align:right;margin-top:20px;"><button onclick="window.fecharModal()" class="btn-reset">Fechar</button></div>`; 
+        modal.innerHTML = `<h2>📦 ${escapeHtml(p.nome)}</h2>${imagemHtml}<p><strong>📂 Categoria:</strong> ${p.categoria || '-'}</p><p><strong>📅 Data inclusão:</strong> ${p.dataInclusao || '-'}</p><div class="preco-box"><strong>💰 Análise de Preços:</strong><br>Mínimo: R$ ${p.precoMin?.toFixed(2) || '-'}<br>Médio: R$ ${p.precoMedio?.toFixed(2) || '-'}<br>Máximo: R$ ${p.precoMax?.toFixed(2) || '-'}<br><strong>Sugerido: R$ ${p.precoSugerido?.toFixed(2) || '-'}</strong></div><h3>📊 Notas e Pareceres</h3>${renderParecer("Demanda", p.demanda, p.parecerDemanda)}${renderParecer("Concorrência", p.concorrencia, p.parecerConcorrencia)}${renderParecer("Logística", p.logistica, p.parecerLogistica)}${renderParecer("Regulatório", p.regulatorio, p.parecerRegulatorio)}${renderParecer("Diferenciação", p.diferenciacao, p.parecerDiferenciacao)}${renderParecer("Posicionamento", p.posicionamento, p.parecerPosicionamento)}${renderParecer("Apelo de Venda", p.apelo, p.parecerApelo)}${renderParecer("Facilidade de Venda", p.facilidade, p.parecerFacilidade)}${renderParecer("Escala e Recorrência", p.escala, p.parecerEscala)}${renderParecer("Risco", p.risco, p.parecerRisco)}${jotacoesHtml}<div style="text-align:right;margin-top:20px;"><button onclick="window.fecharModal()" class="btn-reset">Fechar</button></div>`; 
         document.getElementById("modalDetalhes").style.display = "flex"; 
     }
     
@@ -630,9 +670,7 @@
             
             if (!mapaTexto || mapaTexto.trim() === "") {
                 const continuar = confirm("⚠️ Nenhum Mapa de Dominação foi preenchido.\n\nDeseja importar o produto mesmo assim?\n\nClique em OK para continuar ou Cancelar para adicionar o mapa.");
-                if (!continuar) {
-                    return false;
-                }
+                if (!continuar) return false;
             }
             
             let produto = { 
@@ -696,8 +734,8 @@
     
     function exportarCSV() { 
         if(produtos.length===0){alert("Nenhum produto");return;} 
-        let rows=[["Nome","Categoria","Data","PreçoMin","PreçoMedio","PreçoMax","PreçoSug","Demanda","ParecerDem","Concorrencia","ParecerConc","Logistica","ParecerLog","Regulatorio","ParecerReg","Diferenciacao","ParecerDif","Posicionamento","ParecerPos","Apelo","ParecerApe","Facilidade","ParecerFac","Escala","ParecerEsc","Risco","ParecerRisc","Score(%)","Decisão","TemMapa"]]; 
-        produtos.forEach(p=>{let {score,decisao}=calcularScore(p); rows.push([p.nome,p.categoria,p.dataInclusao,p.precoMin,p.precoMedio,p.precoMax,p.precoSugerido,p.demanda,p.parecerDemanda,p.concorrencia,p.parecerConcorrencia,p.logistica,p.parecerLogistica,p.regulatorio,p.parecerRegulatorio,p.diferenciacao,p.parecerDiferenciacao,p.posicionamento,p.parecerPosicionamento,p.apelo,p.parecerApelo,p.facilidade,p.parecerFacilidade,p.escala,p.parecerEscala,p.risco,p.parecerRisco,score,decisao, p.mapaDominacao ? "Sim" : "Não"]);}); 
+        let rows=[["Nome","Categoria","Data","PreçoMin","PreçoMedio","PreçoMax","PreçoSug","Demanda","ParecerDem","Concorrencia","ParecerConc","Logistica","ParecerLog","Regulatorio","ParecerReg","Diferenciacao","ParecerDif","Posicionamento","ParecerPos","Apelo","ParecerApe","Facilidade","ParecerFac","Escala","ParecerEsc","Risco","ParecerRisc","Score(%)","Decisão","TemMapa","TemJ1","TemJ2","TemJ3"]]; 
+        produtos.forEach(p=>{let {score,decisao}=calcularScore(p); rows.push([p.nome,p.categoria,p.dataInclusao,p.precoMin,p.precoMedio,p.precoMax,p.precoSugerido,p.demanda,p.parecerDemanda,p.concorrencia,p.parecerConcorrencia,p.logistica,p.parecerLogistica,p.regulatorio,p.parecerRegulatorio,p.diferenciacao,p.parecerDiferenciacao,p.posicionamento,p.parecerPosicionamento,p.apelo,p.parecerApelo,p.facilidade,p.parecerFacilidade,p.escala,p.parecerEscala,p.risco,p.parecerRisco,score,decisao, p.mapaDominacao ? "Sim" : "Não", p.jotacao1 ? "Sim" : "Não", p.jotacao2 ? "Sim" : "Não", p.jotacao3 ? "Sim" : "Não"]);}); 
         let csv=rows.map(row=>row.map(c=>`"${String(c).replace(/"/g,'""')}"`).join(",")).join("\n"); 
         let blob=new Blob(["\uFEFF"+csv],{type:"text/csv"}); 
         let a=document.createElement("a"); 
@@ -708,7 +746,7 @@
     }
     
     function exportarJSON() { 
-        let dados=produtos.map(p=>{let{score,decisao}=calcularScore(p); return {...p,score_calculado:score,decisao};}); 
+        let dados=produtos.map(p=>{let{score,decisao}=calcularScore(p); return { ...p, score_calculado: score, decisao }; }); 
         let blob=new Blob([JSON.stringify(dados,null,2)],{type:"application/json"}); 
         let a=document.createElement("a"); 
         a.href=URL.createObjectURL(blob); 
@@ -817,10 +855,8 @@
                 </div>
             `;
             
-            // Carregar Jotações salvos
             carregarJotacoesLocal();
             
-            // Eventos de salvar Jotação
             document.querySelectorAll(".btn-salvar-jotacao").forEach(btn => {
                 btn.addEventListener("click", () => {
                     const jotacaoKey = btn.dataset.jotacao;
@@ -829,12 +865,12 @@
                     else if (jotacaoKey === "j2") inputId = "jotacao2Input";
                     else if (jotacaoKey === "j3") inputId = "jotacao3Input";
                     const valor = document.getElementById(inputId).value;
-                    salvarJotacao(jotacaoKey, valor);
-                    alert(`✅ ${jotacaoKey.toUpperCase()} salvo localmente!`);
+                    if (salvarJotacao(jotacaoKey, valor)) {
+                        alert(`✅ ${jotacaoKey.toUpperCase()} salvo localmente!`);
+                    }
                 });
             });
             
-            // Eventos de copiar com validação
             document.querySelectorAll(".btn-copiar").forEach(btn => {
                 btn.addEventListener("click", async () => {
                     const tipo = btn.dataset.prompt;
