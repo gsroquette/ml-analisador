@@ -30,6 +30,7 @@ os atributos competitivos/logísticos visíveis:
 FULL
 frete grátis
 entrega rápida
+compra internacional
 
 Esse JSON é a principal fonte para entender:
 
@@ -233,10 +234,31 @@ presença de atributos competitivos fortes:
 FULL
 frete grátis
 entrega rápida
+compra internacional
+
 IMPORTANTE SOBRE ATRIBUTOS LOGÍSTICOS:
 
-FULL, frete grátis e entrega rápida não são apenas detalhes operacionais.
+FULL, frete grátis, compra internacional e entrega rápida não são apenas detalhes operacionais.
 Eles alteram a força competitiva percebida do mercado.
+
++ FULL (Mercado Livre):
++ Produtos com FULL tendem a ter:
++ maior visibilidade na busca
++ entrega mais rápida
++ maior confiança do cliente
++ maior taxa de conversão
+
++ Portanto:
++ Alta presença de FULL indica:
++ mercado mais competitivo
++ maior exigência de operação
++ dificuldade maior para novos entrantes sem FULL
+
+A presença de COMPRA INTERNACIONAL indica:
+concorrência com custo mais baixo
+possível compressão de margem
+padrão de mercado mais orientado a preço
+necessidade de diferenciação mais forte (marca, entrega, percepção)
 
 Se esses atributos aparecem com frequência, isso significa que:
 

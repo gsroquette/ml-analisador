@@ -17,6 +17,7 @@ a proporção visível de atributos como:
 FULL
 frete grátis
 entrega rápida
+compra internacional
 JSON CONSOLIDADO DO PROMPT 2
 Esse JSON representa a leitura micro / qualitativa dos 5 anúncios selecionados.
 Ele traz:
@@ -224,30 +225,55 @@ presença relevante de fortes → elevar nota
 presença forte de FULL / frete grátis / entrega rápida → elevar dificuldade competitiva
 mercado com muitos atributos logísticos fortes e boa execução → concorrência mais dura
 mercado fraco em execução, mal posicionado e com poucos diferenciais → concorrência mais acessível
+
 IMPORTANTE SOBRE ATRIBUTOS LOGÍSTICOS:
 
-FULL, frete grátis e entrega rápida não são apenas logística — eles também aumentam a força competitiva do mercado.
+FULL, frete grátis, entrega rápida e compra internacional não são apenas logística — eles também aumentam a força competitiva do mercado.
 
 Exemplo:
 
 se muitos concorrentes são FULL
 se muitos oferecem frete grátis
 se entrega rápida aparece com frequência
+se há presença relevante de compra internacional
 
-isso melhora a proposta percebida pelo comprador e aumenta a dificuldade de competir, especialmente para quem ainda não terá FULL.
++ FULL (Mercado Livre):
++ É o sistema logístico do próprio Mercado Livre (estoque + envio).
++ Produtos FULL tendem a:
++ aparecer melhor posicionados na busca
++ ter entrega mais rápida
++ gerar mais confiança no comprador
++ converter mais
+
++ Portanto:
++ Alta presença de FULL = aumento real da dificuldade competitiva
++ Competir sem FULL exige compensação forte em:
++ preço
++ posicionamento
++ percepção de valor
++ diferenciação
+
+A presença de COMPRA INTERNACIONAL indica:
+concorrência com preços mais baixos
+prazos mais longos desses concorrentes
+isso pode representar vantagem competitiva para operações com entrega mais rápida
+possível pressão de preço no mercado
+necessidade de compensação via posicionamento, entrega ou percepção de valor
 
 Portanto, esses atributos devem influenciar:
 
 a nota de concorrência
 o parecer sobre posicionamento
 a leitura do padrão atual do mercado
+
 NO CAMPO "parecer":
 
 Mencione explicitamente:
 
 a leitura do mercado com base na distribuição do Prompt 1
 como os 5 anúncios analisados confirmam ou aprofundam essa leitura
-o impacto dos atributos competitivos visíveis (FULL, frete grátis, entrega rápida)
+o impacto dos atributos competitivos visíveis (FULL, frete grátis, entrega rápida, compra internacional)
+
 NO CAMPO "oportunidades":
 
 Liste oportunidades reais encontradas com base:
@@ -255,6 +281,7 @@ Liste oportunidades reais encontradas com base:
 nas falhas recorrentes dos concorrentes
 no padrão do mercado
 na diferença entre mercado dominante e qualidade real de execução
+
 📊 CRITÉRIO 3: LOGÍSTICA
 
 ═══════════════════════════════════════════════════════════
