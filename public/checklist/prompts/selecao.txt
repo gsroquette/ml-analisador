@@ -32,7 +32,7 @@ DIFERENCIADOS → anúncios com proposta diferente (kit, oferta, estrutura disti
 Um anúncio pode aparecer em mais de um grupo
 Você está medindo PRESENÇA (não exclusividade)
 Baseie-se apenas no que está visível
-Use estimativa coerente
+Use estimativa baseada na contagem visual real
 
 📤 FORMATO:
 
@@ -42,6 +42,23 @@ MELHOR EXECUÇÃO: XX%
 PIOR EXECUÇÃO: XX%
 MAIS VENDIDOS: XX%
 DIFERENCIADOS: XX%
+
+⚠️ IMPORTANTE:
+- Um mesmo anúncio pode ser contado em mais de um grupo
+- Os percentuais NÃO precisam somar 100%
+- Evite estimativas vagas — baseie-se na contagem visual real:
+
+REGRA DE CÁLCULO DOS PERCENTUAIS (CRÍTICO)
+
+Para cada grupo (melhor execução, pior execução, mais vendidos, diferenciados):
+
+1. Considere TODOS os anúncios válidos visíveis nos prints
+2. Conte quantos anúncios se encaixam naquele critério
+3. calcule a proporção aproximada com base na contagem realizada em relação ao total
+
+Exemplo:
+Se houver 20 anúncios visíveis e 4 forem "mais vendidos":
+→ MAIS VENDIDOS ≈ 20%
 
 🚚 ATRIBUTOS LOGÍSTICOS / COMERCIAIS VISÍVEIS (OBRIGATÓRIO)
 
@@ -69,6 +86,24 @@ FULL: XX%
 FRETE GRÁTIS: XX%
 ENTREGA RÁPIDA: XX%
 COMPRA INTERNACIONAL: XX%
+
+REGRA DE CÁLCULO DOS ATRIBUTOS (CRÍTICO)
+
+Para cada atributo (FULL, frete grátis, entrega rápida, compra internacional):
+
+1. Considere TODOS os anúncios válidos visíveis nos prints
+2. Conte quantos anúncios apresentam claramente aquele atributo
+3. calcule a proporção aproximada com base na contagem realizada em relação ao total
+
+Exemplo:
+Se houver 20 anúncios visíveis e 10 tiverem frete grátis:
+→ FRETE GRÁTIS ≈ 50%
+
+⚠️ IMPORTANTE:
+- Baseie-se apenas no que está visível
+- Não inferir atributos não explícitos
+- Se não for possível identificar claramente, sinalizar
+- Evite estimativas vagas (~) — priorize proporção baseada em contagem real
 
 📊 SELEÇÃO DOS 5 ANÚNCIOS (OBRIGATÓRIO)
 
