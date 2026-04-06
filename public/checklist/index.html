@@ -28,12 +28,16 @@
         .btn-export:hover { background: #166534; }
         .btn-import { background: #7c3aed; }
         .btn-import:hover { background: #6d28d9; }
-        .btn-mapa { background: #7c3aed; padding: 4px 10px; font-size: 0.8rem; margin: 0 2px; }
-        .btn-mapa:disabled { background: #9ca3af; cursor: not-allowed; }
+        .btn-salvar-jotacao { background: #0d9488; padding: 8px 16px; font-size: 0.8rem; margin-top: 8px; }
+        .btn-salvar-jotacao:hover { background: #0f766e; }
         .prompt-card { background: #fef3c7; border-left: 4px solid #f59e0b; padding: 12px 16px; margin-bottom: 16px; border-radius: 16px; }
         .prompt-card h4 { margin: 0 0 8px 0; font-size: 0.9rem; }
         .prompt-card p { margin: 0 0 8px 0; font-size: 0.75rem; color: #555; }
         .prompt-card code { background: #fff; padding: 8px; display: block; border-radius: 8px; font-size: 0.7rem; white-space: pre-wrap; word-break: break-all; font-family: monospace; max-height: 150px; overflow-y: auto; }
+        .jotacao-area { margin-top: 12px; padding-top: 12px; border-top: 2px dashed #f59e0b; }
+        .jotacao-area label { font-size: 0.75rem; font-weight: 600; color: #b45309; margin-bottom: 4px; }
+        .jotacao-area textarea { background: #fffbeb; font-size: 0.7rem; margin-bottom: 8px; }
+        .info-jotacao { font-size: 0.7rem; color: #7c3aed; margin-top: 4px; }
         .filtros { display: flex; flex-wrap: wrap; gap: 16px; margin-bottom: 20px; align-items: flex-end; background: #f8fafc; padding: 16px; border-radius: 20px; }
         .ordenacao { display: flex; align-items: flex-end; gap: 12px; background: #f8fafc; padding: 12px 16px; border-radius: 20px; margin-bottom: 20px; }
         .ordenacao select { width: auto; min-width: 200px; }
@@ -77,14 +81,26 @@
         <div id="promptsContainer">Carregando prompts...</div>
     </div>
 
-    <!-- Área de importação JSON + Mapa -->
+    <!-- Área de importação JSON + Mapa com Jotações -->
     <div class="card">
         <h3>📥 Importar análise completa (JSON gerado pelo Prompt 3)</h3>
         <div class="area-import">
             <div class="form-row">
                 <div class="form-group" style="flex:3">
-                    <label>📋 Cole o JSON gerado pela IA</label>
-                    <textarea id="jsonImport" rows="6" placeholder='Cole aqui o JSON completo gerado pela IA...' style="width:100%; border-radius:16px; padding:12px; font-family:monospace; font-size:0.75rem;"></textarea>
+                    <label>📋 JOTAÇÃO 1 (JSON do Prompt 1)</label>
+                    <textarea id="jotacao1Import" rows="3" placeholder='Cole aqui o JSON do Prompt 1 (Jotação 1)...' style="width:100%; border-radius:16px; padding:12px; font-family:monospace; font-size:0.7rem;"></textarea>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group" style="flex:3">
+                    <label>📋 JOTAÇÃO 2 (JSON Consolidado do Prompt 2)</label>
+                    <textarea id="jotacao2Import" rows="3" placeholder='Cole aqui o JSON Consolidado do Prompt 2 (Jotação 2)...' style="width:100%; border-radius:16px; padding:12px; font-family:monospace; font-size:0.7rem;"></textarea>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group" style="flex:3">
+                    <label>📋 JOTAÇÃO 3 / JSON FINAL (Prompt 3)</label>
+                    <textarea id="jsonImport" rows="6" placeholder='Cole aqui o JSON completo gerado pela IA (Jotação 3)...' style="width:100%; border-radius:16px; padding:12px; font-family:monospace; font-size:0.75rem;"></textarea>
                 </div>
                 <div class="form-group">
                     <label>&nbsp;</label>
@@ -229,7 +245,6 @@
     // ═══════════════════════════════════════════════════════════════════════════
     
     function calcularScore(prod) {
-        // Critérios NORMAIS (nota alta = bom)
         const demandaPontos = prod.demanda * 3;
         const logisticaPontos = prod.logistica * 2;
         const regulatorioPontos = prod.regulatorio * 2;
@@ -239,8 +254,6 @@
         const facilidadePontos = prod.facilidade * 1;
         const escalaPontos = prod.escala * 2;
         const riscoPontos = prod.risco * 3;
-        
-        // Critérios INVERTIDOS (nota baixa = bom) - apenas CONCORRÊNCIA
         const concorrenciaPontos = (5 - prod.concorrencia) * 2;
         
         const somaTotal = demandaPontos + logisticaPontos + regulatorioPontos + 
@@ -251,16 +264,9 @@
         scorePercentual = Math.round(scorePercentual * 10) / 10;
         
         const temNotaCritica = 
-            prod.demanda <= 1 ||
-            prod.logistica <= 1 ||
-            prod.regulatorio <= 1 ||
-            prod.diferenciacao <= 1 ||
-            prod.posicionamento <= 1 ||
-            prod.apelo <= 1 ||
-            prod.facilidade <= 1 ||
-            prod.escala <= 1 ||
-            prod.risco <= 1 ||
-            prod.concorrencia >= 4;
+            prod.demanda <= 1 || prod.logistica <= 1 || prod.regulatorio <= 1 ||
+            prod.diferenciacao <= 1 || prod.posicionamento <= 1 || prod.apelo <= 1 ||
+            prod.facilidade <= 1 || prod.escala <= 1 || prod.risco <= 1 || prod.concorrencia >= 4;
         
         let decisao;
         if (temNotaCritica) {
@@ -279,12 +285,88 @@
     let produtos = [];
     let grafico = null;
     let prompts = { selecao: "", analise: "", compilado: "", dominacao: "" };
+    let jotacoes = { j1: "", j2: "", j3: "" };
     const statusDiv = document.getElementById("statusFirebase");
-    let ordemAtual = "score_desc"; // padrão: score maior primeiro
+    let ordemAtual = "score_desc";
 
     function atualizarStatus(texto, cor) {
         statusDiv.innerHTML = texto;
         statusDiv.style.background = cor;
+    }
+
+    // ═══════════════════════════════════════════════════════════════════════════
+    // 🆕 NOVAS FUNÇÕES DE JOTAÇÕES
+    // ═══════════════════════════════════════════════════════════════════════════
+    
+    function carregarJotacoesLocal() {
+        const salvo = localStorage.getItem("mdm_jotacoes");
+        if (!salvo) return;
+        try {
+            const data = JSON.parse(salvo);
+            jotacoes.j1 = data.j1 || "";
+            jotacoes.j2 = data.j2 || "";
+            jotacoes.j3 = data.j3 || "";
+            // Sincronizar com inputs se existirem
+            const j1Input = document.getElementById("jotacao1Input");
+            const j2Input = document.getElementById("jotacao2Input");
+            const j3Input = document.getElementById("jotacao3Input");
+            if (j1Input) j1Input.value = jotacoes.j1;
+            if (j2Input) j2Input.value = jotacoes.j2;
+            if (j3Input) j3Input.value = jotacoes.j3;
+            // Sincronizar com área de importação
+            const j1Import = document.getElementById("jotacao1Import");
+            const j2Import = document.getElementById("jotacao2Import");
+            if (j1Import && jotacoes.j1) j1Import.value = jotacoes.j1;
+            if (j2Import && jotacoes.j2) j2Import.value = jotacoes.j2;
+        } catch(e) {}
+    }
+    
+    function salvarJotacoesLocal() {
+        localStorage.setItem("mdm_jotacoes", JSON.stringify(jotacoes));
+    }
+    
+    function salvarJotacao(chave, valor) {
+        jotacoes[chave] = valor || "";
+        salvarJotacoesLocal();
+    }
+    
+    function validarJotacoesNecessarias(lista) {
+        const faltando = [];
+        lista.forEach(item => {
+            if (!jotacoes[item] || jotacoes[item].trim() === "") {
+                faltando.push(item);
+            }
+        });
+        if (faltando.length > 0) {
+            const nomes = { j1: "Jotação 1", j2: "Jotação 2", j3: "Jotação 3" };
+            alert("⚠️ Falta salvar:\n- " + faltando.map(f => nomes[f]).join("\n- "));
+            return false;
+        }
+        return true;
+    }
+    
+    function montarPrompt3Completo() {
+        return `${prompts.compilado}\n\n════════════════════════════\nJSON DO PROMPT 1 (JOTAÇÃO 1)\n════════════════════════════\n${jotacoes.j1}\n\n════════════════════════════\nJSON CONSOLIDADO DO PROMPT 2 (JOTAÇÃO 2)\n════════════════════════════\n${jotacoes.j2}`;
+    }
+    
+    function montarPrompt4Completo() {
+        return `${prompts.dominacao}\n\n════════════════════════════\nJSON DO PROMPT 1 (JOTAÇÃO 1)\n════════════════════════════\n${jotacoes.j1}\n\n════════════════════════════\nJSON CONSOLIDADO DO PROMPT 2 (JOTAÇÃO 2)\n════════════════════════════\n${jotacoes.j2}\n\n════════════════════════════\nJSON FINAL DO PROMPT 3 (JOTAÇÃO 3)\n════════════════════════════\n${jotacoes.j3}`;
+    }
+    
+    async function copiarTexto(texto, mensagemSucesso) {
+        try {
+            await navigator.clipboard.writeText(texto);
+            alert(mensagemSucesso);
+        } catch(e) {
+            // Fallback para Safari
+            const textarea = document.createElement("textarea");
+            textarea.value = texto;
+            document.body.appendChild(textarea);
+            textarea.select();
+            document.execCommand("copy");
+            document.body.removeChild(textarea);
+            alert(mensagemSucesso);
+        }
     }
 
     // Função de ordenação
@@ -372,7 +454,10 @@
             risco: prod.risco || 0,
             parecerRisco: prod.parecerRisco || "",
             alertasRisco: prod.alertasRisco || "",
-            mapaDominacao: prod.mapaDominacao || ""
+            mapaDominacao: prod.mapaDominacao || "",
+            jotacao1: prod.jotacao1 || "",
+            jotacao2: prod.jotacao2 || "",
+            jotacao3: prod.jotacao3 || ""
         };
     }
 
@@ -400,7 +485,6 @@
             return true;
         });
         
-        // Aplica ordenação
         return ordenarProdutos(filtrados, ordemAtual);
     }
 
@@ -468,7 +552,7 @@
         const p = produtos[idx]; 
         const imagemHtml = p.imagemUrl ? `<img src="${escapeHtml(p.imagemUrl)}" class="produto-detalhe-imagem" onerror="this.style.display='none'">` : (p.descricaoImagem ? `<p><strong>🖼️ Sugestão de imagem:</strong> ${escapeHtml(p.descricaoImagem)}</p>` : '<p>⚠️ Nenhuma imagem cadastrada</p>');
         const modal = document.getElementById("modalDetalhesContent"); 
-        modal.innerHTML = `<h2>📦 ${escapeHtml(p.nome)}</h2>${imagemHtml}<p><strong>📂 Categoria:</strong> ${p.categoria || '-'}</p><p><strong>📅 Data inclusão:</strong> ${p.dataInclusao || '-'}</p><div class="preco-box"><strong>💰 Análise de Preços:</strong><br>Mínimo: R$ ${p.precoMin?.toFixed(2) || '-'}<br>Médio: R$ ${p.precoMedio?.toFixed(2) || '-'}<br>Máximo: R$ ${p.precoMax?.toFixed(2) || '-'}<br><strong>Sugerido: R$ ${p.precoSugerido?.toFixed(2) || '-'}</strong></div><h3>📊 Notas e Pareceres</h3>${renderParecer("Demanda", p.demanda, p.parecerDemanda)}${renderParecer("Concorrência", p.concorrencia, p.parecerConcorrencia)}${renderParecer("Logística", p.logistica, p.parecerLogistica)}${renderParecer("Regulatório", p.regulatorio, p.parecerRegulatorio)}${renderParecer("Diferenciação", p.diferenciacao, p.parecerDiferenciacao)}${renderParecer("Posicionamento", p.posicionamento, p.parecerPosicionamento)}${renderParecer("Apelo de Venda", p.apelo, p.parecerApelo)}${renderParecer("Facilidade de Venda", p.facilidade, p.parecerFacilidade)}${renderParecer("Escala e Recorrência", p.escala, p.parecerEscala)}${renderParecer("Risco", p.risco, p.parecerRisco)}<div style="text-align:right;margin-top:20px;"><button onclick="fecharModal()" class="btn-reset">Fechar</button></div>`; 
+        modal.innerHTML = `<h2>📦 ${escapeHtml(p.nome)}</h2>${imagemHtml}<p><strong>📂 Categoria:</strong> ${p.categoria || '-'}</p><p><strong>📅 Data inclusão:</strong> ${p.dataInclusao || '-'}</p><div class="preco-box"><strong>💰 Análise de Preços:</strong><br>Mínimo: R$ ${p.precoMin?.toFixed(2) || '-'}<br>Médio: R$ ${p.precoMedio?.toFixed(2) || '-'}<br>Máximo: R$ ${p.precoMax?.toFixed(2) || '-'}<br><strong>Sugerido: R$ ${p.precoSugerido?.toFixed(2) || '-'}</strong></div><h3>📊 Notas e Pareceres</h3>${renderParecer("Demanda", p.demanda, p.parecerDemanda)}${renderParecer("Concorrência", p.concorrencia, p.parecerConcorrencia)}${renderParecer("Logística", p.logistica, p.parecerLogistica)}${renderParecer("Regulatório", p.regulatorio, p.parecerRegulatorio)}${renderParecer("Diferenciação", p.diferenciacao, p.parecerDiferenciacao)}${renderParecer("Posicionamento", p.posicionamento, p.parecerPosicionamento)}${renderParecer("Apelo de Venda", p.apelo, p.parecerApelo)}${renderParecer("Facilidade de Venda", p.facilidade, p.parecerFacilidade)}${renderParecer("Escala e Recorrência", p.escala, p.parecerEscala)}${renderParecer("Risco", p.risco, p.parecerRisco)}<div style="text-align:right;margin-top:20px;"><button onclick="window.fecharModal()" class="btn-reset">Fechar</button></div>`; 
         document.getElementById("modalDetalhes").style.display = "flex"; 
     }
     
@@ -535,7 +619,7 @@
         select.innerHTML = '<option value="">Todas</option>' + categorias.map(c=>`<option>${escapeHtml(c)}</option>`).join(''); 
     }
     
-    async function importarJSON(jsonText, mapaTexto) { 
+    async function importarJSON(jsonText, mapaTexto, jotacao1Texto, jotacao2Texto, jotacao3Texto) { 
         try { 
             if (!jsonText || jsonText.trim() === "") {
                 alert("❌ Erro: O JSON está vazio. Cole um JSON válido primeiro.");
@@ -593,7 +677,10 @@
                 risco: data.risco?.nota || 0, 
                 parecerRisco: data.risco?.parecer || "", 
                 alertasRisco: Array.isArray(data.risco?.alertas) ? data.risco.alertas.join('\n') : "",
-                mapaDominacao: mapaTexto || ""
+                mapaDominacao: mapaTexto || "",
+                jotacao1: jotacao1Texto || "",
+                jotacao2: jotacao2Texto || "",
+                jotacao3: jotacao3Texto || jsonText || ""
             }; 
             produtos.push(produto); 
             renderizarTabela(); 
@@ -679,53 +766,95 @@
             const compiladoText = compilado.ok ? await compilado.text() : "Arquivo não encontrado";
             const dominacaoText = dominacao.ok ? await dominacao.text() : "Arquivo não encontrado";
             
+            prompts.selecao = selecaoText;
+            prompts.analise = analiseText;
+            prompts.compilado = compiladoText;
+            prompts.dominacao = dominacaoText;
+            
             container.innerHTML = `
                 <div class="prompt-card">
                     <h4>📌 PROMPT 1: SELECIONAR 5 ANÚNCIOS</h4>
                     <p>📸Anexe os PRINTS da página de busca do Mercado Livre (com todos os cards visíveis) e cole este prompt + o texto de todos os cards. A IA selecionará 5 anúncios para análise.</p>
                     <code>${escapeHtml(selecaoText.substring(0, 800))}${selecaoText.length > 800 ? '...' : ''}</code>
                     <button class="btn-copiar" data-prompt="selecao" style="margin-top: 8px;">📋 Copiar Prompt 1</button>
+                    <div class="jotacao-area">
+                        <label>📝 JOTAÇÃO 1 (JSON gerado pela IA)</label>
+                        <textarea id="jotacao1Input" rows="4" placeholder="Cole aqui o JSON gerado pela IA..."></textarea>
+                        <button class="btn-salvar-jotacao" data-jotacao="j1">💾 Salvar Jotação 1</button>
+                        <div class="info-jotacao">✓ Salvo localmente para usar nos Prompts 3 e 4</div>
+                    </div>
                 </div>
                 <div class="prompt-card">
                     <h4>🔗 PROMPT 2: ANALISAR OS 5 LINKS</h4>
                     <p>🔗 Envie este prompt para a IA. Abra os 5 anúncios sugeridos e, para cada produto (um por mensagem), envie imagens suficientes para exibir todas as informações do anúncio + o texto da descrição copiado. A IA analisará a qualidade da concorrência.</p>
                     <code>${escapeHtml(analiseText.substring(0, 800))}${analiseText.length > 800 ? '...' : ''}</code>
                     <button class="btn-copiar" data-prompt="analise" style="margin-top: 8px;">📋 Copiar Prompt 2</button>
+                    <div class="jotacao-area">
+                        <label>📝 JOTAÇÃO 2 (JSON Consolidado gerado pela IA)</label>
+                        <textarea id="jotacao2Input" rows="4" placeholder="Cole aqui o JSON Consolidado do Prompt 2..."></textarea>
+                        <button class="btn-salvar-jotacao" data-jotacao="j2">💾 Salvar Jotação 2</button>
+                        <div class="info-jotacao">✓ Salvo localmente para usar nos Prompts 3 e 4</div>
+                    </div>
                 </div>
                 <div class="prompt-card">
                     <h4>📦 PROMPT 3: GERAR JSON COMPLETO</h4>
                     <p>🤖 Cole este prompt após ter todas as informações. A IA vai gerar o JSON completo para importar no app.</p>
                     <code>${escapeHtml(compiladoText.substring(0, 800))}${compiladoText.length > 800 ? '...' : ''}</code>
-                    <button class="btn-copiar" data-prompt="compilado" style="margin-top: 8px;">📋 Copiar Prompt 3</button>
+                    <button class="btn-copiar" data-prompt="compilado" style="margin-top: 8px;">📋 Copiar Prompt 3 (com J1+J2)</button>
+                    <div class="jotacao-area">
+                        <label>📝 JOTAÇÃO 3 / JSON FINAL (gerado pela IA)</label>
+                        <textarea id="jotacao3Input" rows="4" placeholder="Cole aqui o JSON Final gerado pela IA..."></textarea>
+                        <button class="btn-salvar-jotacao" data-jotacao="j3">💾 Salvar Jotação 3</button>
+                        <div class="info-jotacao">✓ Salvo localmente para usar no Prompt 4</div>
+                    </div>
                 </div>
                 <div class="prompt-card">
                     <h4>⚔️ PROMPT 4: MAPA DE DOMINAÇÃO DO MERCADO</h4>
                     <p>🎯 Use este prompt após ter todas as análises. A IA vai gerar um mapa estratégico completo para dominar o mercado.</p>
                     <code>${escapeHtml(dominacaoText.substring(0, 800))}${dominacaoText.length > 800 ? '...' : ''}</code>
-                    <button class="btn-copiar" data-prompt="dominacao" style="margin-top: 8px;">📋 Copiar Prompt 4</button>
+                    <button class="btn-copiar" data-prompt="dominacao" style="margin-top: 8px;">📋 Copiar Prompt 4 (com J1+J2+J3)</button>
+                    <div class="info-jotacao" style="margin-top:8px;">⚡ O Prompt 4 usa automaticamente J1 + J2 + J3 salvos</div>
                 </div>
             `;
             
-            prompts.selecao = selecaoText;
-            prompts.analise = analiseText;
-            prompts.compilado = compiladoText;
-            prompts.dominacao = dominacaoText;
+            // Carregar Jotações salvos
+            carregarJotacoesLocal();
             
+            // Eventos de salvar Jotação
+            document.querySelectorAll(".btn-salvar-jotacao").forEach(btn => {
+                btn.addEventListener("click", () => {
+                    const jotacaoKey = btn.dataset.jotacao;
+                    let inputId = "";
+                    if (jotacaoKey === "j1") inputId = "jotacao1Input";
+                    else if (jotacaoKey === "j2") inputId = "jotacao2Input";
+                    else if (jotacaoKey === "j3") inputId = "jotacao3Input";
+                    const valor = document.getElementById(inputId).value;
+                    salvarJotacao(jotacaoKey, valor);
+                    alert(`✅ ${jotacaoKey.toUpperCase()} salvo localmente!`);
+                });
+            });
+            
+            // Eventos de copiar com validação
             document.querySelectorAll(".btn-copiar").forEach(btn => {
-                btn.addEventListener("click", () => copiarPrompt(btn.dataset.prompt));
+                btn.addEventListener("click", async () => {
+                    const tipo = btn.dataset.prompt;
+                    if (tipo === "selecao") {
+                        await copiarTexto(prompts.selecao, "✅ Prompt 1 copiado!");
+                    } else if (tipo === "analise") {
+                        await copiarTexto(prompts.analise, "✅ Prompt 2 copiado!");
+                    } else if (tipo === "compilado") {
+                        if (validarJotacoesNecessarias(["j1", "j2"])) {
+                            await copiarTexto(montarPrompt3Completo(), "✅ Prompt 3 completo copiado (com J1 + J2)!");
+                        }
+                    } else if (tipo === "dominacao") {
+                        if (validarJotacoesNecessarias(["j1", "j2", "j3"])) {
+                            await copiarTexto(montarPrompt4Completo(), "✅ Prompt 4 completo copiado (com J1 + J2 + J3)!");
+                        }
+                    }
+                });
             });
         } catch(e) {
             container.innerHTML = `<div class="erro-prompts">⚠️ Erro ao carregar prompts. Verifique se a pasta "prompts" existe e contém os arquivos selecao.txt, analise.txt, compilado.txt e dominacao.txt</div>`;
-        }
-    }
-    
-    async function copiarPrompt(tipo) {
-        let texto = prompts[tipo];
-        if(texto && texto !== "Arquivo não encontrado") {
-            await navigator.clipboard.writeText(texto);
-            alert(`✅ Prompt ${tipo} copiado!`);
-        } else {
-            alert(`❌ Prompt ${tipo} não disponível`);
         }
     }
     
@@ -735,13 +864,17 @@
     document.getElementById("btnImportarJSON").addEventListener("click", async () => {
         const jsonText = document.getElementById("jsonImport").value;
         const mapaTexto = document.getElementById("mapaDominacaoImport").value;
+        const jotacao1 = document.getElementById("jotacao1Import").value;
+        const jotacao2 = document.getElementById("jotacao2Import").value;
         if (!jsonText || jsonText.trim() === "") {
             alert("❌ O campo JSON está vazio. Cole um JSON válido primeiro.");
             return;
         }
-        await importarJSON(jsonText, mapaTexto);
+        await importarJSON(jsonText, mapaTexto, jotacao1, jotacao2, jsonText);
         document.getElementById("jsonImport").value = "";
         document.getElementById("mapaDominacaoImport").value = "";
+        document.getElementById("jotacao1Import").value = "";
+        document.getElementById("jotacao2Import").value = "";
     });
     
     document.getElementById("btnImportarArquivo").addEventListener("click", () => {
@@ -754,9 +887,13 @@
             reader.onload = async (e) => {
                 const jsonText = e.target.result;
                 const mapaTexto = document.getElementById("mapaDominacaoImport").value;
-                await importarJSON(jsonText, mapaTexto);
+                const jotacao1 = document.getElementById("jotacao1Import").value;
+                const jotacao2 = document.getElementById("jotacao2Import").value;
+                await importarJSON(jsonText, mapaTexto, jotacao1, jotacao2, jsonText);
                 document.getElementById("jsonImport").value = "";
                 document.getElementById("mapaDominacaoImport").value = "";
+                document.getElementById("jotacao1Import").value = "";
+                document.getElementById("jotacao2Import").value = "";
                 fileInput.value = "";
             }; 
             reader.readAsText(file);

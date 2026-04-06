@@ -1,142 +1,449 @@
-🚀 PROMPT — MAPA DE DOMINAÇÃO DO MERCADO (VERSÃO PROFISSIONAL)
+🚀 PROMPT FINAL — MAPA DE DOMINAÇÃO DO MERCADO (MDM INTEGRADO)
 
-Com base nas análises já realizadas anteriormente (prints da busca + análise detalhada de 5 anúncios concorrentes), você deve gerar um **MAPA DE DOMINAÇÃO DO MERCADO** altamente estratégico.
+Com base nas análises já realizadas anteriormente, você deve gerar um MAPA DE DOMINAÇÃO DO MERCADO altamente estratégico.
+
+Seu papel aqui não é reanalisar anúncio por anúncio nem repetir o que já foi feito.
+Seu papel é pensar como estrategista de entrada, usando tudo o que já foi levantado para responder:
+
+como o mercado realmente funciona
+onde estão as falhas estruturais
+onde há oportunidade real de dominação
+como entrar para ganhar dinheiro
+como evitar entrar de forma burra, genérica ou fraca
+⚠️ DADOS DE ENTRADA OBRIGATÓRIOS
+
+Você receberá obrigatoriamente 4 fontes de informação:
+
+1. JSON DO PROMPT 1
+
+Esse JSON representa a leitura macro do mercado, feita a partir dos prints da página de busca do Mercado Livre.
+
+Ele traz:
+
+a distribuição real do mercado visível
+a proporção de:
+melhor execução
+pior execução
+mais vendidos
+diferenciados
+os atributos competitivos/logísticos visíveis:
+FULL
+frete grátis
+entrega rápida
+
+Esse JSON é a principal fonte para entender:
+
+o padrão dominante do mercado
+a intensidade da concorrência real
+o nível competitivo da página
+o quanto atributos como FULL/frete/velocidade já viraram padrão
+2. JSON CONSOLIDADO DO PROMPT 2
+
+Esse JSON representa a leitura micro / qualitativa dos 5 anúncios selecionados.
+
+Ele traz:
+
+notas dos anúncios
+nível de execução
+pontos fracos
+melhorias sugeridas
+padrões observados
+oportunidades práticas
+
+Esse JSON serve para:
+
+validar qualitativamente o que aparece no macro
+aprofundar como os concorrentes executam
+mostrar onde eles erram de verdade
+revelar falhas de conversão, posicionamento, narrativa, oferta e apresentação
 
 ⚠️ IMPORTANTE:
+Esses 5 anúncios não representam a distribuição real do mercado.
+Eles são uma amostra estratégica, escolhida intencionalmente para funcionar como lupa qualitativa.
 
-* NÃO repita análises individuais dos anúncios
-* NÃO faça resumo superficial
-* NÃO seja genérico
-* NÃO explique o que é básico
-* Trabalhe em nível estratégico (pensamento de quem quer dominar o mercado)
+Não trate esses 5 anúncios como se fossem a fotografia estatística do mercado.
 
-═══════════════════════════════════════════════
+3. JSON FINAL DO PROMPT 3
+
+Esse JSON representa a análise consolidada do produto.
+
+Ele traz:
+
+demanda
+concorrência
+logística
+regulatório
+diferenciação
+posicionamento
+apelo
+facilidade
+escala
+risco
+
+Esse JSON é a principal base para responder:
+
+vale a pena entrar ou não
+qual é a atratividade do produto
+qual é a viabilidade estratégica
+onde está o maior risco
+onde está o maior potencial
+4. PRINTS DA BUSCA (CONTEXTO ORIGINAL)
+
+Os prints existem como contexto original da leitura do mercado.
+
+⚠️ Porém, a leitura principal já foi transformada em JSON no Prompt 1.
+Portanto, aqui no Prompt 4, você deve usar os prints apenas como contexto complementar, e não como base principal.
+
+A base principal da sua análise deve ser:
+
+Prompt 1 para o macro
+Prompt 2 para o micro
+Prompt 3 para o diagnóstico final do produto
+⚠️ REGRA CENTRAL DE INTERPRETAÇÃO (CRÍTICA)
+
+Você deve entender corretamente o papel de cada camada:
+
+PROMPT 1 = VISÃO MACRO DO MERCADO
+
+Mostra:
+
+como o mercado está distribuído
+qual é o nível competitivo dominante
+quantos anúncios parecem fortes ou fracos
+o peso de atributos relevantes como FULL, frete grátis e entrega rápida
+
+Essa é a camada principal para entender o mercado como um todo.
+
+PROMPT 2 = VISÃO MICRO / LUPA QUALITATIVA
+
+Mostra:
+
+como os concorrentes realmente executam
+quais falhas se repetem
+quais oportunidades aparecem quando se entra mais fundo
+
+Essa é a camada principal para entender falhas práticas de execução e oportunidade real de superioridade.
+
+PROMPT 3 = SÍNTESE ESTRATÉGICA DO PRODUTO
+
+Mostra:
+
+se o produto é atraente ou ruim
+o nível da concorrência
+o espaço de diferenciação
+o potencial de posicionamento
+o risco, a escala e a facilidade de venda
+
+Essa é a camada principal para decidir se vale entrar e como entrar.
+
+⚠️ HIERARQUIA DE PESO ENTRE AS FONTES
+
+Use esta lógica obrigatoriamente:
+
+Quando estiver analisando O MERCADO COMO UM TODO:
+
+→ dê mais peso ao Prompt 1
+
+Quando estiver analisando FALHAS DE EXECUÇÃO / PADRÕES DE ERRO / GAP PRÁTICO:
+
+→ use o Prompt 2
+
+Quando estiver analisando VIABILIDADE / ATRATIVIDADE / ESTRATÉGIA DE ENTRADA:
+
+→ use fortemente o Prompt 3
+
+Quando um ponto depender das três camadas:
+
+→ combine assim:
+
+Prompt 1 = realidade do mercado
+Prompt 2 = profundidade qualitativa
+Prompt 3 = decisão estratégica consolidada
+⚠️ IMPORTANTE
+NÃO repita análises individuais dos anúncios
+NÃO faça resumo superficial
+NÃO seja genérico
+NÃO explique o básico
+NÃO fale como professor
+NÃO faça texto bonito e vazio
+Trabalhe em nível estratégico
+Pense como alguém que quer dominar o mercado, não apenas participar
+Fale como alguém que está tentando encontrar uma entrada vencedora, não uma entrada “ok”
 🎯 OBJETIVO
-═══════════════════════════════════════════════
 
-Identificar:
+Identificar com clareza:
 
-* Como o mercado está operando de verdade
-* Onde estão as falhas estruturais
-* Onde existe oportunidade clara de dominação
-* Como entrar para ganhar (não competir)
-
-═══════════════════════════════════════════════
+como o mercado realmente funciona
+onde estão as falhas estruturais
+onde há oportunidade clara de dominação
+qual é o movimento inteligente de entrada
+como entrar para ganhar (não apenas competir)
 🧠 ESTRUTURA OBRIGATÓRIA DA RESPOSTA
-═══════════════════════════════════════════════
+🧠 MAPA DE DOMINAÇÃO DO MERCADO
+🎯 0. VEREDITO DE VIABILIDADE (OBRIGATÓRIO)
 
-# 🧠 MAPA DE DOMINAÇÃO DO MERCADO
+Com base principalmente no JSON do Prompt 3, mas validando com Prompt 1 e Prompt 2:
 
-## 🎯 1. RAIO-X REAL DO MERCADO
+VALE A PENA ENTRAR NESSE MERCADO?
 
-Analise o padrão dos concorrentes:
+Responda com uma das opções:
 
-* Como eles se posicionam
-* Como comunicam
-* Como vendem
-* Nível real de qualidade (não aparência)
+SIM
+NÃO
+COM RESSALVAS
+IMPORTANTE:
 
+Essa resposta não deve ser emocional nem genérica.
+Ela deve refletir a combinação entre:
+
+demanda real
+nível da concorrência
+espaço de diferenciação
+risco operacional
+capacidade de posicionamento
+padrão dominante do mercado
+Se a resposta for NÃO ou COM RESSALVAS:
+
+Explique em 1 frase qual é o principal risco.
+
+🎯 1. RAIO-X REAL DO MERCADO
+
+Baseie-se principalmente no Prompt 1.
+
+Aqui você deve analisar:
+
+como os concorrentes se posicionam
+como comunicam
+como vendem
+qual é o nível real de qualidade
+qual é o padrão dominante da página
+o que realmente está prevalecendo no mercado
+IMPORTANTE:
+
+A análise deve refletir a proporção real do mercado, não apenas os 5 anúncios.
+
+Use os 5 anúncios apenas como validação qualitativa.
+
+Analise explicitamente:
+predominância de anúncios fortes ou fracos
+quanto o mercado parece genérico
+quanto o mercado parece bem executado
+presença de diferenciação real ou não
+presença de atributos competitivos fortes:
+FULL
+frete grátis
+entrega rápida
+IMPORTANTE SOBRE ATRIBUTOS LOGÍSTICOS:
+
+FULL, frete grátis e entrega rápida não são apenas detalhes operacionais.
+Eles alteram a força competitiva percebida do mercado.
+
+Se esses atributos aparecem com frequência, isso significa que:
+
+o padrão mínimo competitivo sobe
+o comprador passa a esperar mais conveniência
+competir sem esses atributos fica mais difícil
+o posicionamento precisa compensar essa desvantagem
 Liste:
+padrões dominantes
+erros recorrentes
+limitações estruturais do mercado
+💣 2. FALHAS DO MERCADO (ONDE ESTÁ O OURO)
 
-* Padrões dominantes
-* Erros recorrentes
-* Limitações estruturais
+Baseie-se na combinação de:
 
-⚠️ Seja crítico (não elogie sem motivo)
+padrões repetidos do Prompt 1
+fraquezas recorrentes do Prompt 2
 
----
+Aqui você deve identificar onde está o dinheiro escondido.
 
-## 💣 2. FALHAS DO MERCADO (ONDE ESTÁ O OURO)
+Procure falhas reais como:
 
-Liste falhas reais como:
+problemas de percepção
+erros de posicionamento
+falta de diferenciação
+fraqueza em imagens
+fraqueza em oferta
+fraqueza em narrativa
+fraqueza em promessa
+fraqueza em conveniência percebida
+anúncios que vendem mesmo mal executados
+atributos fortes de logística convivendo com execução fraca
+bom volume com comunicação ruim
+IMPORTANTE:
 
-* Problemas de percepção
-* Erros de posicionamento
-* Falta de diferenciação
-* Fraquezas em imagens, oferta ou narrativa
+Não liste banalidades.
+Liste falhas que realmente representam oportunidade de captura de mercado.
 
-👉 Aqui está o dinheiro — seja direto
+👉 Aqui está o dinheiro — seja direto.
 
----
-
-## 🚀 3. OPORTUNIDADE REAL (GAP DE MERCADO)
+🚀 3. OPORTUNIDADE REAL (GAP DE MERCADO)
 
 Explique claramente:
 
 ❌ Como o mercado vende hoje
-VS
+
+Mostre:
+
+como o mercado se apresenta hoje
+como fala com o cliente
+como estrutura sua oferta
+o que está faltando
+o que está sendo mal explorado
 ✅ Como deveria vender
 
-Transforme isso em:
-👉 Uma nova proposta de valor
+Mostre:
 
----
+como deveria ser a comunicação
+como deveria ser a oferta
+como deveria ser a percepção de valor
+como deveria ser a experiência de compra
+Depois transforme isso em:
 
-## 🧩 4. ESTRATÉGIA DE DOMINAÇÃO
+👉 Uma proposta de valor clara, explorável e competitivamente inteligente
 
-Divida em:
+Essa nova proposta de valor precisa fazer sentido com base em:
 
-### 🔥 POSICIONAMENTO
+padrão do mercado
+falhas observadas
+espaço para diferenciação
+atributos logísticos disponíveis ou ausentes
+limite competitivo real
+🧩 4. ESTRATÉGIA DE DOMINAÇÃO
 
-O que você vai vender (percepção)
+Divida obrigatoriamente em:
 
-### 🔥 OFERTA
+🔥 POSICIONAMENTO
 
-Como seu produto será percebido diferente
+Explique:
 
-### 🔥 PREÇO
+o que você vai vender de verdade
+qual percepção dominante deve ser construída
+como sair do genérico
+como compensar, se necessário, eventuais desvantagens operacionais
+como se posicionar diante de um mercado com ou sem FULL, frete grátis e entrega rápida como padrão
+🔥 OFERTA
 
-Estratégia inteligente (não chute)
+Explique:
 
----
+como o produto deve ser percebido como superior
+qual estrutura de oferta aumenta a percepção de valor
+como combinar produto, kit, conveniência, proposta e benefício
+qual é a superioridade percebida que precisa ficar óbvia
+🔥 PREÇO
 
-## 🎯 5. EXECUÇÃO PRÁTICA (O DIFERENCIAL REAL)
+Defina a lógica de preço com base em:
 
-Explique o que fazer em:
+posicionamento
+concorrência
+preço médio
+espaço premium
+pressão de mercado
+risco de guerra de preço
 
-* IMAGENS (nível profissional)
-* VÍDEO (se aplicável)
-* TÍTULO (estrutura ideal)
-* DESCRIÇÃO (como vender de verdade)
-* KIT / ESCALA (se aplicável)
+⚠️ IMPORTANTE:
+Não chute preço.
+Não use preço como resposta preguiçosa.
+O preço precisa ser uma consequência da estratégia.
 
-⚠️ Aqui precisa ser aplicável na prática
+🎯 5. EXECUÇÃO PRÁTICA (O DIFERENCIAL REAL)
 
----
+Explique o que deve ser feito de forma prática em:
 
-## ⚠️ 6. ERROS QUE NÃO PODE COMETER
+IMAGENS
 
-Liste erros que fariam o projeto fracassar
+Como converter mais que os concorrentes.
+Que tipo de imagem falta no mercado.
+Que tipo de narrativa visual deve ser usada.
+Como gerar percepção de valor maior.
 
----
+VÍDEO
 
-## 🧠 7. MOVIMENTO ESTRATÉGICO FINAL
+Se aplicável:
+
+o que o vídeo deve mostrar
+qual função estratégica ele cumpre
+como ele pode compensar ou ampliar conversão
+TÍTULO
+
+Que estrutura de título tende a dominar melhor esse mercado.
+Como unir busca + clareza + benefício + diferenciação.
+
+DESCRIÇÃO
+
+Como montar uma descrição que converte melhor.
+Como resolver dúvidas.
+Como organizar informação.
+Como sustentar a proposta de valor.
+
+KIT / ESCALA
+
+Como aumentar ticket.
+Como diferenciar.
+Como fugir do genérico.
+Como criar estrutura de linha ou escada de oferta.
+
+⚠️ Seja prático e aplicável.
+⚠️ Não escreva teoria vazia.
+
+⚠️ 6. ERROS QUE NÃO PODE COMETER
+
+Liste erros que fariam o projeto fracassar com base em:
+
+falhas dos concorrentes
+limitações estruturais do mercado
+padrão competitivo atual
+atributos logísticos dominantes
+risco de commoditização
+guerra de preço
+mau posicionamento
+entrada genérica
+tentativa de competir só no preço
+tentar entrar sem compensar desvantagens reais
+
+Esses erros devem ser específicos para esse mercado.
+
+🧠 7. MOVIMENTO ESTRATÉGICO FINAL
 
 Explique claramente:
 
-👉 Como entrar para dominar
-👉 Por que isso funciona nesse mercado
+como entrar para dominar
+qual é o movimento inteligente de entrada
+por que isso funciona nesse mercado especificamente
+qual é a lógica de captura de valor
+onde está a alavanca principal
+onde está a vantagem que realmente importa
 
----
+Aqui você deve amarrar:
 
-## 🏁 8. RESUMO EXECUTIVO
+macro
+micro
+produto
+execução
+posicionamento
+barreiras práticas
 
-* Como está o mercado
-* Onde está o dinheiro
-* Como ganhar
+Esse é o trecho onde você transforma análise em decisão.
 
----
+🏁 8. RESUMO EXECUTIVO
 
-═══════════════════════════════════════════════
+Feche de forma direta respondendo:
+
+Como está o mercado (com base principalmente no Prompt 1)
+Onde está o dinheiro
+Como ganhar
 ⚠️ REGRAS CRÍTICAS
-═══════════════════════════════════════════════
-
-* Não use linguagem genérica
-* Não fale como professor — fale como estrategista
-* Não suavize a análise
-* Não copie padrões comuns de resposta
-* Pense como alguém que vai entrar para ganhar dinheiro
-
----
+Não use linguagem genérica
+Não fale como professor
+Fale como estrategista
+Não suavize a análise
+Não copie padrões comuns
+Não faça texto bonito e vazio
+Não repita os anúncios individualmente
+Não trate os 5 anúncios como se fossem o mercado inteiro
+Não ignore o Prompt 1
+Não ignore os atributos logísticos visíveis
+Não ignore o Prompt 3 na hora de decidir viabilidade
+Pense como alguém que quer entrar para ganhar dinheiro com inteligência
 
 Agora gere o MAPA DE DOMINAÇÃO DO MERCADO com base nos dados analisados.

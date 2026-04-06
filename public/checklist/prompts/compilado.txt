@@ -1,146 +1,658 @@
-COMPILAR ANÁLISE COMPLETA DO PRODUTO - GERAR JSON
+Com base nas informações estruturadas que já coletamos nas etapas anteriores, compile uma análise COMPLETA do produto em formato JSON.
 
-Com base nas informações que já coletamos (prints da busca + análise dos 5 links + sua própria avaliação do produto), compile uma análise COMPLETA em formato JSON.
+⚠️ DADOS DE ENTRADA OBRIGATÓRIOS:
 
-⚠️ IMPORTANTE: Use as regras de pontuação abaixo para cada critério.
+Você receberá obrigatoriamente:
 
-═══════════════════════════════════════════════════════════
+JSON DO PROMPT 1
+Esse JSON representa a leitura macro do mercado, feita a partir dos prints da busca do Mercado Livre.
+Ele traz:
+a distribuição real do mercado
+a presença relativa de:
+melhor execução
+pior execução
+mais vendidos
+diferenciados
+a proporção visível de atributos como:
+FULL
+frete grátis
+entrega rápida
+JSON CONSOLIDADO DO PROMPT 2
+Esse JSON representa a leitura micro / qualitativa dos 5 anúncios selecionados.
+Ele traz:
+notas dos anúncios
+nível de execução
+pontos fracos
+melhorias sugeridas
+padrões observados
+Sua própria avaliação estratégica do produto, feita com base nesses dados estruturados.
+⚠️ REGRA CENTRAL DE INTERPRETAÇÃO (CRÍTICA)
+
+Você deve entender corretamente o papel de cada entrada:
+
+JSON DO PROMPT 1 = VISÃO MACRO DO MERCADO
+
+Esse JSON mostra a realidade geral da página de busca, ou seja, o retrato mais amplo do mercado visível.
+
+Ele é a principal fonte para entender:
+
+o nível real de concorrência no mercado
+a proporção de anúncios fortes e fracos
+a presença de atributos competitivos relevantes
+a distribuição visível de volume
+o padrão dominante do mercado
+JSON DO PROMPT 2 = VISÃO MICRO / LUPA QUALITATIVA
+
+Esse JSON mostra uma amostra intencional de 5 anúncios, escolhidos para enxergar o mercado com mais profundidade.
+
+Esses 5 anúncios NÃO representam estatisticamente o mercado inteiro.
+
+Eles servem para:
+
+validar qualitativamente os padrões do mercado
+mostrar com mais profundidade como os concorrentes executam
+identificar falhas recorrentes
+revelar oportunidades reais de posicionamento, comunicação, oferta e conversão
+
+⚠️ IMPORTANTE:
+Os 5 anúncios foram escolhidos com propósitos diferentes (bom, ruim, líder, diferenciado, problemático).
+Portanto, NÃO use esses 5 anúncios como se fossem a distribuição do mercado.
+
+Exemplo do que NÃO fazer:
+
+ver 1 anúncio forte e 1 fraco e concluir que o mercado é “50% forte / 50% fraco”
+
+Isso seria errado.
+
+A distribuição real do mercado vem do Prompt 1.
+Os 5 anúncios servem como amostra qualitativa, não como distribuição quantitativa.
+
+⚠️ HIERARQUIA DE PESO ENTRE AS FONTES
+
+Ao montar o JSON final, use esta lógica:
+
+Quando a análise for sobre o MERCADO COMO UM TODO:
+
+→ dê mais peso ao JSON DO PROMPT 1
+
+Quando a análise for sobre PADRÕES DE EXECUÇÃO / FALHAS / OPORTUNIDADES:
+
+→ use o JSON DO PROMPT 2 como lupa qualitativa
+
+Quando um critério depender das duas visões:
+
+→ use:
+
+Prompt 1 como base principal
+Prompt 2 como validação qualitativa / aprofundamento
 📊 CATEGORIA E URL DA IMAGEM
+
 ═══════════════════════════════════════════════════════════
 
-CATEGORIA: Use APENAS o primeiro nível da categoria do Mercado Livre.
+📊 CATEGORIA
+
+═══════════════════════════════════════════════════════════
+
+Use APENAS o primeiro nível da categoria do Mercado Livre.
+
 Exemplos válidos:
-- "Esportes e Fitness"
-- "Casa, Móveis e Decoração"
-- "Eletrodomésticos"
-- "Beleza e Cuidado Pessoal"
-- "Ferramentas"
-- "Brinquedos e Hobbies"
-- "Informática"
-- "Celulares e Telefones"
 
-IMAGEM_URL: Preencha com um LINK DIRETO e VÁLIDO de uma imagem do produto.
-A URL deve abrir a imagem diretamente no navegador (arquivo .png, .jpg, .webp ou similar).
-Não use:
-- link de página de produto
-- link de busca
-- termo de busca
-- URL incompleta ou inferida
-
-Pode ser uma imagem genérica que represente bem o produto, apenas para ilustração.
-Exemplo válido:
-https://cdn.awsli.com.br/1709/1709525/produto/76990007/classic-black-maximum_01-cec6ilzv4b.png
-
-⚠️ "imagemUrl" deve conter obrigatoriamente uma URL direta de imagem, começando com http/https e terminando em extensão de imagem (.png, .jpg, .jpeg, .webp) ou outro link que abra diretamente o arquivo da imagem.
-⚠️ Não aceitar termo de busca, página de produto ou campo vazio, salvo se realmente não houver nenhuma imagem válida disponível.
+"Esportes e Fitness"
+"Casa, Móveis e Decoração"
+"Eletrodomésticos"
+"Beleza e Cuidado Pessoal"
+"Ferramentas"
+"Brinquedos e Hobbies"
+"Informática"
+"Celulares e Telefones"
 
 ═══════════════════════════════════════════════════════════
-📊 CRITÉRIO 1: DEMANDA (use os dados da sua análise)
+
+📊 IMAGEM DO PRODUTO (OBRIGATÓRIO)
+
 ═══════════════════════════════════════════════════════════
 
-Preencha com os dados que você já extraiu dos prints da busca:
+Preencha o campo "imagemUrl" com um link direto de uma imagem que represente o produto.
 
-PRECO_MIN: R$ [valor]
-PRECO_MEDIO: R$ [valor]  
-PRECO_MAX: R$ [valor]
-PRECO_SUGERIDO: R$ [valor]
+A imagem deve:
+representar corretamente o produto analisado
+ser apenas ilustrativa
+abrir diretamente no navegador
+ser um arquivo válido como .png, .jpg, .jpeg ou .webp
+REGRAS IMPORTANTES:
+NÃO use links de página (Mercado Livre, Shopee, etc.)
+NÃO use termos de busca
+NÃO copie exemplos fornecidos no prompt
+NÃO deixe vazio
+PRIORIDADE:
+Se você conhecer um link direto válido → use
+Se NÃO tiver certeza de um link direto válido → use um link genérico confiável que represente o produto
 
+⚠️ O objetivo NÃO é encontrar a imagem exata do anúncio.
+O objetivo é apenas ter uma imagem representativa válida do produto para fins ilustrativos.
+
+📊 CRITÉRIO 1: DEMANDA
+
+═══════════════════════════════════════════════════════════
+
+📊 DEMANDA
+
+═══════════════════════════════════════════════════════════
+
+A DEMANDA deve ser calculada com base principalmente no JSON DO PROMPT 1, porque ele representa a visão ampla da busca.
+
+Você deve usar:
+
+a leitura geral dos cards visíveis
+a presença relativa de anúncios vendidos
+a proporção de anúncios com forte volume
+a informação da distribuição do mercado
+
+⚠️ IMPORTANTE:
+A DEMANDA não pode ser calculada com base apenas nos 5 anúncios do Prompt 2, porque esses 5 foram escolhidos de forma intencional e não representam amostra neutra.
+
+Os 5 anúncios do Prompt 2 podem ajudar apenas como apoio, mas a leitura principal da demanda deve vir do Prompt 1.
+
+Preencha:
+precoMin
+precoMedio
+precoMax
+precoSugerido
 REGRAS DEMANDA:
 Nota 0 = nenhuma venda visível
 Nota 1 = líder com menos de 100 vendas
-Nota 2 = líder com 100-500 vendas
-Nota 3 = líder com 500-1000 vendas
-Nota 4 = líder com 1000-5000 vendas
+Nota 2 = líder com 100–500 vendas
+Nota 3 = líder com 500–1000 vendas
+Nota 4 = líder com 1000–5000 vendas
 Nota 5 = líder com mais de 5000 vendas
-BÔNUS: +0.5 se houver 3+ anúncios com +500 vendas
+BÔNUS:
+
+Adicionar +0.5 se houver presença relevante de anúncios com forte volume, por exemplo:
+
+3+ anúncios com +500 vendas
+ou distribuição claramente favorável a anúncios muito vendidos
+NO CAMPO "parecer":
+
+Explique a leitura da demanda com base:
+
+na visão geral do Prompt 1
+no padrão visível de vendas
+no nível de tração percebido na busca
+📊 CRITÉRIO 2: CONCORRÊNCIA
 
 ═══════════════════════════════════════════════════════════
-📊 CRITÉRIO 2: CONCORRÊNCIA (use a resposta do Prompt 2)
-═══════════════════════════════════════════════════════════
 
-Use a NOTA, PARECER e OPORTUNIDADES que você já recebeu.
+📊 CONCORRÊNCIA (USAR MACRO + MICRO)
 
 ═══════════════════════════════════════════════════════════
-📊 CRITÉRIO 3: LOGÍSTICA (avalie agora)
+
+A nota de CONCORRÊNCIA deve ser construída a partir de duas camadas:
+
+CAMADA 1 — BASE PRINCIPAL = JSON DO PROMPT 1
+
+Esse JSON mostra:
+
+quantos anúncios parecem fortes
+quantos parecem fracos
+quantos são mais vendidos
+quantos são diferenciados
+a proporção visível de atributos competitivos:
+FULL
+frete grátis
+entrega rápida
+
+Essa é a base principal da nota, porque representa o panorama real do mercado.
+
+CAMADA 2 — VALIDAÇÃO QUALITATIVA = JSON DO PROMPT 2
+
+Esse JSON mostra:
+
+como os concorrentes fortes executam
+quais são as falhas dos fracos
+quais padrões se repetem
+onde há espaço real para entrar melhor
+LÓGICA OBRIGATÓRIA:
+Use a distribuição (%) do Prompt 1 como peso principal
+Use o Prompt 2 para qualificar essa leitura
+NÃO use média simples dos 5 anúncios
+NÃO ignore a distribuição do mercado
+A nota final deve refletir a realidade do mercado, não apenas os exemplos escolhidos
+INTERPRETAÇÃO:
+maioria fraca → nota de concorrência mais baixa
+maioria média → nota intermediária
+presença relevante de fortes → elevar nota
+presença forte de FULL / frete grátis / entrega rápida → elevar dificuldade competitiva
+mercado com muitos atributos logísticos fortes e boa execução → concorrência mais dura
+mercado fraco em execução, mal posicionado e com poucos diferenciais → concorrência mais acessível
+IMPORTANTE SOBRE ATRIBUTOS LOGÍSTICOS:
+
+FULL, frete grátis e entrega rápida não são apenas logística — eles também aumentam a força competitiva do mercado.
+
+Exemplo:
+
+se muitos concorrentes são FULL
+se muitos oferecem frete grátis
+se entrega rápida aparece com frequência
+
+isso melhora a proposta percebida pelo comprador e aumenta a dificuldade de competir, especialmente para quem ainda não terá FULL.
+
+Portanto, esses atributos devem influenciar:
+
+a nota de concorrência
+o parecer sobre posicionamento
+a leitura do padrão atual do mercado
+NO CAMPO "parecer":
+
+Mencione explicitamente:
+
+a leitura do mercado com base na distribuição do Prompt 1
+como os 5 anúncios analisados confirmam ou aprofundam essa leitura
+o impacto dos atributos competitivos visíveis (FULL, frete grátis, entrega rápida)
+NO CAMPO "oportunidades":
+
+Liste oportunidades reais encontradas com base:
+
+nas falhas recorrentes dos concorrentes
+no padrão do mercado
+na diferença entre mercado dominante e qualidade real de execução
+📊 CRITÉRIO 3: LOGÍSTICA
+
 ═══════════════════════════════════════════════════════════
 
-TABELA: Tamanho (<10cm=5, 10-20cm=4, 20-30cm=3, 30-40cm=2, >40cm=1)
-Peso (<100g=5, 100-300g=4, 300-600g=3, 600g-1kg=2, >1kg=1)
-Compacidade (Perfeito=5, Bom=4, Médio=3, Irregular=2, Não empilha=1)
-Fragilidade (Inquebrável=5, Baixa=4, Média=3, Alta=2, Extremamente=1)
-FÓRMULA: Média dos 6 critérios
+📊 LOGÍSTICA (AVALIAR O PRODUTO)
 
 ═══════════════════════════════════════════════════════════
-📊 CRITÉRIO 4: REGULATÓRIO (avalie agora)
+
+Aqui a análise é mais ligada ao produto em si, não ao mercado.
+
+Avalie:
+
+Tamanho
+<10cm = 5
+10–20cm = 4
+20–30cm = 3
+30–40cm = 2
+
+40cm = 1
+
+Peso
+<100g = 5
+100–300g = 4
+300–600g = 3
+600g–1kg = 2
+
+1kg = 1
+
+Compacidade
+Perfeito = 5
+Bom = 4
+Médio = 3
+Irregular = 2
+Não empilha = 1
+Fragilidade
+Inquebrável = 5
+Baixa = 4
+Média = 3
+Alta = 2
+Extremamente = 1
+FÓRMULA:
+
+Média dos critérios logísticos avaliados
+
+NO CAMPO "parecer":
+
+Explique a facilidade ou dificuldade operacional do produto sob o ponto de vista logístico.
+
+NO CAMPO "alertas":
+
+Liste riscos reais:
+
+volume
+fragilidade
+armazenamento
+empilhamento
+custo logístico potencial
+📊 CRITÉRIO 4: REGULATÓRIO
+
 ═══════════════════════════════════════════════════════════
 
-CRITÉRIOS (0-5): Anvisa, Inmetro, Certificação, Homologação, Risco legal
-FÓRMULA: Média dos 5 critérios
+📊 REGULATÓRIO (AVALIAR O PRODUTO)
 
 ═══════════════════════════════════════════════════════════
-📊 CRITÉRIO 5: DIFERENCIAÇÃO (avalie agora)
-═══════════════════════════════════════════════════════════
 
-CRITÉRIOS (0-5): Melhorar produto, Criar kit, Melhorar embalagem, Nichar público, Resolver dor melhor
-FÓRMULA: Média dos 5 critérios
+CRITÉRIOS (0-5):
 
-═══════════════════════════════════════════════════════════
-📊 CRITÉRIO 6: POSICIONAMENTO (avalie agora)
-═══════════════════════════════════════════════════════════
+Anvisa
+Inmetro
+Certificação
+Homologação
+Risco legal
+FÓRMULA:
 
-CRITÉRIOS (0-5): Percepção valor atual, Potencial premium, Espaço aumento, Concorrentes mal posicionados, Sair do genérico
-FÓRMULA: Média dos 5 critérios
+Média dos 5 critérios
 
-═══════════════════════════════════════════════════════════
-📊 CRITÉRIO 7: APELO DE VENDA (avalie agora)
-═══════════════════════════════════════════════════════════
+LÓGICA:
+Nota ALTA = produto fácil de operar do ponto de vista regulatório
+Nota BAIXA = produto com exigências, risco ou burocracia regulatória maior
+NO CAMPO "parecer":
 
-CRITÉRIOS (0-5): Resolve problema claro, Benefício imediato, Antes/depois possível, Visual forte, Demonstração fácil, Entendimento rápido
-FÓRMULA: Média dos 6 critérios
+Explique o grau de facilidade regulatória da operação.
 
-═══════════════════════════════════════════════════════════
-📊 CRITÉRIO 8: FACILIDADE DE VENDA (avalie agora)
-═══════════════════════════════════════════════════════════
+NO CAMPO "exigencias":
 
-CRITÉRIOS (0-5): Produto simples, Baixa dúvida, Baixa devolução, Expectativa realista, Funciona 1ª vez
-FÓRMULA: Média dos 5 critérios
-ALERTA GUERRA PREÇO: SIM se (simples nota 5 + preço médio < R$50 + demanda alta + dif baixa)
+Descreva exigências, riscos ou observações relevantes.
+
+📊 CRITÉRIO 5: DIFERENCIAÇÃO
 
 ═══════════════════════════════════════════════════════════
-📊 CRITÉRIO 9: ESCALA E RECORRÊNCIA (avalie agora)
-═══════════════════════════════════════════════════════════
 
-CRITÉRIOS (0-5): Compra mais de 1, Criar kits, Complementos, Aumenta ticket, Linha produtos, Não é compra única
-FÓRMULA: Média dos 6 critérios
+📊 DIFERENCIAÇÃO
 
 ═══════════════════════════════════════════════════════════
-📊 CRITÉRIO 10: RISCO (avalie agora)
+
+Aqui você deve olhar para:
+
+falhas dos concorrentes no Prompt 2
+padrão dominante do mercado no Prompt 1
+espaço real para entrar diferente
+
+CRITÉRIOS (0-5):
+
+Melhorar produto
+Criar kit
+Melhorar embalagem
+Nichar público
+Resolver dor melhor
+FÓRMULA:
+
+Média dos 5 critérios
+
+LÓGICA:
+
+Quanto maior o espaço para entrar de forma diferente e claramente superior, maior a nota.
+
+NO CAMPO "parecer":
+
+Explique onde está o espaço real de diferenciação.
+
+NO CAMPO "oportunidades":
+
+Liste possibilidades concretas de:
+
+kit
+nicho
+embalagem
+proposta
+benefício
+📊 CRITÉRIO 6: POSICIONAMENTO
+
 ═══════════════════════════════════════════════════════════
 
-CRITÉRIOS (0-5): Quebra, Devolução, Avaliação negativa, Frustração, Problema crônico, Garantia/suporte
-FÓRMULA: Média dos 6 critérios
+📊 POSICIONAMENTO (MUITO IMPORTANTE)
 
 ═══════════════════════════════════════════════════════════
-📤 FORMATO DE RESPOSTA OBRIGATÓRIO (APENAS o JSON)
+
+Esse critério deve analisar como o mercado está posicionado hoje e qual o espaço para entrar melhor.
+
+Aqui você deve usar fortemente a combinação de:
+
+Prompt 1 = padrão atual do mercado
+Prompt 2 = qualidade real da execução observada
+
+CRITÉRIOS (0-5):
+
+Percepção de valor atual
+Potencial premium
+Espaço para aumento
+Concorrentes mal posicionados
+Sair do genérico
+FÓRMULA:
+
+Média dos 5 critérios
+
+COMO ANALISAR:
+
+Pergunte-se:
+
+O mercado vende de forma genérica ou construída?
+Os concorrentes parecem baratos / comuns / sem narrativa?
+Existe espaço para posicionar melhor?
+Existe espaço para premium?
+O mercado é dominado por preço ou por percepção?
+Os anúncios são mal apresentados mesmo quando vendem?
+FULL, frete grátis e entrega rápida já viraram padrão?
+Esses atributos logísticos aumentam a exigência mínima para entrar?
+O mercado está “bem servido” ou ainda mal comunicado?
+IMPORTANTE:
+
+A presença de FULL, frete grátis e entrega rápida influencia o posicionamento porque:
+
+melhora a percepção de conveniência
+aumenta a expectativa do comprador
+eleva o padrão mínimo competitivo
+
+Portanto, se esses atributos forem frequentes no Prompt 1, isso deve aparecer no parecer de posicionamento.
+
+NO CAMPO "parecer":
+
+Explique:
+
+qual é o padrão atual do mercado
+se há espaço para premium
+se os concorrentes estão mal posicionados
+se o mercado ainda está genérico
+como os atributos logísticos mudam o jogo
+NO CAMPO precoMedioConcorrentes:
+
+Use o preço médio percebido do mercado.
+
+NO CAMPO precoPremiumSugerido:
+
+Sugira um preço coerente com uma proposta mais forte, se houver espaço real para isso.
+
+📊 CRITÉRIO 7: APELO DE VENDA
+
 ═══════════════════════════════════════════════════════════
+
+📊 APELO DE VENDA
+
+═══════════════════════════════════════════════════════════
+
+CRITÉRIOS (0-5):
+
+Resolve problema claro
+Benefício imediato
+Antes/depois possível
+Visual forte
+Demonstração fácil
+Entendimento rápido
+FÓRMULA:
+
+Média dos 6 critérios
+
+NO CAMPO "parecer":
+
+Explique a força natural de venda do produto.
+
+NO CAMPO "estrategias":
+
+Liste formas concretas de vender melhor:
+
+demonstração
+benefício
+narrativa visual
+antes/depois
+clareza
+📊 CRITÉRIO 8: FACILIDADE DE VENDA
+
+═══════════════════════════════════════════════════════════
+
+📊 FACILIDADE DE VENDA
+
+═══════════════════════════════════════════════════════════
+
+CRITÉRIOS (0-5):
+
+Produto simples
+Baixa dúvida
+Baixa devolução
+Expectativa realista
+Funciona na 1ª vez
+FÓRMULA:
+
+Média dos 5 critérios
+
+ALERTA GUERRA DE PREÇO:
+
+Marque "SIM" se houver combinação de:
+
+produto muito simples
+preço médio baixo
+demanda alta
+baixa diferenciação
+NO CAMPO "parecer":
+
+Explique se o produto é fácil ou difícil de vender de forma saudável.
+
+NO CAMPO "cuidados":
+
+Liste pontos de atenção:
+
+expectativa
+devolução
+frustração
+commoditização
+guerra de preço
+📊 CRITÉRIO 9: ESCALA E RECORRÊNCIA
+
+═══════════════════════════════════════════════════════════
+
+📊 ESCALA E RECORRÊNCIA
+
+═══════════════════════════════════════════════════════════
+
+CRITÉRIOS (0-5):
+
+Compra mais de 1
+Criar kits
+Complementos
+Aumenta ticket
+Linha de produtos
+Não é compra única
+FÓRMULA:
+
+Média dos 6 critérios
+
+NO CAMPO "parecer":
+
+Explique o potencial de escala e expansão.
+
+NO CAMPO "estrategias":
+
+Liste estratégias como:
+
+kits
+upsell
+cross-sell
+linha de produtos
+aumento de ticket
+📊 CRITÉRIO 10: RISCO
+
+═══════════════════════════════════════════════════════════
+
+📊 RISCO
+
+═══════════════════════════════════════════════════════════
+
+CRITÉRIOS (0-5):
+
+Quebra
+Devolução
+Avaliação negativa
+Frustração
+Problema crônico
+Garantia/suporte
+FÓRMULA:
+
+Média dos 6 critérios
+
+LÓGICA:
+Nota ALTA = produto mais seguro como operação
+Nota BAIXA = produto com maior chance de problema, devolução, frustração ou dano reputacional
+NO CAMPO "parecer":
+
+Explique o risco operacional geral.
+
+NO CAMPO "alertas":
+
+Liste riscos reais.
+
+📤 FORMATO DE RESPOSTA OBRIGATÓRIO
+
+⚠️ RESPONDA APENAS COM O JSON
+⚠️ NÃO adicione texto fora do JSON
+⚠️ Use as regras de pontuação acima
+⚠️ A nota de concorrência deve refletir a distribuição real do mercado + a qualidade dos anúncios analisados
+⚠️ A demanda deve refletir principalmente a visão macro do Prompt 1
+⚠️ Os 5 anúncios do Prompt 2 são validação qualitativa, não distribuição do mercado
 
 {
   "nome": "nome do produto",
   "categoria": "PRIMEIRO_NIVEL_APENAS",
-  "imagemUrl": "URL DIRETA DE UMA IMAGEM DO PRODUTO (não página, não busca, não texto)",
-  "demanda": {"nota": 0, "parecer": "", "precoMin": 0, "precoMedio": 0, "precoMax": 0, "precoSugerido": 0},
-  "concorrencia": {"nota": 0, "parecer": "", "oportunidades": []},
-  "logistica": {"nota": 0, "parecer": "", "alertas": []},
-  "regulatorio": {"nota": 0, "parecer": "", "exigencias": ""},
-  "diferenciacao": {"nota": 0, "parecer": "", "oportunidades": []},
-  "posicionamento": {"nota": 0, "parecer": "", "precoMedioConcorrentes": 0, "precoPremiumSugerido": 0},
-  "apelo": {"nota": 0, "parecer": "", "estrategias": []},
-  "facilidade": {"nota": 0, "parecer": "", "alertaGuerraPreco": "", "cuidados": []},
-  "escala": {"nota": 0, "parecer": "", "estrategias": []},
-  "risco": {"nota": 0, "parecer": "", "alertas": []
+  "imagemUrl": "URL DIRETA DE UMA IMAGEM DO PRODUTO",
+  "demanda": {
+    "nota": 0,
+    "parecer": "",
+    "precoMin": 0,
+    "precoMedio": 0,
+    "precoMax": 0,
+    "precoSugerido": 0
+  },
+  "concorrencia": {
+    "nota": 0,
+    "parecer": "",
+    "oportunidades": []
+  },
+  "logistica": {
+    "nota": 0,
+    "parecer": "",
+    "alertas": []
+  },
+  "regulatorio": {
+    "nota": 0,
+    "parecer": "",
+    "exigencias": ""
+  },
+  "diferenciacao": {
+    "nota": 0,
+    "parecer": "",
+    "oportunidades": []
+  },
+  "posicionamento": {
+    "nota": 0,
+    "parecer": "",
+    "precoMedioConcorrentes": 0,
+    "precoPremiumSugerido": 0
+  },
+  "apelo": {
+    "nota": 0,
+    "parecer": "",
+    "estrategias": []
+  },
+  "facilidade": {
+    "nota": 0,
+    "parecer": "",
+    "alertaGuerraPreco": "",
+    "cuidados": []
+  },
+  "escala": {
+    "nota": 0,
+    "parecer": "",
+    "estrategias": []
+  },
+  "risco": {
+    "nota": 0,
+    "parecer": "",
+    "alertas": []
+  }
 }
-
-⚠️ NÃO adicione texto fora do JSON.
-⚠️ Use as regras de pontuação acima.
-
-Agora, preencha o JSON com base no produto que estamos analisando.

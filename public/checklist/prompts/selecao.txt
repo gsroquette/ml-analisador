@@ -1,56 +1,186 @@
+🚀 PROMPT 1 — SELEÇÃO + DISTRIBUIÇÃO + ATRIBUTOS + JSON
+
 COM BASE APENAS NOS PRINTS DA PÁGINA DE BUSCA DO MERCADO LIVRE que eu anexei, você deve SELECIONAR 5 ANÚNCIOS para eu abrir e analisar a CONCORRÊNCIA com foco em QUALIDADE DE EXECUÇÃO.
 
- ***IMPORTANTE*** ANÚNCIOS PARA DESCONSIDERAR DA ANÁLISE: Os resultados de busca no Mercado Livre podem incluir produtos anômalos — ou seja, itens que não correspondem ao padrão predominante do produto pesquisado. Em alguns casos, podem ser produtos apenas relacionados ou semelhantes, mas não equivalentes ao que foi buscado. Sua tarefa é identificar qual é o padrão real do produto dominante na busca e desconsiderar da análise todos os anúncios que não se encaixam nesse padrão. Ao final da resposta, liste separadamente todos os anúncios desconsiderados.
+⚠️ IMPORTANTE — ANÚNCIOS PARA DESCONSIDERAR DA ANÁLISE
 
-📊 CRITÉRIOS DE SELEÇÃO (use estes para escolher 5 anúncios com PROPÓSITOS DIFERENTES):
+Os resultados de busca no Mercado Livre podem incluir produtos anômalos — ou seja, itens que não correspondem ao padrão predominante do produto pesquisado. Em alguns casos, podem ser produtos apenas relacionados ou semelhantes, mas não equivalentes ao que foi buscado.
 
-Antes de escolher os 5 anúncios, você deve avaliar TODOS os anúncios visíveis nos prints que não foram desconsiderados para análise (os que são fora de padrão). Faça isso mentalmente (NÃO mostrar essa análise. Usar apenas para tomar decisão mais precisa).
+Sua tarefa é identificar qual é o padrão real do produto dominante na busca e desconsiderar da análise todos os anúncios que não se encaixam nesse padrão.
 
-⚠️ Para cada anúncio, identifique nos prints:
-- Marca/nome do produto
-- Preço atual
-- Quantidade de vendas
-- Avaliação (estrelas)
-- Se é kit (quantas peças)
+Ao final da resposta, liste separadamente todos os anúncios desconsiderados.
 
-| Prioridade | Propósito | O que procurar |
-|------------|-----------|----------------|
-| 1 | MELHOR EXECUÇÃO | Anúncio com melhor título, avaliação alta, marca forte |
-| 2 | PIOR EXECUÇÃO | Anúncio com título ruim, avaliação baixa, genérico |
-| 3 | MAIS VENDIDO | O líder em volume (referência de mercado) |
-| 4 | DIFERENCIADO | Algo único (kit grande, funcionalidade especial) |
-| 5 | PROBLEMAS VISÍVEIS | Título truncado, informação faltando, preço fora da curva |
+📊 DISTRIBUIÇÃO DO MERCADO (OBRIGATÓRIO)
 
-🎯 OBJETIVO: Ter uma amostra que inclua:
-- 1 anúncio de ALTA QUALIDADE (referência)
-- 1 anúncio de BAIXA QUALIDADE (oportunidade)
-- 1 anúncio LÍDER (volume)
-- 1 anúncio DIFERENCIADO (inovação)
-- 1 anúncio com PROBLEMAS CLAROS (para identificar o que evitar)
+👉 ANTES de selecionar os anúncios, você deve analisar TODOS os anúncios visíveis nos prints (apenas os válidos) e estimar a presença de cada tipo de anúncio no mercado.
 
-📤 FORMATO DE RESPOSTA (OBRIGATÓRIO — NÃO RESUMIR, NÃO SIMPLIFICAR)
+Classifique nos grupos:
 
-ANÚNCIOS PARA ABRIR:
+MELHOR EXECUÇÃO → alta qualidade geral (imagem, título, confiança)
+PIOR EXECUÇÃO → baixa qualidade geral (genéricos, mal feitos)
+MAIS VENDIDOS → anúncios com forte volume (considere todos com +500 vendas)
+DIFERENCIADOS → anúncios com proposta diferente (kit, oferta, estrutura distinta)
+⚠️ REGRAS:
+Um anúncio pode aparecer em mais de um grupo
+Você está medindo PRESENÇA (não exclusividade)
+Baseie-se apenas no que está visível
+Use estimativa coerente
+📤 FORMATO:
 
-Para cada anúncio selecionado, você deve REPLICAR o card do Mercado Livre o mais fiel possível com base no print. Cada item deve conter:
+DISTRIBUIÇÃO DO MERCADO:
 
-🖼️ [imagem do produto]
-📝 Organizador De Geladeira Transparente Com Cesto 5L
-💰 R$ 29,90
-⭐ 4.8 ⭐ | +1200 avaliações
-📦 +5000 vendidos
-🏷️ FULL | Frete grátis
-📦 Unidade
-🎯 Motivo: MAIS VENDIDO (líder claro de volume)
+MELHOR EXECUÇÃO: XX%
+PIOR EXECUÇÃO: XX%
+MAIS VENDIDOS: XX%
+DIFERENCIADOS: XX%
+🚚 ATRIBUTOS LOGÍSTICOS / COMERCIAIS VISÍVEIS (OBRIGATÓRIO)
 
+👉 Ainda analisando TODOS os anúncios válidos visíveis:
 
-Ao final da resposta, listar separadamente:
+Identifique a proporção de:
 
-ANÚNCIOS FORA DE PADRÃO (os que foram desconsiderados para a análise):
+FULL
+Frete grátis
+Entrega rápida (ex.: chega amanhã, hoje, etc.)
+⚠️ REGRAS:
+Só considerar o que estiver visível
+Não inferir
+Se não for possível ver claramente, avisar
+Percentuais devem refletir o conjunto visível
+📤 FORMATO:
+
+ATRIBUTOS LOGÍSTICOS / COMERCIAIS:
+
+FULL: XX%
+FRETE GRÁTIS: XX%
+ENTREGA RÁPIDA: XX%
+📊 SELEÇÃO DOS 5 ANÚNCIOS (OBRIGATÓRIO)
+
+Após a análise acima, selecione 5 anúncios com propósitos diferentes:
+
+MELHOR EXECUÇÃO
+PIOR EXECUÇÃO
+MAIS VENDIDO
+DIFERENCIADO
+PROBLEMAS VISÍVEIS
+Para cada anúncio, identificar:
+Nome
+Preço
+Avaliação
+Vendas
+Se é kit
+Informações visíveis (FULL, frete, etc.)
+📤 FORMATO:
+🛒 ANÚNCIOS PARA ABRIR:
 
 Para cada um:
 
-🖼️ Imagem do produto
-📝 Nome/título
-❌ Motivo pelo qual foi desconsiderado (produto diferente do padrão da busca)
+🖼️ DESCRIÇÃO DA IMAGEM
+📝 Nome
+💰 Preço
+⭐ Avaliação
+📦 Quantidade vendida
+🏷️ Informações visíveis
+📦 Tipo (unidade / kit)
+🎯 Motivo
+❌ ANÚNCIOS DESCONSIDERADOS:
 
+Para cada um:
+
+🖼️ Imagem
+📝 Nome
+❌ Motivo
+⚠️ FORMATO DE SAÍDA FINAL (CRÍTICO)
+
+Sua resposta deve ter DUAS PARTES:
+
+🔹 PARTE 1 — ANÁLISE COMPLETA (TEXTO NORMAL)
+
+Inclua tudo:
+
+distribuição
+atributos
+anúncios
+descartados
+
+👉 Texto livre, claro, organizado
+
+🔹 PARTE 2 — BLOCO ESTRUTURADO (JSON PURO)
+Apenas JSON
+Sem explicação
+Sem texto antes ou depois
+Dentro de json
+Pronto para copiar
+📦 JSON OBRIGATÓRIO:
+{
+  "distribuicaoMercado": {
+    "melhorExecucao": 0,
+    "piorExecucao": 0,
+    "maisVendidos": 0,
+    "diferenciados": 0
+  },
+  "atributosVisiveis": {
+    "full": 0,
+    "freteGratis": 0,
+    "entregaRapida": 0
+  },
+  "anunciosSelecionados": [
+    {
+      "categoria": "MELHOR EXECUCAO",
+      "nome": "",
+      "preco": "",
+      "avaliacao": "",
+      "quantidadeVendida": "",
+      "informacoesVisiveis": [],
+      "tipo": "",
+      "motivo": ""
+    },
+    {
+      "categoria": "PIOR EXECUCAO",
+      "nome": "",
+      "preco": "",
+      "avaliacao": "",
+      "quantidadeVendida": "",
+      "informacoesVisiveis": [],
+      "tipo": "",
+      "motivo": ""
+    },
+    {
+      "categoria": "MAIS VENDIDO",
+      "nome": "",
+      "preco": "",
+      "avaliacao": "",
+      "quantidadeVendida": "",
+      "informacoesVisiveis": [],
+      "tipo": "",
+      "motivo": ""
+    },
+    {
+      "categoria": "DIFERENCIADO",
+      "nome": "",
+      "preco": "",
+      "avaliacao": "",
+      "quantidadeVendida": "",
+      "informacoesVisiveis": [],
+      "tipo": "",
+      "motivo": ""
+    },
+    {
+      "categoria": "PROBLEMAS VISIVEIS",
+      "nome": "",
+      "preco": "",
+      "avaliacao": "",
+      "quantidadeVendida": "",
+      "informacoesVisiveis": [],
+      "tipo": "",
+      "motivo": ""
+    }
+  ],
+  "anunciosDesconsiderados": [
+    {
+      "nome": "",
+      "motivo": ""
+    }
+  ],
+  "observacoes": ""
+}
